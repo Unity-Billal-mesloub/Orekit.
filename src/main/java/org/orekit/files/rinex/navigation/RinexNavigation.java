@@ -159,10 +159,10 @@ public class RinexNavigation extends RinexFile<RinexNavigationHeader> {
      * <p>
      * They are used to initialize the {@link KlobucharIonoModel}.
      * </p>
-     * @return the "alpha" ionospheric parameters
+     * @return the "alpha" ionospheric parameters or null if not initialized
      */
     public double[] getKlobucharAlpha() {
-        return klobucharAlpha.clone();
+        return klobucharAlpha == null ? null : klobucharAlpha.clone();
     }
 
     /**
@@ -178,10 +178,10 @@ public class RinexNavigation extends RinexFile<RinexNavigationHeader> {
      * <p>
      * They are used to initialize the {@link KlobucharIonoModel}.
      * </p>
-     * @return the "beta" ionospheric parameters
+     * @return the "beta" ionospheric parameters or null if not initialized
      */
     public double[] getKlobucharBeta() {
-        return klobucharBeta.clone();
+        return klobucharBeta == null ? null : klobucharBeta.clone();
     }
 
     /**
@@ -197,10 +197,10 @@ public class RinexNavigation extends RinexFile<RinexNavigationHeader> {
      * <p>
      * They are used to initialize the {@link NeQuickModel}.
      * </p>
-     * @return the "alpha" ionospheric parameters
+     * @return the "alpha" ionospheric parameters or null if not initialized
      */
     public double[] getNeQuickAlpha() {
-        return neQuickAlpha.clone();
+        return neQuickAlpha == null ? null : neQuickAlpha.clone();
     }
 
     /**
