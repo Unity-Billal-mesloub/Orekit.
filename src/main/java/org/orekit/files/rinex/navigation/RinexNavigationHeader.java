@@ -35,8 +35,8 @@ public class RinexNavigationHeader extends RinexBaseHeader {
     /** Index of label in header lines. */
     public static final int LABEL_INDEX = 60;
 
-    /** Ionospheric correction type. */
-    private IonosphericCorrectionType ionosphericCorrectionType;
+    /** Ionospheric corrections. */
+    private final List<IonosphericCorrection> ionosphericCorrections;
 
     /** List of time system corrections. */
     private final List<TimeSystemCorrection> timeSystemCorrections;
@@ -48,8 +48,9 @@ public class RinexNavigationHeader extends RinexBaseHeader {
      */
     public RinexNavigationHeader() {
         super(RinexFileType.NAVIGATION);
-        this.timeSystemCorrections = new ArrayList<>();
-        this.mergedFiles           = -1;
+        this.ionosphericCorrections = new ArrayList<>();
+        this.timeSystemCorrections  = new ArrayList<>();
+        this.mergedFiles            = -1;
     }
 
     /** {@inheritDoc} */
@@ -86,19 +87,19 @@ public class RinexNavigationHeader extends RinexBaseHeader {
     }
 
     /**
-     * Getter for the ionospheric correction type.
-     * @return the ionospheric correction type
+     * Getter for the ionospheric corrections.
+     * @return the ionospheric corrections
      */
-    public IonosphericCorrectionType getIonosphericCorrectionType() {
-        return ionosphericCorrectionType;
+    public List<IonosphericCorrection> getIonosphericCorrections() {
+        return ionosphericCorrections;
     }
 
     /**
-     * Setter for the ionospheric correction type.
-     * @param ionosphericCorrectionType the ionospheric correction type to set
+     * Add a ionospheric correction.
+     * @param ionosphericCorrection the ionospheric correction type to add
      */
-    public void setIonosphericCorrectionType(final IonosphericCorrectionType ionosphericCorrectionType) {
-        this.ionosphericCorrectionType = ionosphericCorrectionType;
+    public void addIonosphericCorrection(final IonosphericCorrection ionosphericCorrection) {
+        this.ionosphericCorrections.add(ionosphericCorrection);
     }
 
     /**

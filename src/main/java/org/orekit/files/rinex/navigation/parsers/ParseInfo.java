@@ -26,6 +26,9 @@ import org.orekit.files.rinex.navigation.IonosphereKlobucharMessage;
 import org.orekit.files.rinex.navigation.IonosphereNavICKlobucharMessage;
 import org.orekit.files.rinex.navigation.IonosphereNavICNeQuickNMessage;
 import org.orekit.files.rinex.navigation.IonosphereNequickGMessage;
+import org.orekit.files.rinex.navigation.IonosphericCorrectionType;
+import org.orekit.files.rinex.navigation.KlobucharIonosphericCorrection;
+import org.orekit.files.rinex.navigation.NeQuickGIonosphericCorrection;
 import org.orekit.files.rinex.navigation.RecordType;
 import org.orekit.files.rinex.navigation.RinexNavigation;
 import org.orekit.files.rinex.navigation.RinexNavigationHeader;
@@ -104,8 +107,17 @@ public class ParseInfo {
     /** Flag indicating header has been completely parsed. */
     private boolean headerParsed;
 
-    /** Flag indicating the distinction between "alpha" and "beta" ionospheric coefficients. */
-    private boolean isIonosphereAlphaInitialized;
+    /** Ionospheric correction type. */
+    private IonosphericCorrectionType ionosphericCorrectionType;
+
+    /** Ionospheric correction time mark. */
+    private char timeMark;
+
+    /** Klobuchar α coefficients. */
+    private double[] klobucharAlpha;
+
+    /** Klobuchar β coefficients. */
+    private double[] klobucharBeta;
 
     /** Record line parser. */
     private RecordLineParser recordLineParser;
@@ -125,10 +137,9 @@ public class ParseInfo {
      */
     public ParseInfo(final String name, final TimeScales timeScales) {
         // Initialize default values for fields
-        this.name                         = name;
-        this.timeScales                   = timeScales;
-        this.isIonosphereAlphaInitialized = false;
-        this.file                         = new RinexNavigation();
+        this.name       = name;
+        this.timeScales = timeScales;
+        this.file       = new RinexNavigation();
 
         // reset the default values set by header constructor
         this.file.getHeader().setProgramName(null);
@@ -625,35 +636,66 @@ public class ParseInfo {
     }
 
     /**
-     * Set the "alpha" ionspheric parameters.
-     * @param klobucharAlpha the "alpha" ionspheric parameters to set
+     * Set the ionospheric correction type.
+     * @param ionosphericCorrectionType ionospheric correction type
+     * @since 14.0
+     */
+    public void setIonosphericCorrectionType(final IonosphericCorrectionType ionosphericCorrectionType) {
+        this.ionosphericCorrectionType = ionosphericCorrectionType;
+    }
+
+    /**
+     * Set the ionospheric correction time mark.
+     * @param timeMark ionospheric correction time mark
+     * @since 14.0
+     */
+    public void setTimeMark(final char timeMark) {
+        this.timeMark = timeMark;
+    }
+
+    /**
+     * Set the α ionospheric parameters.
+     * @param klobucharAlpha the α ionospheric parameters to set
      */
     public void setKlobucharAlpha(final double[] klobucharAlpha) {
-        file.setKlobucharAlpha(klobucharAlpha);
-        isIonosphereAlphaInitialized = true;
-    }
-
-    /** Check if ionosphere alpha coefficients have been parsed.
-     * @return true if ionosphere alpha coefficients have been parsed
-     */
-    public boolean isIonosphereAlphaInitialized() {
-        return isIonosphereAlphaInitialized;
+        this.klobucharAlpha = klobucharAlpha.clone();
+        setKlobucharIfComplete();
     }
 
     /**
-     * Set the "beta" ionospheric parameters.
-     * @param klobucharBeta the "beta" ionospheric parameters to set
+     * Set the β ionospheric parameters.
+     * @param klobucharBeta the β ionospheric parameters to set
      */
     public void setKlobucharBeta(final double[] klobucharBeta) {
-        file.setKlobucharBeta(klobucharBeta);
+        this.klobucharBeta = klobucharBeta.clone();
+        setKlobucharIfComplete();
+    }
+
+    /** Add the Klobuchar correction if it is complete.
+     */
+    private void setKlobucharIfComplete() {
+        if (klobucharAlpha != null && klobucharBeta != null) {
+            file.getHeader().addIonosphericCorrection(new KlobucharIonosphericCorrection(ionosphericCorrectionType,
+                                                                                         timeMark,
+                                                                                         klobucharAlpha,
+                                                                                         klobucharBeta));
+            ionosphericCorrectionType = null;
+            timeMark                  = 0;
+            klobucharAlpha            = null;
+            klobucharBeta             = null;
+        }
     }
 
     /**
-     * Set the "alpha" ionospheric parameters.
-     * @param neQuickAlpha the "alpha" ionospheric parameters to set
+     * Set the α ionospheric parameters.
+     * @param neQuickAlpha the α ionospheric parameters to set
      */
     public void setNeQuickAlpha(final double[] neQuickAlpha) {
-        file.setNeQuickAlpha(neQuickAlpha);
+            file.getHeader().addIonosphericCorrection(new NeQuickGIonosphericCorrection(ionosphericCorrectionType,
+                                                                                        timeMark,
+                                                                                        neQuickAlpha));
+            ionosphericCorrectionType = null;
+            timeMark                  = 0;
     }
 
 }

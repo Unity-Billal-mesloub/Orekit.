@@ -47,9 +47,13 @@ import org.orekit.gnss.SatelliteSystem;
 import org.orekit.propagation.analytical.gnss.data.NavigationMessage;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.DateTimeComponents;
+import org.orekit.time.GNSSDate;
 import org.orekit.time.TimeScale;
 import org.orekit.time.TimeScales;
+import org.orekit.utils.formatting.FastDecimalFormatter;
+import org.orekit.utils.formatting.FastDoubleFormatter;
 import org.orekit.utils.formatting.FastLongFormatter;
+import org.orekit.utils.formatting.FastScientificFormatter;
 import org.orekit.utils.units.Unit;
 
 import java.io.IOException;
@@ -68,66 +72,75 @@ public class RinexNavigationWriter extends BaseRinexWriter<RinexNavigationHeader
     /** Format for one 9 digits integer field. */
     protected static final FastLongFormatter NINE_DIGITS_INTEGER = new FastLongFormatter(9, false);
 
+    /** Format for one 12.4 digits float field. */
+    public static final FastDoubleFormatter TWELVE_FOUR_DIGITS_FLOAT = new FastDecimalFormatter(12, 4);
+
+    /** Format for one 16.9 digits float field. */
+    public static final FastDoubleFormatter SIXTEEN_DIGITS_SCIENTIFIC = new FastScientificFormatter(16);
+
+    /** Format for one 17.10 digits float field. */
+    public static final FastDoubleFormatter SEVENTEEN_DIGITS_SCIENTIFIC = new FastScientificFormatter(17);
+
     /** Identifier for system time offset messages.
      * <p>
-     * The identifier is prefixed with "00_" so all messages that are not related
-     * to any satellites are grouped together before satellite messages
+     * The identifier is prefixed with "00_" so all time offset messages
+     * are grouped together before satellite messages
      * </p>
      */
     private static final String STO_IDENTIFIER = "00_STO";
 
     /** Identifier for Earth Orientation Parameters messages.
      * <p>
-     * The identifier is prefixed with "00_" so all messages that are not related
-     * to any satellites are grouped together before satellite messages
+     * The identifier is prefixed with "00_" so all EOP messages
+     * are grouped together before satellite messages
      * </p>
      */
     private static final String EOP_IDENTIFIER = "00_EOP";
 
     /** Identifier for Klobuchar model ionospheric messages.
      * <p>
-     * The identifier is prefixed with "00_" so all messages that are not related
-     * to any satellites are grouped together before satellite messages
+     * The identifier is prefixed with "00_" so all Klobuchar messages
+     * are grouped together before satellite messages
      * </p>
      */
     private static final String KLOBUCHAR_IDENTIFIER = "00_IONO_KLOBUCHAR";
 
     /** Identifier for NeQuick G ionospheric messages.
      * <p>
-     * The identifier is prefixed with "00_" so all messages that are not related
-     * to any satellites are grouped together before satellite messages
+     * The identifier is prefixed with "00_" so all NeQuick messages
+     * are grouped together before satellite messages
      * </p>
      */
     private static final String NEQUICK_IDENTIFIER = "00_IONO_NEQUICK";
 
     /** Identifier for BDGIM ionospheric messages.
      * <p>
-     * The identifier is prefixed with "00_" so all messages that are not related
-     * to any satellites are grouped together before satellite messages
+     * The identifier is prefixed with "00_" so all BDGIM messages
+     * are grouped together before satellite messages
      * </p>
      */
     private static final String BDGIM_IDENTIFIER = "00_IONO_BDGIM";
 
     /** Identifier for NavIC Klobuchar ionospheric messages.
      * <p>
-     * The identifier is prefixed with "00_" so all messages that are not related
-     * to any satellites are grouped together before satellite messages
+     * The identifier is prefixed with "00_" so all NavIC Klobuchar messages
+     * are grouped together before satellite messages
      * </p>
      */
     private static final String NAVIC_KLOBUCHAR_IDENTIFIER = "00_IONO_NAVIC_KLOBUCHAR";
 
     /** Identifier for NavIC NeQuick N ionospheric messages.
      * <p>
-     * The identifier is prefixed with "00_" so all messages that are not related
-     * to any satellites are grouped together before satellite messages
+     * The identifier is prefixed with "00_" so all NavIC NeQuick N messages
+     * are grouped together before satellite messages
      * </p>
      */
     private static final String NAVIC_NEQUICK_N_IDENTIFIER = "00_IONO_NAVIC_NEQUICK_N";
 
     /** Identifier for GLONASS CDMS ionospheric messages.
      * <p>
-     * The identifier is prefixed with "00_" so all messages that are not related
-     * to any satellites are grouped together before satellite messages
+     * The identifier is prefixed with "00_" so all GLONASS CDMS messages
+     * are grouped together before satellite messages
      * </p>
      */
     private static final String GLONASS_CDMS_IDENTIFIER = "00_IONO_GLONASS_CDMS_N";
@@ -299,6 +312,58 @@ public class RinexNavigationWriter extends BaseRinexWriter<RinexNavigationHeader
 
         // PGM / RUN BY / DATE
         writeProgramRunByDate(header);
+
+        if (header.getFormatVersion() < 4) {
+            // IONOSPHERIC CORR
+            for (final IonosphericCorrection correction : header.getIonosphericCorrections()) {
+                if (correction.getType() == IonosphericCorrectionType.GAL) {
+                    final NeQuickGIonosphericCorrection nequick = (NeQuickGIonosphericCorrection) correction;
+                    final double[] alpha = nequick.getNeQuickAlpha();
+                    outputField(nequick.getType().toString(), 5, true);
+                    outputField(TWELVE_FOUR_DIGITS_FLOAT, alpha[0], 17);
+                    outputField(TWELVE_FOUR_DIGITS_FLOAT, alpha[1], 29);
+                    outputField(TWELVE_FOUR_DIGITS_FLOAT, alpha[2], 41);
+                    outputField("", 53, true);
+                    outputField(nequick.getTimeMark(), 54);
+                    finishHeaderLine(NavigationLabel.IONOSPHERIC_CORR);
+                } else {
+                    final KlobucharIonosphericCorrection klobuchar = (KlobucharIonosphericCorrection) correction;
+                    final double[] alpha = klobuchar.getKlobucharAlpha();
+                    final double[] beta  = klobuchar.getKlobucharBeta();
+                    outputField(klobuchar.getType().toString(), 3, true);
+                    outputField('A', 5);
+                    outputField(TWELVE_FOUR_DIGITS_FLOAT, alpha[0], 17);
+                    outputField(TWELVE_FOUR_DIGITS_FLOAT, alpha[1], 29);
+                    outputField(TWELVE_FOUR_DIGITS_FLOAT, alpha[2], 41);
+                    outputField(TWELVE_FOUR_DIGITS_FLOAT, alpha[3], 53);
+                    outputField(klobuchar.getTimeMark(), 54);
+                    finishHeaderLine(NavigationLabel.IONOSPHERIC_CORR);
+                    outputField(klobuchar.getType().toString(), 3, true);
+                    outputField('B', 5);
+                    outputField(TWELVE_FOUR_DIGITS_FLOAT, beta[0], 17);
+                    outputField(TWELVE_FOUR_DIGITS_FLOAT, beta[1], 29);
+                    outputField(TWELVE_FOUR_DIGITS_FLOAT, beta[2], 41);
+                    outputField(TWELVE_FOUR_DIGITS_FLOAT, beta[3], 53);
+                    outputField(klobuchar.getTimeMark(), 54);
+                    finishHeaderLine(NavigationLabel.IONOSPHERIC_CORR);
+                }
+            }
+
+            // TIME SYSTEM CORR
+            for (final TimeSystemCorrection correction : header.getTimeSystemCorrections()) {
+                final GNSSDate date = new GNSSDate(correction.getReferenceDate(), header.getSatelliteSystem());
+                outputField(correction.getTimeSystemCorrectionType(), 5, true);
+                outputField(SEVENTEEN_DIGITS_SCIENTIFIC, correction.getTimeSystemCorrectionA0(), 22);
+                outputField(SIXTEEN_DIGITS_SCIENTIFIC,   correction.getTimeSystemCorrectionA1(), 39);
+                outputField(SIX_DIGITS_INTEGER, (int) FastMath.rint(date.getSecondsInWeek()), 46);
+                outputField(FOUR_DIGITS_INTEGER, date.getWeekNumber(), 51);
+                outputField(correction.getSatId(), 56, false);
+                outputField("", 57, true);
+                outputField(TWO_DIGITS_INTEGER, correction.getUtcId(), 59);
+                finishHeaderLine(NavigationLabel.TIME_SYSTEM_CORR);
+            }
+
+        }
 
         // REC # / TYPE / VERS
         if (header.getReceiverNumber() != null) {

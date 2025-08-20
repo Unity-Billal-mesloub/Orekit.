@@ -36,21 +36,34 @@ public class TimeSystemCorrection {
     /** Reference date for time system correction. */
     private final AbsoluteDate referenceDate;
 
+    /** Satellite ID.
+     * @since 14.0
+     */
+    private final String satId;
+
+    /** UTC ID.
+     * @since 14.0
+     */
+    private int utcId;
+
     /**
      * Constructor.
-     * @param timeSystemCorrectionType       time system correction type
-     * @param referenceDate                  reference date for time system correction
-     * @param timeSystemCorrectionA0         A0 coefficient of linear polynomial for time system correction
-     * @param timeSystemCorrectionA1         A1 coefficient of linear polynomial for time system correction
+     * @param timeSystemCorrectionType time system correction type
+     * @param referenceDate            reference date for time system correction
+     * @param timeSystemCorrectionA0   A0 coefficient of linear polynomial for time system correction
+     * @param timeSystemCorrectionA1   A1 coefficient of linear polynomial for time system correction
+     * @param satId                    satellite ID
+     * @param utcId                    UTC id
      */
-    public TimeSystemCorrection(final String timeSystemCorrectionType,
-                                final AbsoluteDate referenceDate,
-                                final double timeSystemCorrectionA0,
-                                final double timeSystemCorrectionA1) {
+    public TimeSystemCorrection(final String timeSystemCorrectionType, final AbsoluteDate referenceDate,
+                                final double timeSystemCorrectionA0, final double timeSystemCorrectionA1,
+                                final String satId, final int utcId) {
         this.timeSystemCorrectionType = timeSystemCorrectionType;
         this.referenceDate            = referenceDate;
         this.timeSystemCorrectionA0   = timeSystemCorrectionA0;
         this.timeSystemCorrectionA1   = timeSystemCorrectionA1;
+        this.satId                    = satId;
+        this.utcId                    = utcId;
     }
 
     /**
@@ -92,6 +105,24 @@ public class TimeSystemCorrection {
      */
     public AbsoluteDate getReferenceDate() {
         return referenceDate;
+    }
+
+    /**
+     * Getter for the satellite ID.
+     * @return satellite ID
+     * @since 14.0
+     */
+    public String getSatId() {
+        return satId;
+    }
+
+    /**
+     * Getter for the UTC ID.
+     * @return UTC ID
+     * @since 14.0
+     */
+    public int getUtcId() {
+        return utcId;
     }
 
 }

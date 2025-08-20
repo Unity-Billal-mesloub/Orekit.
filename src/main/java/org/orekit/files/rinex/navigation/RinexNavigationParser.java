@@ -201,7 +201,7 @@ public class RinexNavigationParser {
         HEADER_ION_ALPHA(pi -> pi.getHeader().matchFound(NavigationLabel.ION_ALPHA, pi.getLine()),
                          pi -> {
 
-                             pi.getHeader().setIonosphericCorrectionType(IonosphericCorrectionType.GPS);
+                             pi.setIonosphericCorrectionType(IonosphericCorrectionType.GPS);
 
                              // Read coefficients
                              final double[] parameters = new double[4];
@@ -218,7 +218,7 @@ public class RinexNavigationParser {
         HEADER_ION_BETA(pi -> pi.getHeader().matchFound(NavigationLabel.ION_BETA, pi.getLine()),
                         pi -> {
 
-                            pi.getHeader().setIonosphericCorrectionType(IonosphericCorrectionType.GPS);
+                            pi.setIonosphericCorrectionType(IonosphericCorrectionType.GPS);
 
                             // Read coefficients
                             final double[] parameters = new double[4];
@@ -238,35 +238,31 @@ public class RinexNavigationParser {
                                // ionospheric correction type
                                final IonosphericCorrectionType ionoType =
                                                IonosphericCorrectionType.valueOf(ParsingUtils.parseString(pi.getLine(), 0, 3));
-                               pi.getHeader().setIonosphericCorrectionType(ionoType);
+                               pi.setIonosphericCorrectionType(ionoType);
+                               pi.setTimeMark(pi.getLine().charAt(54));
 
-                               // Read coefficients
-                               final double[] parameters = new double[4];
-                               parameters[0] = ParsingUtils.parseDouble(pi.getLine(), 5, 12);
-                               parameters[1] = ParsingUtils.parseDouble(pi.getLine(), 17, 12);
-                               parameters[2] = ParsingUtils.parseDouble(pi.getLine(), 29, 12);
-                               parameters[3] = ParsingUtils.parseDouble(pi.getLine(), 41, 12);
-
-                               // Verify if we are parsing Galileo ionospheric parameters
                                if (ionoType == IonosphericCorrectionType.GAL) {
-
-                                   // We are parsing Galileo ionospheric parameters
-                                   pi.setNeQuickAlpha(parameters);
-
+                                   // We are parsing Galileo NeQuick G ionospheric parameters
+                                   pi.setNeQuickAlpha(new double[] {
+                                       ParsingUtils.parseDouble(pi.getLine(),  5, 12),
+                                       ParsingUtils.parseDouble(pi.getLine(), 17, 12),
+                                       ParsingUtils.parseDouble(pi.getLine(), 29, 12)
+                                   });
                                } else {
                                    // We are parsing Klobuchar ionospheric parameters
+                                   final double[] parameters = new double[] {
+                                       ParsingUtils.parseDouble(pi.getLine(),  5, 12),
+                                       ParsingUtils.parseDouble(pi.getLine(), 17, 12),
+                                       ParsingUtils.parseDouble(pi.getLine(), 29, 12),
+                                       ParsingUtils.parseDouble(pi.getLine(), 41, 12)
+                                   };
 
-                                   // Verify if we are parsing "alpha" or "beta" ionospheric parameters
-                                   if (pi.isIonosphereAlphaInitialized()) {
-
-                                       // Ionospheric "beta" parameters
-                                       pi.setKlobucharBeta(parameters);
-
-                                   } else {
-
-                                       // Ionospheric "alpha" parameters
+                                   if (pi.getLine().charAt(3) == 'A') {
+                                       // Ionospheric α parameters
                                        pi.setKlobucharAlpha(parameters);
-
+                                   } else {
+                                       // Ionospheric β parameters
+                                       pi.setKlobucharBeta(parameters);
                                    }
 
                                }
@@ -288,7 +284,7 @@ public class RinexNavigationParser {
                              final AbsoluteDate    date      = new GNSSDate(refWeek, refTime, satSystem, pi.getTimeScales()).getDate();
 
                              // Add to the list
-                             final TimeSystemCorrection tsc = new TimeSystemCorrection("GPUT", date, a0, a1);
+                             final TimeSystemCorrection tsc = new TimeSystemCorrection("GPUT", date, a0, a1, "", 0);
                              pi.getHeader().addTimeSystemCorrections(tsc);
                          },
                          LineParser::headerNext),
@@ -308,7 +304,7 @@ public class RinexNavigationParser {
                              final AbsoluteDate    date      = new AbsoluteDate(year, month, day, timeScale);
 
                              // Add to the list
-                             final TimeSystemCorrection tsc = new TimeSystemCorrection("GLUT", date, minusTau, 0.0);
+                             final TimeSystemCorrection tsc = new TimeSystemCorrection("GLUT", date, minusTau, 0.0, "", 0);
                              pi.getHeader().addTimeSystemCorrections(tsc);
 
                          },
@@ -319,11 +315,13 @@ public class RinexNavigationParser {
                     pi -> {
 
                         // Read fields
-                        final String type    = ParsingUtils.parseString(pi.getLine(), 0, 4);
-                        final double a0      = ParsingUtils.parseDouble(pi.getLine(), 5, 17);
+                        final String type    = ParsingUtils.parseString(pi.getLine(),  0, 4);
+                        final double a0      = ParsingUtils.parseDouble(pi.getLine(),  5, 17);
                         final double a1      = ParsingUtils.parseDouble(pi.getLine(), 22, 16);
-                        final int    refTime = ParsingUtils.parseInt(pi.getLine(), 38, 7);
-                        final int    refWeek = ParsingUtils.parseInt(pi.getLine(), 46, 5);
+                        final int    refTime = ParsingUtils.parseInt(pi.getLine(),    38,  7);
+                        final int    refWeek = ParsingUtils.parseInt(pi.getLine(),    46,  5);
+                        final String satId   = ParsingUtils.parseString(pi.getLine(), 51,  5);
+                        final int    utcId   = ParsingUtils.parseInt(pi.getLine(),    57,  2);
 
                         // convert date
                         final SatelliteSystem satSystem = pi.getHeader().getSatelliteSystem();
@@ -338,7 +336,7 @@ public class RinexNavigationParser {
                         }
 
                         // Add to the list
-                        final TimeSystemCorrection tsc = new TimeSystemCorrection(type, date, a0, a1);
+                        final TimeSystemCorrection tsc = new TimeSystemCorrection(type, date, a0, a1, satId, utcId);
                         pi.getHeader().addTimeSystemCorrections(tsc);
 
                     },

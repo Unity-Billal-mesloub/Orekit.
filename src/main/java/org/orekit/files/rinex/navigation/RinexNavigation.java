@@ -24,8 +24,6 @@ import java.util.Map;
 
 import org.orekit.files.rinex.RinexFile;
 import org.orekit.gnss.SatelliteSystem;
-import org.orekit.models.earth.ionosphere.KlobucharIonoModel;
-import org.orekit.models.earth.ionosphere.nequick.NeQuickModel;
 import org.orekit.propagation.analytical.gnss.data.BeidouCivilianNavigationMessage;
 import org.orekit.propagation.analytical.gnss.data.BeidouLegacyNavigationMessage;
 import org.orekit.propagation.analytical.gnss.data.GLONASSFdmaNavigationMessage;
@@ -45,15 +43,6 @@ import org.orekit.propagation.analytical.gnss.data.SBASNavigationMessage;
  * @since 11.0
  */
 public class RinexNavigation extends RinexFile<RinexNavigationHeader> {
-
-    /** The 4 Klobuchar coefficients of a cubic equation representing the amplitude of the vertical delay. */
-    private double[] klobucharAlpha;
-
-    /** The 4 coefficients of a cubic equation representing the period of the model. */
-    private double[] klobucharBeta;
-
-    /** The three ionospheric coefficients broadcast in the Galileo navigation message. */
-    private double[] neQuickAlpha;
 
     /** A map containing the GPS navigation messages. */
     private final Map<String, List<GPSLegacyNavigationMessage>> gpsLegacyData;
@@ -152,63 +141,6 @@ public class RinexNavigation extends RinexFile<RinexNavigationHeader> {
         this.navICKlobucharMessages = new ArrayList<>();
         this.navICNeQuickNMessages  = new ArrayList<>();
         this.glonassCDMSMessages    = new ArrayList<>();
-    }
-
-    /**
-     * Get the "alpha" ionospheric parameters.
-     * <p>
-     * They are used to initialize the {@link KlobucharIonoModel}.
-     * </p>
-     * @return the "alpha" ionospheric parameters or null if not initialized
-     */
-    public double[] getKlobucharAlpha() {
-        return klobucharAlpha == null ? null : klobucharAlpha.clone();
-    }
-
-    /**
-     * Set the "alpha" ionspheric parameters.
-     * @param klobucharAlpha the "alpha" ionspheric parameters to set
-     */
-    public void setKlobucharAlpha(final double[] klobucharAlpha) {
-        this.klobucharAlpha = klobucharAlpha.clone();
-    }
-
-    /**
-     * Get the "beta" ionospheric parameters.
-     * <p>
-     * They are used to initialize the {@link KlobucharIonoModel}.
-     * </p>
-     * @return the "beta" ionospheric parameters or null if not initialized
-     */
-    public double[] getKlobucharBeta() {
-        return klobucharBeta == null ? null : klobucharBeta.clone();
-    }
-
-    /**
-     * Set the "beta" ionospheric parameters.
-     * @param klobucharBeta the "beta" ionospheric parameters to set
-     */
-    public void setKlobucharBeta(final double[] klobucharBeta) {
-        this.klobucharBeta = klobucharBeta.clone();
-    }
-
-    /**
-     * Get the "alpha" ionospheric parameters.
-     * <p>
-     * They are used to initialize the {@link NeQuickModel}.
-     * </p>
-     * @return the "alpha" ionospheric parameters or null if not initialized
-     */
-    public double[] getNeQuickAlpha() {
-        return neQuickAlpha == null ? null : neQuickAlpha.clone();
-    }
-
-    /**
-     * Set the "alpha" ionospheric parameters.
-     * @param neQuickAlpha the "alpha" ionospheric parameters to set
-     */
-    public void setNeQuickAlpha(final double[] neQuickAlpha) {
-        this.neQuickAlpha = neQuickAlpha.clone();
     }
 
     /**
