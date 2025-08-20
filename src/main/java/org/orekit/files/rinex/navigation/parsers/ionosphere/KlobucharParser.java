@@ -22,7 +22,6 @@ import org.orekit.files.rinex.navigation.RegionCode;
 import org.orekit.files.rinex.navigation.RinexNavigation;
 import org.orekit.files.rinex.navigation.parsers.ParseInfo;
 import org.orekit.files.rinex.navigation.parsers.RecordLineParser;
-import org.orekit.utils.units.Unit;
 
 /** Parser for Klobuchar ionosphere.
  * @author Luc Maisonobe
