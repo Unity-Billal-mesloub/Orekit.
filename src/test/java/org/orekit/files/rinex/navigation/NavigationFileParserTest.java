@@ -19,7 +19,6 @@ package org.orekit.files.rinex.navigation;
 import java.io.IOException;
 import java.util.List;
 
-import com.tngtech.archunit.lang.ArchRule.Transformation.As;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.hipparchus.util.FastMath;
 import org.junit.jupiter.api.Assertions;

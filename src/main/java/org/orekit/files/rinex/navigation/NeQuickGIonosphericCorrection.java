@@ -23,7 +23,7 @@ package org.orekit.files.rinex.navigation;
 public class NeQuickGIonosphericCorrection extends IonosphericCorrection {
 
     /** The three ionospheric coefficients broadcast in the Galileo navigation message. */
-    private double[] neQuickAlpha;
+    private final double[] neQuickAlpha;
 
     /**
      * Constructor.

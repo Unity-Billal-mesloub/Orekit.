@@ -16,8 +16,6 @@
  */
 package org.orekit.files.rinex.navigation;
 
-import org.orekit.gnss.SatelliteSystem;
-
 /** Container for Klobuchar ionospheric corrections.
  * @author Luc Maisonobe
  * @since 14.0
@@ -25,10 +23,10 @@ import org.orekit.gnss.SatelliteSystem;
 public class KlobucharIonosphericCorrection extends IonosphericCorrection {
 
     /** The 4 Klobuchar coefficients of a cubic equation representing the amplitude of the vertical delay. */
-    private double[] klobucharAlpha;
+    private final double[] klobucharAlpha;
 
     /** The 4 coefficients of a cubic equation representing the period of the model. */
-    private double[] klobucharBeta;
+    private final double[] klobucharBeta;
 
     /**
      * Constructor.

@@ -44,7 +44,7 @@ public class TimeSystemCorrection {
     /** UTC ID.
      * @since 14.0
      */
-    private int utcId;
+    private final int utcId;
 
     /**
      * Constructor.
@@ -77,8 +77,7 @@ public class TimeSystemCorrection {
     /**
      * Getter for the A0 coefficient of the time system correction.
      * <p>
-     * deltaT = {@link #getTimeSystemCorrectionA0() A0} +
-     *          {@link #getTimeSystemCorrectionA1() A1} * (t - tref)
+     * deltaT = {@code A0 + A1 * (t - tref)}
      * </p>
      * @return the A0 coefficient of the time system correction
      */
@@ -89,8 +88,7 @@ public class TimeSystemCorrection {
     /**
      * Getter for the A1 coefficient of the time system correction.
      * <p>
-     * deltaT = {@link #getTimeSystemCorrectionA0() A0} +
-     *          {@link #getTimeSystemCorrectionA1() A1} * (t - tref)
+     * deltaT = {@code A0 + A1 * (t - tref)}
      * </p>
      * @return the A1 coefficient of the time system correction
      */
