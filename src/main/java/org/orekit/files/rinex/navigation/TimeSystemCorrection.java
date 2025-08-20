@@ -25,16 +25,16 @@ import org.orekit.time.AbsoluteDate;
 public class TimeSystemCorrection {
 
     /** Time system correction type. */
-    private String timeSystemCorrectionType;
+    private final String timeSystemCorrectionType;
 
     /** A0 coefficient of linear polynomial for time system correction. */
-    private double timeSystemCorrectionA0;
+    private final double timeSystemCorrectionA0;
 
     /** A1 coefficient of linear polynomial for time system correction. */
-    private double timeSystemCorrectionA1;
+    private final double timeSystemCorrectionA1;
 
     /** Reference date for time system correction. */
-    private AbsoluteDate referenceDate;
+    private final AbsoluteDate referenceDate;
 
     /**
      * Constructor.
