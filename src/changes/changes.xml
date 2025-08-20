@@ -29,6 +29,12 @@
         <action dev="luc" type="add" issue="1775">
             Allow custom GNSS time systems.
         </action>
+        <action dev="serrof" type="update" issue="1787">
+            Introduce Archunit as test dependency.
+        </action>
+        <action dev="serrof" type="fix" issue="1784">
+            Compute derivatives properly in mean-to-eccentric conversions.
+        </action>
     </release>
     <release version="13.1" date="2025-08-01" description="13.1 is a minor release.">
         <action dev="serrof" type="fix" issue="1782">
