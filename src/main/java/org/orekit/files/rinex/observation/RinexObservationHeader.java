@@ -24,19 +24,23 @@ import java.util.Map;
 
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.hipparchus.geometry.euclidean.twod.Vector2D;
-import org.orekit.files.rinex.AppliedDCBS;
-import org.orekit.files.rinex.AppliedPCVS;
-import org.orekit.files.rinex.section.RinexBaseHeader;
+import org.orekit.files.rinex.section.Label;
+import org.orekit.files.rinex.section.RinexClockObsBaseHeader;
+import org.orekit.files.rinex.utils.ParsingUtils;
 import org.orekit.files.rinex.utils.RinexFileType;
 import org.orekit.gnss.ObservationType;
 import org.orekit.gnss.SatInSystem;
 import org.orekit.gnss.SatelliteSystem;
 import org.orekit.time.AbsoluteDate;
+import org.orekit.time.TimeScales;
 
 /** Container for Rinex observation file header.
  * @since 9.2
  */
-public class RinexObservationHeader extends RinexBaseHeader {
+public class RinexObservationHeader extends RinexClockObsBaseHeader {
+
+    /** Index of label in header lines. */
+    public static final int LABEL_INDEX = 60;
 
     /** Name of the Antenna Marker. */
     private String markerName;
@@ -52,15 +56,6 @@ public class RinexObservationHeader extends RinexBaseHeader {
 
     /** Name of Agency. */
     private String agencyName;
-
-    /** Receiver Number. */
-    private String receiverNumber;
-
-    /** Receiver Type. */
-    private String receiverType;
-
-    /** Receiver version. */
-    private String receiverVersion;
 
     /** Antenna Number. */
     private String antennaNumber;
@@ -122,12 +117,6 @@ public class RinexObservationHeader extends RinexBaseHeader {
      */
     private boolean clockOffsetApplied;
 
-    /** List of applied differential code bias corrections. */
-    private final List<AppliedDCBS> listAppliedDCBS;
-
-    /** List of antenna center variation corrections. */
-    private final List<AppliedPCVS> listAppliedPCVS;
-
     /** List of phase shift correction used to generate phases consistent w/r to cycle shifts. */
     private final List<PhaseShiftCorrection> phaseShiftCorrections;
 
@@ -148,28 +137,6 @@ public class RinexObservationHeader extends RinexBaseHeader {
      * @since 12.0
      */
     private final Map<SatInSystem, Map<ObservationType, Integer>> nbObsPerSat;
-
-    /** Observation types for each satellite systems.
-     * @since 12.0
-     */
-    private final Map<SatelliteSystem, List<ObservationType>> mapTypeObs;
-
-    /** Number of leap seconds since 6-Jan-1980. */
-    private int leapSeconds;
-
-    /** Future or past leap seconds ΔtLSF (BNK).
-     * i.e. future leap second if the week and day number are in the future.
-     */
-    private int leapSecondsFuture;
-
-    /** Respective leap second week number.
-     * For GPS, GAL, QZS and IRN, weeks since 6-Jan-1980.
-     * When BDS only file leap seconds specified, weeks since 1-Jan-2006
-     */
-    private int leapSecondsWeekNum;
-
-    /** Respective leap second day number. */
-    private int leapSecondsDayNum;
 
     /** Code phase bias correction for GLONASS C1C signal.
      * @since 12.0
@@ -201,19 +168,31 @@ public class RinexObservationHeader extends RinexBaseHeader {
         clockOffsetApplied     = false;
         nbSat                  = -1;
         interval               = Double.NaN;
-        leapSeconds            = 0;
-        listAppliedDCBS        = new ArrayList<>();
-        listAppliedPCVS        = new ArrayList<>();
         phaseShiftCorrections  = new ArrayList<>();
         scaleFactorCorrections = new HashMap<>();
         glonassChannels        = new ArrayList<>();
         nbObsPerSat            = new HashMap<>();
-        mapTypeObs             = new HashMap<>();
         tLastObs               = AbsoluteDate.FUTURE_INFINITY;
         c1cCodePhaseBias       = Double.NaN;
         c1pCodePhaseBias       = Double.NaN;
         c2cCodePhaseBias       = Double.NaN;
         c2pCodePhaseBias       = Double.NaN;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public SatelliteSystem parseSatelliteSystem(final String line, final SatelliteSystem defaultSatelliteSystem) {
+        // for observation files, the satellite system is in column 40, and empty defaults to GPS
+        return SatelliteSystem.parseSatelliteSystem(line.substring(40, 41), defaultSatelliteSystem);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void parseProgramRunByDate(final String line, final TimeScales timeScales) {
+        parseProgramRunByDate(ParsingUtils.parseString(line, 0, 20),
+                              ParsingUtils.parseString(line, 20, 20),
+                              ParsingUtils.parseString(line, 40, 20),
+                              timeScales);
     }
 
     /** Set name of the antenna marker.
@@ -271,48 +250,6 @@ public class RinexObservationHeader extends RinexBaseHeader {
      */
     public String getAgencyName() {
         return agencyName;
-    }
-
-    /** Set the number of the receiver.
-     * @param receiverNumber number of the receiver
-     */
-    public void setReceiverNumber(final String receiverNumber) {
-        this.receiverNumber = receiverNumber;
-    }
-
-    /** Get the number of the receiver.
-     * @return number of the receiver
-     */
-    public String getReceiverNumber() {
-        return receiverNumber;
-    }
-
-    /** Set the type of the receiver.
-     * @param receiverType type of the receiver
-     */
-    public void setReceiverType(final String receiverType) {
-        this.receiverType = receiverType;
-    }
-
-    /** Get the type of the receiver.
-     * @return type of the receiver
-     */
-    public String getReceiverType() {
-        return receiverType;
-    }
-
-    /** Set the version of the receiver.
-     * @param receiverVersion version of the receiver
-     */
-    public void setReceiverVersion(final String receiverVersion) {
-        this.receiverVersion = receiverVersion;
-    }
-
-    /** Get the version of the receiver.
-     * @return version of the receiver
-     */
-    public String getReceiverVersion() {
-        return receiverVersion;
     }
 
     /** Set the number of the antenna.
@@ -441,20 +378,6 @@ public class RinexObservationHeader extends RinexBaseHeader {
      */
     public AbsoluteDate getTLastObs() {
         return tLastObs;
-    }
-
-    /** Set the Number of leap seconds since 6-Jan-1980.
-     * @param leapSeconds Number of leap seconds since 6-Jan-1980
-     */
-    public void setLeapSeconds(final int leapSeconds) {
-        this.leapSeconds = leapSeconds;
-    }
-
-    /** Get the Number of leap seconds since 6-Jan-1980.
-     * @return Number of leap seconds since 6-Jan-1980
-     */
-    public int getLeapSeconds() {
-        return leapSeconds;
     }
 
     /** Set type of the antenna marker.
@@ -599,76 +522,6 @@ public class RinexObservationHeader extends RinexBaseHeader {
         return signalStrengthUnit;
     }
 
-    /** Set the future or past leap seconds.
-     * @param leapSecondsFuture Future or past leap seconds
-     */
-    public void setLeapSecondsFuture(final int leapSecondsFuture) {
-        this.leapSecondsFuture = leapSecondsFuture;
-    }
-
-    /** Get the future or past leap seconds.
-     * @return Future or past leap seconds
-     */
-    public int getLeapSecondsFuture() {
-        return leapSecondsFuture;
-    }
-
-    /** Set the respective leap second week number.
-     * @param leapSecondsWeekNum Respective leap second week number
-     */
-    public void setLeapSecondsWeekNum(final int leapSecondsWeekNum) {
-        this.leapSecondsWeekNum = leapSecondsWeekNum;
-    }
-
-    /** Get the respective leap second week number.
-     * @return Respective leap second week number
-     */
-    public int getLeapSecondsWeekNum() {
-        return leapSecondsWeekNum;
-    }
-
-    /** Set the respective leap second day number.
-     * @param leapSecondsDayNum Respective leap second day number
-     */
-    public void setLeapSecondsDayNum(final int leapSecondsDayNum) {
-        this.leapSecondsDayNum = leapSecondsDayNum;
-    }
-
-    /** Get the respective leap second day number.
-     * @return Respective leap second day number
-     */
-    public int getLeapSecondsDayNum() {
-        return leapSecondsDayNum;
-    }
-
-    /** Add applied differential code bias corrections.
-     * @param appliedDCBS applied differential code bias corrections to add
-     */
-    public void addAppliedDCBS(final AppliedDCBS appliedDCBS) {
-        listAppliedDCBS.add(appliedDCBS);
-    }
-
-    /** Get the list of applied differential code bias corrections.
-     * @return list of applied differential code bias corrections
-     */
-    public List<AppliedDCBS> getListAppliedDCBS() {
-        return Collections.unmodifiableList(listAppliedDCBS);
-    }
-
-    /** Add antenna center variation corrections.
-     * @param appliedPCVS antenna center variation corrections
-     */
-    public void addAppliedPCVS(final AppliedPCVS appliedPCVS) {
-        listAppliedPCVS.add(appliedPCVS);
-    }
-
-    /** Get the list of antenna center variation corrections.
-     * @return List of antenna center variation corrections
-     */
-    public List<AppliedPCVS> getListAppliedPCVS() {
-        return Collections.unmodifiableList(listAppliedPCVS);
-    }
-
     /** Add phase shift correction used to generate phases consistent w/r to cycle shifts.
      * @param phaseShiftCorrection phase shift correction used to generate phases consistent w/r to cycle shifts
      */
@@ -758,23 +611,6 @@ public class RinexObservationHeader extends RinexBaseHeader {
         return Collections.unmodifiableMap(nbObsPerSat);
     }
 
-    /** Set number of observations for a satellite.
-     * @param system satellite system
-     * @param types observation types
-     * @since 12.0
-     */
-    public void setTypeObs(final SatelliteSystem system, final List<ObservationType> types) {
-        mapTypeObs.put(system, new ArrayList<>(types));
-    }
-
-    /** Get an unmodifiable view of the map of observation types.
-     * @return unmodifiable view of the map of observation types
-     * @since 12.0
-     */
-    public Map<SatelliteSystem, List<ObservationType>> getTypeObs() {
-        return Collections.unmodifiableMap(mapTypeObs);
-    }
-
     /** Set the code phase bias correction for GLONASS {@link org.orekit.gnss.PredefinedObservationType#C1C} signal.
      * @param c1cCodePhaseBias code phase bias correction for GLONASS {@link org.orekit.gnss.PredefinedObservationType#C1C} signal
      * @since 12.0
@@ -837,6 +673,25 @@ public class RinexObservationHeader extends RinexBaseHeader {
      */
     public double getC2pCodePhaseBias() {
         return c2pCodePhaseBias;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void checkType(final String line, final String name) {
+        checkType(line, 20, name);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int getLabelIndex() {
+        return LABEL_INDEX;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean matchFound(final Label label, final String line) {
+        final int max = getLabelIndex();
+        return line.length() >= max && label.matches(line.substring(max).trim());
     }
 
 }

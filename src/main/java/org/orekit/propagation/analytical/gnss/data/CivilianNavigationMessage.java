@@ -28,17 +28,6 @@ import org.orekit.time.TimeScales;
  */
 public abstract class CivilianNavigationMessage<O extends CivilianNavigationMessage<O>> extends AbstractNavigationMessage<O> implements GNSSClockElements {
 
-    /** Identifier for message type. */
-    public static final String CNAV = "CNAV";
-
-    /** Identifier for message type. */
-    public static final String CNV2 = "CNV2";
-
-    /** Identifier for message type.
-     * @since 13.0
-     */
-    public static final String L1NV = "L1NV";
-
     /** Indicator for CNV 2 messages. */
     private final boolean cnv2;
 
@@ -84,6 +73,11 @@ public abstract class CivilianNavigationMessage<O extends CivilianNavigationMess
     /** Term 2 of Non-Elevation-Dependent User Range Accuracy. */
     private int uraiNed2;
 
+    /** Flags.
+     * @since 14.0
+     */
+    private int flags;
+
     /**
      * Constructor.
      * @param cnv2            indicator for CNV2 messages
@@ -94,11 +88,13 @@ public abstract class CivilianNavigationMessage<O extends CivilianNavigationMess
      * @param system          satellite system to consider for interpreting week number
      *                        (may be different from real system, for example in Rinex nav, weeks
      *                        are always according to GPS)
+     * @param type            message type
      */
     protected CivilianNavigationMessage(final boolean cnv2,
                                         final double mu, final double angularVelocity, final int weeksInCycle,
-                                        final TimeScales timeScales, final SatelliteSystem system) {
-        super(mu, angularVelocity, weeksInCycle, timeScales, system);
+                                        final TimeScales timeScales, final SatelliteSystem system,
+                                        final String type) {
+        super(mu, angularVelocity, weeksInCycle, timeScales, system, type);
         this.cnv2 = cnv2;
     }
 
@@ -125,6 +121,7 @@ public abstract class CivilianNavigationMessage<O extends CivilianNavigationMess
         setUraiNed0(original.getUraiNed0());
         setUraiNed1(original.getUraiNed1());
         setUraiNed2(original.getUraiNed2());
+        setFlags(original.getFlags());
     }
 
     /** Check it message is a CNV2 message.
@@ -352,6 +349,22 @@ public abstract class CivilianNavigationMessage<O extends CivilianNavigationMess
      */
     public void setUraiNed2(final int uraiNed2) {
         this.uraiNed2 = uraiNed2;
+    }
+
+    /** Get the flags.
+     * @return flags
+     * @since 14.0
+     */
+    public int getFlags() {
+        return flags;
+    }
+
+    /** Set the flags.
+     * @param flags flags
+     * @since 14.0
+     */
+    public void setFlags(final int flags) {
+        this.flags = flags;
     }
 
 }

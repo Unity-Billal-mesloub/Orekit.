@@ -520,9 +520,6 @@ public enum OrekitMessages implements Localizable {
     /** STK_UNEXPECTED_END_OF_FILE. */
     STK_UNEXPECTED_END_OF_FILE("unexpected end of STK file (after line {0})"),
 
-    /** CLOCK_FILE_UNSUPPORTED_VERSION. */
-    CLOCK_FILE_UNSUPPORTED_VERSION("unsupported clock file version {0}"),
-
     /** UNSUPPORTED_FILE_FORMAT_VERSION. */
     UNSUPPORTED_FILE_FORMAT_VERSION("version {0} from file {1} is not supported, supported version: {2}"),
 
@@ -986,7 +983,22 @@ public enum OrekitMessages implements Localizable {
     INCONSISTENT_STATE_DIMENSIONS("state vector (dimension {0}) and covariance (dimension {1}) are inconsistent"),
 
     /** EXPUNGED_SPAN. */
-    EXPUNGED_SPAN("data at date {0} has already been automatically expunged");
+    EXPUNGED_SPAN("data at date {0} has already been automatically expunged"),
+
+    /** MISSING_TIME_SYSTEM_DEFINITION. */
+    MISSING_TIME_SYSTEM_DEFINITION("missing time system definition in file {0}"),
+
+    /** WRONG_STATIONS_NUMBER. */
+    WRONG_STATIONS_NUMBER("wrong stations numbers in file {0}, expected {1}, got {2}"),
+
+    /** WRONG_SATELLITES_NUMBER. */
+    WRONG_SATELLITES_NUMBER("wrong satellites numbers in file {0}, expected {1}, got {2}"),
+
+    /** INVALID_FORMAT. */
+    INVALID_FORMAT("invalid format: width = {0}, precision = {1}"),
+
+    /** OUTPUT_ALREADY_CLOSED. */
+    OUTPUT_ALREADY_CLOSED("output {0} has already been closed");
 
     /** Base name of the resource bundle in classpath. */
     private static final String RESOURCE_BASE_NAME = "assets/org/orekit/localization/OrekitMessages";

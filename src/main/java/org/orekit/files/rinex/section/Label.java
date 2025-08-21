@@ -1,4 +1,4 @@
-/* Copyright 2022-2025 Luc Maisonobe
+/* Copyright 2022-2025 Thales Alenia Space
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -14,12 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- *
- * This package contains classes related to the parsing
- * of RINEX files.
- *
+package org.orekit.files.rinex.section;
+
+/** Label for Rinex files.
  * @author Luc Maisonobe
- * @since 12.0
+ * @since 14.0
  */
-package org.orekit.files.rinex.utils.parsing;
+public interface Label {
+
+    /** Check if label matches.
+     * @param headerLabel label foun in a header line to check
+     * @return true if label matches the instance
+     */
+    boolean matches(String headerLabel);
+
+    /** Get the first label.
+     * @return first label
+     */
+    String getLabel();
+
+}

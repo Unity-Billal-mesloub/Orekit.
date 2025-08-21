@@ -17,16 +17,17 @@
 package org.orekit.propagation.analytical.gnss.data;
 
 import org.orekit.time.AbsoluteDate;
+import org.orekit.time.TimeStamped;
 
 /**
  * Base class for ephemeris-based navigation messages.
  * @author Bryan Cazabonne
  * @since 11.0
  *
- * @see GLONASSNavigationMessage
+ * @see GLONASSFdmaNavigationMessage
  * @see SBASNavigationMessage
  */
-public abstract class AbstractEphemerisMessage {
+public abstract class AbstractEphemerisMessage implements TimeStamped, NavigationMessage {
 
     /** Ephemeris reference epoch. */
     private AbsoluteDate date;
