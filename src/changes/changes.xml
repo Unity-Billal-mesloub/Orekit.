@@ -19,6 +19,11 @@
     <title>Orekit Changes</title>
   </properties>
   <body>
+    <release version="13.1.1" date="TBD" description="13.1 is a patch release.">
+        <action dev="serrof" type="fix" issue="1788">
+            Pass event detectors from attitude provider in (Field)DSSTPropagator.
+        </action>
+    </release>
     <release version="13.1" date="2025-08-01" description="13.1 is a minor release.">
         <action dev="serrof" type="fix" issue="1782">
             Improve performance and accuracy of getJd.
