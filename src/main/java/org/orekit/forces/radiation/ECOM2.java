@@ -123,18 +123,18 @@ public class ECOM2 extends AbstractRadiationForceModel {
         // Add parameter along eB axis in alphabetical order
         coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " B0", value, scale, MIN_VALUE, MAX_VALUE));
         for (int i = 1; i < nB + 1; i++) {
-            coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Bcos" + Integer.toString(i - 1), value, scale, MIN_VALUE, MAX_VALUE));
+            coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Bcos" + (i - 1), value, scale, MIN_VALUE, MAX_VALUE));
         }
         for (int i = nB + 1; i < 2 * nB + 1; i++) {
-            coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Bsin" + Integer.toString(i - (nB + 1)), value, scale, MIN_VALUE, MAX_VALUE));
+            coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Bsin" + (i - (nB + 1)), value, scale, MIN_VALUE, MAX_VALUE));
         }
         // Add driver along eD axis in alphabetical order
         coefficients.add(2 * nB + 1, new ParameterDriver(ECOM_COEFFICIENT + " D0", value, scale, MIN_VALUE, MAX_VALUE));
         for (int i = 2 * nB + 2; i < 2 * nB + 2 + nD; i++) {
-            coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Dcos" + Integer.toString(i - (2 * nB + 2)), value, scale, MIN_VALUE, MAX_VALUE));
+            coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Dcos" + (i - (2 * nB + 2)), value, scale, MIN_VALUE, MAX_VALUE));
         }
         for (int i = 2 * nB + 2 + nD; i < 2 * (nB + nD) + 2; i++) {
-            coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Dsin" + Integer.toString(i - (2 * nB + nD + 2)), value, scale, MIN_VALUE, MAX_VALUE));
+            coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Dsin" + (i - (2 * nB + nD + 2)), value, scale, MIN_VALUE, MAX_VALUE));
         }
         // Add Y0
         coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Y0", value, scale, MIN_VALUE, MAX_VALUE));
