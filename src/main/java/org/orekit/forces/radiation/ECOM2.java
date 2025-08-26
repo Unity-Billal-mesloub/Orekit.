@@ -84,14 +84,6 @@ public class ECOM2 extends AbstractRadiationForceModel {
     /** Maximum value for ECOM2 estimated parameters. */
     private static final double MAX_VALUE = Double.POSITIVE_INFINITY;
 
-    /** Parameters scaling factor.
-     * <p>
-     * We use a power of 2 to avoid numeric noise introduction
-     * in the multiplications/divisions sequences.
-     * </p>
-     */
-    private final double SCALE = FastMath.scalb(1.0, -22);
-
     /** Highest order for parameter along eD axis (satellite --> sun direction). */
     private final int nD;
 
@@ -126,24 +118,26 @@ public class ECOM2 extends AbstractRadiationForceModel {
         this.nD = nD;
         this.coefficients = new ArrayList<>(2 * (nD + nB) + 3);
 
+        // Parameters scaling factor
+        double scale = FastMath.scalb(1.0, -22);
         // Add parameter along eB axis in alphabetical order
-        coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " B0", value, SCALE, MIN_VALUE, MAX_VALUE));
+        coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " B0", value, scale, MIN_VALUE, MAX_VALUE));
         for (int i = 1; i < nB + 1; i++) {
-            coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Bcos" + Integer.toString(i - 1), value, SCALE, MIN_VALUE, MAX_VALUE));
+            coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Bcos" + Integer.toString(i - 1), value, scale, MIN_VALUE, MAX_VALUE));
         }
         for (int i = nB + 1; i < 2 * nB + 1; i++) {
-            coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Bsin" + Integer.toString(i - (nB + 1)), value, SCALE, MIN_VALUE, MAX_VALUE));
+            coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Bsin" + Integer.toString(i - (nB + 1)), value, scale, MIN_VALUE, MAX_VALUE));
         }
         // Add driver along eD axis in alphabetical order
-        coefficients.add(2 * nB + 1, new ParameterDriver(ECOM_COEFFICIENT + " D0", value, SCALE, MIN_VALUE, MAX_VALUE));
+        coefficients.add(2 * nB + 1, new ParameterDriver(ECOM_COEFFICIENT + " D0", value, scale, MIN_VALUE, MAX_VALUE));
         for (int i = 2 * nB + 2; i < 2 * nB + 2 + nD; i++) {
-            coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Dcos" + Integer.toString(i - (2 * nB + 2)), value, SCALE, MIN_VALUE, MAX_VALUE));
+            coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Dcos" + Integer.toString(i - (2 * nB + 2)), value, scale, MIN_VALUE, MAX_VALUE));
         }
         for (int i = 2 * nB + 2 + nD; i < 2 * (nB + nD) + 2; i++) {
-            coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Dsin" + Integer.toString(i - (2 * nB + nD + 2)), value, SCALE, MIN_VALUE, MAX_VALUE));
+            coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Dsin" + Integer.toString(i - (2 * nB + nD + 2)), value, scale, MIN_VALUE, MAX_VALUE));
         }
-        // Add  Y0
-        coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Y0", value, SCALE, MIN_VALUE, MAX_VALUE));
+        // Add Y0
+        coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Y0", value, scale, MIN_VALUE, MAX_VALUE));
 
         // For ECOM2 model, all parameters are estimated
         coefficients.forEach(parameter -> parameter.setSelected(true));
