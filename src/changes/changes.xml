@@ -20,11 +20,20 @@
   </properties>
   <body>
     <release version="13.1.1" date="TBD" description="13.1 is a patch release.">
+        <action dev="sdinot" type="fix" issue="1790">
+            Fixed duplicated 13.1 version in faq.md.
+        </action>
+        <action dev="sdinot" type="fix" issue="1783">
+            Link to "changes" web page on technical site not working on develop version.
+        </action>
         <action dev="serrof" type="fix" issue="1788">
             Pass event detectors from attitude provider in (Field)DSSTPropagator.
         </action>
         <action dev="bryan" type="fix" issue="1629">
             Fixed limitation of ECOM2 model to default data context.
+        </action>
+        <action dev="sdinot" type="fix" issue="1564">
+            Fixed dead link to in "Development Guidelines" site page.
         </action>
     </release>
     <release version="13.1" date="2025-08-01" description="13.1 is a minor release.">
