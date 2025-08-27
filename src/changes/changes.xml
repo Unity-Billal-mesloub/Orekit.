@@ -35,6 +35,9 @@
         <action dev="sdinot" type="fix" issue="1564">
             Fixed dead link to in "Development Guidelines" site page.
         </action>
+        <action dev="evan" type="fix">
+            Fix exception message when parsing a CDM with an invalid date.
+        </action>
     </release>
     <release version="13.1" date="2025-08-01" description="13.1 is a minor release.">
         <action dev="serrof" type="fix" issue="1782">
