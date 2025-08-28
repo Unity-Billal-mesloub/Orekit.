@@ -850,12 +850,12 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <sourceFiles>
+              <sources>
                 <directory>${basedir}/src/design</directory>
                 <includes>
-                  <include>*.puml</include>
+                  <include>**/*.puml</include>
                 </includes>
-              </sourceFiles>
+              </sources>
               <outputDirectory>
                 ${project.build.directory}/site/images/design
               </outputDirectory>
