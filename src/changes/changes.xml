@@ -20,6 +20,9 @@
   </properties>
   <body>
     <release version="14.0" date="TBD" description="TBD">
+        <action dev="luc" type="add" issue="1800">
+            Added {Field}ClockOffset.add() and {Field}ClockOffset.subtract().
+        </action>
         <action dev="serrof" type="add" issue="1796">
             Added TleExtendedPositionProvider.
         </action>
@@ -30,7 +33,7 @@
             Added writer for Rinex navigation files.
         </action>
         <action dev="serrof" type="add" issue="1795">
-            add KeplerianExtendedPositionProvider
+            add KeplerianExtendedPositionProvider.
         </action>
         <action dev="luc" type="add" issue="1780">
             Added FastScientificFormatter.
