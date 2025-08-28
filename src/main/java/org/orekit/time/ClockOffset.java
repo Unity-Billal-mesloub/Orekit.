@@ -17,6 +17,9 @@
 package org.orekit.time;
 
 /** Container for time stamped clock offset.
+ * <p>
+ * Instances of this class are immutable
+ * </p>
  * @author Luc Maisonobe
  * @since 12.1
  */
@@ -46,6 +49,36 @@ public class ClockOffset implements TimeStamped {
         this.offset       = offset;
         this.rate         = rate;
         this.acceleration = acceleration;
+    }
+
+    /** Add another offset to the instance.
+     * <p>
+     * The instance is not modified, a new instance is created
+     * </p>
+     * @param other offset to add (date part will be ignored)
+     * @return instance + other, at instance date
+     * @since 14.0
+     */
+    public ClockOffset add(final ClockOffset other) {
+        return new ClockOffset(date,
+                               offset       + other.offset,
+                               rate         + other.rate,
+                               acceleration + other.acceleration);
+    }
+
+    /** Subtract another offset from the instance.
+     * <p>
+     * The instance is not modified, a new instance is created
+     * </p>
+     * @param other offset to subtract (date part will be ignored)
+     * @return instance - other, at instance date
+     * @since 14.0
+     */
+    public ClockOffset subtract(final ClockOffset other) {
+        return new ClockOffset(date,
+                               offset       - other.offset,
+                               rate         - other.rate,
+                               acceleration - other.acceleration);
     }
 
     /** {@inheritDoc} */

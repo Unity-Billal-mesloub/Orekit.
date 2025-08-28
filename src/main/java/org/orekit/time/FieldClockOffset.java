@@ -51,6 +51,36 @@ public class FieldClockOffset<T extends CalculusFieldElement<T>> implements Fiel
         this.acceleration = acceleration;
     }
 
+    /** Add another offset to the instance.
+     * <p>
+     * The instance is not modified, a new instance is created
+     * </p>
+     * @param other offset to add (date part will be ignored)
+     * @return instance + other, at instance date
+     * @since 14.0
+     */
+    public FieldClockOffset<T> add(final FieldClockOffset<T> other) {
+        return new FieldClockOffset<>(date,
+                                      offset.add(other.offset),
+                                      rate.add(other.rate),
+                                      acceleration.add(other.acceleration));
+    }
+
+    /** Subtract another offset from the instance.
+     * <p>
+     * The instance is not modified, a new instance is created
+     * </p>
+     * @param other offset to subtract (date part will be ignored)
+     * @return instance - other, at instance date
+     * @since 14.0
+     */
+    public FieldClockOffset<T> subtract(final FieldClockOffset<T> other) {
+        return new FieldClockOffset<>(date,
+                                      offset.subtract(other.offset),
+                                      rate.subtract(other.rate),
+                                      acceleration.subtract(other.acceleration));
+    }
+
     /** {@inheritDoc} */
     @Override
     public FieldAbsoluteDate<T> getDate() {
