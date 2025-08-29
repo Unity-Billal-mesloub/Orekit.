@@ -89,6 +89,9 @@
           -nbInterpolationPoints
         }
 
+        class ConstantClockModel {
+          -offset
+        }
         class PerfectClockModel
         note bottom
           offset is always zero
@@ -96,20 +99,20 @@
 
         class QuadraticClockModel
         class AggregatedClockModel
-        abstract class CombinedClocksPair
+        abstract class AbstractCombinedClocksPair
         class ClocksSum
         class ClocksDifference
         class ClockOffsetHermiteInterpolator
         class "FieldClockOffsetHermiteInterpolator<T>" as FieldClockOffsetHermiteInterpolator_T
         class "QuadraticFieldClockModel<T>" as QuadraticFieldClockModel_T
-        note left
+        note right
           not really an implementation of ClockModel
           it just uses field versions of a₀, a₁, a₂
         end note
 
         TimeStamped        <|.. ClockOffset
         FieldTimeStamped_T <|.. FieldClockOffset_T
-        ParameterDriver    <--* QuadraticClockModel : "a₀, a₁, a₂"
+        QuadraticClockModel *-right-> ParameterDriver : "a₀, a₁, a₂"
         ClockOffset        <-- ClockModel : generate
         FieldClockOffset_T <-- ClockModel : generate
         ClockOffset    "*" <--* SampledClockModel : sample
@@ -119,16 +122,17 @@
         QuadraticFieldClockModel_T --> FieldClockOffset_T : generate
 
         ClockModel         <|.. SampledClockModel
-        ClockModel         <|.. PerfectClockModel
+        ClockModel         <|.. ConstantClockModel
         ClockModel         <|.. QuadraticClockModel
         ClockModel         <|.. AggregatedClockModel
         ClockModel         <|.. AbstractCombinedClocksPair
+        ConstantClockModel <|-- PerfectClockModel
         AbstractCombinedClocksPair <|-- ClocksSum
         AbstractCombinedClocksPair <|-- ClocksDifference
         AbstractTimeInterpolator <|-- ClockOffsetHermiteInterpolator
-        ClockOffset        <-- ClockOffsetHermiteInterpolator
-        AbstractFieldTimeInterpolator_T <|-- FieldClockOffsetHermiteInterpolator_T
-        FieldClockOffset_T        <-- FieldClockOffsetHermiteInterpolator_T
+        ClockOffsetHermiteInterpolator --> ClockOffset : interpolate
+        AbstractFieldTimeInterpolator_T <|-left- FieldClockOffsetHermiteInterpolator_T
+        FieldClockOffset_T        <-- FieldClockOffsetHermiteInterpolator_T : interpolate
 
       }
 
