@@ -17,8 +17,6 @@
 package org.orekit.time.clocks;
 
 import org.hipparchus.CalculusFieldElement;
-import org.orekit.time.AbsoluteDate;
-import org.orekit.time.FieldAbsoluteDate;
 
 /** Clock model computing the sum of two underlying models.
  * @author Luc Maisonobe

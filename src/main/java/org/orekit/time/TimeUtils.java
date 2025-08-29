@@ -23,7 +23,7 @@ import org.hipparchus.CalculusFieldElement;
  * @author Luc Maisonobe
  * @since 14.0
  */
-public class TimeUtils{
+public class TimeUtils {
 
     /** Private constructor for utility class. */
     private TimeUtils() {
