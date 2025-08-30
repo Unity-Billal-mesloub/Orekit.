@@ -46,7 +46,7 @@ import org.orekit.time.TimeScalesFactory;
 import org.orekit.utils.Constants;
 import org.orekit.utils.ExtendedPositionProvider;
 
-class AnalyticalSolarPositionProviderTest {
+class AnalyticalLunarPositionProviderTest {
 
     @BeforeEach
     void setUp() {
@@ -59,15 +59,15 @@ class AnalyticalSolarPositionProviderTest {
         // GIVEN
         final AbsoluteDate date = new AbsoluteDate(new DateTimeComponents(2000, month, 1, 0, 0, 0),
                 TimeScalesFactory.getUTC());
-        final AnalyticalSolarPositionProvider solarPositionProvider = new AnalyticalSolarPositionProvider();
+        final AnalyticalLunarPositionProvider lunarPositionProvider = new AnalyticalLunarPositionProvider();
         final Frame frame = FramesFactory.getGCRF();
         // WHEN
-        final Vector3D actualPosition = solarPositionProvider.getPosition(date, frame);
+        final Vector3D actualPosition = lunarPositionProvider.getPosition(date, frame);
         // THEN
-        final CelestialBody celestialBody = CelestialBodyFactory.getSun();
+        final CelestialBody celestialBody = CelestialBodyFactory.getMoon();
         final Vector3D expectedPosition = celestialBody.getPosition(date, frame);
-        Assertions.assertEquals(0., Vector3D.angle(expectedPosition, actualPosition), 5e-5);
-        Assertions.assertEquals(0., expectedPosition.subtract(actualPosition).getNorm(), 1e7);
+        Assertions.assertEquals(0., Vector3D.angle(expectedPosition, actualPosition), 5e-4);
+        Assertions.assertEquals(0., expectedPosition.subtract(actualPosition).getNorm(), 3e5);
     }
 
     @Test
@@ -78,12 +78,12 @@ class AnalyticalSolarPositionProviderTest {
         final DataContext dataContext = DataContext.getDefault();
         final Frames frames = dataContext.getFrames();
         final Frame frame = frames.getEME2000();
-        final AnalyticalSolarPositionProvider solarPositionProvider = new AnalyticalSolarPositionProvider(dataContext);
+        final AnalyticalLunarPositionProvider lunarPositionProvider = new AnalyticalLunarPositionProvider(dataContext);
         final FieldAbsoluteDate<Complex> fieldDate = new FieldAbsoluteDate<>(ComplexField.getInstance(), date);
         // WHEN
-        final FieldVector3D<Complex> fieldPosition = solarPositionProvider.getPosition(fieldDate, frame);
+        final FieldVector3D<Complex> fieldPosition = lunarPositionProvider.getPosition(fieldDate, frame);
         // THEN
-        final Vector3D expectedPosition = solarPositionProvider.getPosition(date, frame);
+        final Vector3D expectedPosition = lunarPositionProvider.getPosition(date, frame);
         Assertions.assertEquals(expectedPosition, fieldPosition.toVector3D());
     }
 
@@ -95,11 +95,11 @@ class AnalyticalSolarPositionProviderTest {
         final DataContext dataContext = DataContext.getDefault();
         final Frames frames = dataContext.getFrames();
         final Frame frame = frames.getGCRF();
-        final AnalyticalSolarPositionProvider solarPositionProvider = new AnalyticalSolarPositionProvider(dataContext);
+        final AnalyticalLunarPositionProvider lunarPositionProvider = new AnalyticalLunarPositionProvider(dataContext);
         final FieldAbsoluteDate<UnivariateDerivative1> fieldDate = new FieldAbsoluteDate<>(UnivariateDerivative1Field.getInstance(),
                 date).shiftedBy(new UnivariateDerivative1(0., 1.));
         // WHEN
-        final FieldVector3D<UnivariateDerivative1> fieldPosition = solarPositionProvider.getPosition(fieldDate, frame);
+        final FieldVector3D<UnivariateDerivative1> fieldPosition = lunarPositionProvider.getPosition(fieldDate, frame);
         // THEN
         Assertions.assertNotEquals(0., fieldPosition.getX().getFirstDerivative());
     }
@@ -107,14 +107,14 @@ class AnalyticalSolarPositionProviderTest {
     @Test
     void testPropagation() {
         // GIVEN
-        final CelestialBody sun = CelestialBodyFactory.getSun();
-        final ExtendedPositionProvider positionProvider = new AnalyticalSolarPositionProvider();
+        final CelestialBody moon = CelestialBodyFactory.getMoon();
+        final ExtendedPositionProvider positionProvider = new AnalyticalLunarPositionProvider();
         // WHEN
         final NumericalPropagator propagator = createPropagator(positionProvider);
-        final AbsoluteDate terminalDate = propagator.getInitialState().getDate().shiftedBy(1e6);
+        final AbsoluteDate terminalDate = propagator.getInitialState().getDate().shiftedBy(1e5);
         final SpacecraftState actualState = propagator.propagate(terminalDate);
         // THEN
-        final NumericalPropagator propagator2 = createPropagator(sun);
+        final NumericalPropagator propagator2 = createPropagator(moon);
         final SpacecraftState expectedState = propagator2.propagate(terminalDate);
         Assertions.assertEquals(0., expectedState.getPosition().subtract(actualState.getPosition()).getNorm(), 1e-1);
     }
@@ -126,7 +126,7 @@ class AnalyticalSolarPositionProviderTest {
         final EquinoctialOrbit orbit = new EquinoctialOrbit(Constants.EGM96_EARTH_EQUATORIAL_RADIUS + 1000.e3,
                 0.1, 0.2, 0.3, 0.4, 5., PositionAngleType.ECCENTRIC, FramesFactory.getGCRF(), date, Constants.EGM96_EARTH_MU);
         propagator.setInitialState(new SpacecraftState(orbit));
-        propagator.addForceModel(new ThirdBodyAttraction(positionProvider, "", Constants.JPL_SSD_SUN_GM));
+        propagator.addForceModel(new ThirdBodyAttraction(positionProvider, "", Constants.JPL_SSD_MOON_GM));
         return propagator;
     }
  }
