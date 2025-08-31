@@ -119,33 +119,6 @@ public class SpacecraftState implements TimeStamped, TimeShiftable<SpacecraftSta
         this(orbit, attitude, DEFAULT_MASS, null, null);
     }
 
-    /** Create a new instance from orbit and mass.
-     * <p>Attitude law is set to an unspecified default attitude.</p>
-     * @param orbit the orbit
-     * @param mass the mass (kg)
-     * @deprecated since 13.0, use withXXX
-     */
-    @Deprecated
-    public SpacecraftState(final Orbit orbit, final double mass) {
-        this(orbit, getDefaultAttitudeProvider(orbit.getFrame())
-                        .getAttitude(orbit, orbit.getDate(), orbit.getFrame()),
-             mass, null, null);
-    }
-
-    /** Build a spacecraft state from orbit, attitude and mass.
-     * @param orbit the orbit
-     * @param attitude attitude
-     * @param mass the mass (kg)
-     * @exception IllegalArgumentException if orbit and attitude dates
-     * or frames are not equal
-     * @deprecated since 13.0, use withXXX
-     */
-    @Deprecated
-    public SpacecraftState(final Orbit orbit, final Attitude attitude, final double mass)
-        throws IllegalArgumentException {
-        this(orbit, attitude, mass, null, null);
-    }
-
     /** Build a spacecraft state from orbit, attitude, mass, additional states and derivatives.
      * @param orbit the orbit
      * @param attitude attitude
@@ -188,33 +161,6 @@ public class SpacecraftState implements TimeStamped, TimeShiftable<SpacecraftSta
     public SpacecraftState(final AbsolutePVCoordinates absPva, final Attitude attitude)
         throws IllegalArgumentException {
         this(absPva, attitude, DEFAULT_MASS, null, null);
-    }
-
-    /** Create a new instance from position-velocity-acceleration and mass.
-     * <p>Attitude law is set to an unspecified default attitude.</p>
-     * @param absPva position-velocity-acceleration
-     * @param mass the mass (kg)
-     * @deprecated since 13.0, use withXXX
-     */
-    @Deprecated
-    public SpacecraftState(final AbsolutePVCoordinates absPva, final double mass) {
-        this(absPva, getDefaultAttitudeProvider(absPva.getFrame())
-                        .getAttitude(absPva, absPva.getDate(), absPva.getFrame()),
-             mass,  null, null);
-    }
-
-    /** Build a spacecraft state from position-velocity-acceleration, attitude and mass.
-     * @param absPva position-velocity-acceleration
-     * @param attitude attitude
-     * @param mass the mass (kg)
-     * @exception IllegalArgumentException if orbit and attitude dates
-     * or frames are not equal
-     * @deprecated since 13.0, use withXXX
-     */
-    @Deprecated
-    public SpacecraftState(final AbsolutePVCoordinates absPva, final Attitude attitude, final double mass)
-        throws IllegalArgumentException {
-        this(absPva, attitude, mass, null, null);
     }
 
     /** Build a spacecraft state from position-velocity-acceleration, attitude, mass and additional states and derivatives.

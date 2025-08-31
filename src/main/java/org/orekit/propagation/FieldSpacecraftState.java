@@ -129,33 +129,6 @@ public class FieldSpacecraftState <T extends CalculusFieldElement<T>>
         this(orbit, attitude, orbit.getA().getField().getZero().newInstance(DEFAULT_MASS), null, null);
     }
 
-    /** Create a new instance from orbit and mass.
-     * <p>FieldAttitude law is set to an unspecified default attitude.</p>
-     * @param orbit the orbit
-     * @param mass the mass (kg)
-     * @deprecated since 13.0, use withXXX
-     */
-    @Deprecated
-    public FieldSpacecraftState(final FieldOrbit<T> orbit, final T mass) {
-        this(orbit, SpacecraftState.getDefaultAttitudeProvider(orbit.getFrame())
-                        .getAttitude(orbit, orbit.getDate(), orbit.getFrame()),
-             mass, null, null);
-    }
-
-    /** Build a spacecraft state from orbit, attitude and mass.
-     * @param orbit the orbit
-     * @param attitude attitude
-     * @param mass the mass (kg)
-     * @exception IllegalArgumentException if orbit and attitude dates
-     * or frames are not equal
-     * @deprecated since 13.0, use withXXX
-     */
-    @Deprecated
-    public FieldSpacecraftState(final FieldOrbit<T> orbit, final FieldAttitude<T> attitude, final T mass)
-        throws IllegalArgumentException {
-        this(orbit, attitude, mass, null, null);
-    }
-
     /** Build a spacecraft state from orbit, attitude, mass, additional states and derivatives.
      * @param orbit the orbit
      * @param attitude attitude
@@ -257,33 +230,6 @@ public class FieldSpacecraftState <T extends CalculusFieldElement<T>>
     public FieldSpacecraftState(final FieldAbsolutePVCoordinates<T> absPva, final FieldAttitude<T> attitude)
         throws IllegalArgumentException {
         this(absPva, attitude, absPva.getDate().getField().getZero().newInstance(DEFAULT_MASS), null, null);
-    }
-
-    /** Create a new instance from orbit and mass.
-     * <p>Attitude law is set to an unspecified default attitude.</p>
-     * @param absPva position-velocity-acceleration
-     * @param mass the mass (kg)
-     * @deprecated since 13.0, use withXXX
-     */
-    @Deprecated
-    public FieldSpacecraftState(final FieldAbsolutePVCoordinates<T> absPva, final T mass) {
-        this(absPva, SpacecraftState.getDefaultAttitudeProvider(absPva.getFrame())
-                        .getAttitude(absPva, absPva.getDate(), absPva.getFrame()),
-             mass, null, null);
-    }
-
-    /** Build a spacecraft state from orbit, attitude and mass.
-     * @param absPva position-velocity-acceleration
-     * @param attitude attitude
-     * @param mass the mass (kg)
-     * @exception IllegalArgumentException if orbit and attitude dates
-     * or frames are not equal
-     * @deprecated since 13.0, use withXXX
-     */
-    @Deprecated
-    public FieldSpacecraftState(final FieldAbsolutePVCoordinates<T> absPva, final FieldAttitude<T> attitude, final T mass)
-        throws IllegalArgumentException {
-        this(absPva, attitude, mass, null, null);
     }
 
     /** Build a spacecraft state from orbit, attitude and mass.
