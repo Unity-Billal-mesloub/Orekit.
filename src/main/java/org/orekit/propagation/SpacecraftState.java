@@ -53,8 +53,9 @@ import org.orekit.utils.TimeStampedPVCoordinates;
  * <p>
  * The state can be slightly shifted to close dates. This actual shift varies
  * between {@link Orbit} and {@link AbsolutePVCoordinates}.
- * For attitude it is a linear extrapolation taking the spin rate into account
- * and no mass change. It is <em>not</em> intended as a replacement for proper
+ * For attitude it is a linear extrapolation taking the spin rate into account.
+ * Same thing for the mass, with the rate staying constant.
+ * It is <em>not</em> intended as a replacement for proper
  * orbit and attitude propagation but should be sufficient for either small
  * time shifts or coarse accuracy.
  * </p>
@@ -89,6 +90,9 @@ public class SpacecraftState implements TimeStamped, TimeShiftable<SpacecraftSta
     /** Current mass (kg). */
     private final double mass;
 
+    /** Mass rate (kg/s). */
+    private final double massRate;
+
     /** Additional data, can be any object (String, double[], etc.). */
     private final DataDictionary additional;
 
@@ -119,33 +123,6 @@ public class SpacecraftState implements TimeStamped, TimeShiftable<SpacecraftSta
         this(orbit, attitude, DEFAULT_MASS, null, null);
     }
 
-    /** Create a new instance from orbit and mass.
-     * <p>Attitude law is set to an unspecified default attitude.</p>
-     * @param orbit the orbit
-     * @param mass the mass (kg)
-     * @deprecated since 13.0, use withXXX
-     */
-    @Deprecated
-    public SpacecraftState(final Orbit orbit, final double mass) {
-        this(orbit, getDefaultAttitudeProvider(orbit.getFrame())
-                        .getAttitude(orbit, orbit.getDate(), orbit.getFrame()),
-             mass, null, null);
-    }
-
-    /** Build a spacecraft state from orbit, attitude and mass.
-     * @param orbit the orbit
-     * @param attitude attitude
-     * @param mass the mass (kg)
-     * @exception IllegalArgumentException if orbit and attitude dates
-     * or frames are not equal
-     * @deprecated since 13.0, use withXXX
-     */
-    @Deprecated
-    public SpacecraftState(final Orbit orbit, final Attitude attitude, final double mass)
-        throws IllegalArgumentException {
-        this(orbit, attitude, mass, null, null);
-    }
-
     /** Build a spacecraft state from orbit, attitude, mass, additional states and derivatives.
      * @param orbit the orbit
      * @param attitude attitude
@@ -159,11 +136,29 @@ public class SpacecraftState implements TimeStamped, TimeShiftable<SpacecraftSta
     public SpacecraftState(final Orbit orbit, final Attitude attitude, final double mass,
                            final DataDictionary additional, final DoubleArrayDictionary additionalDot)
         throws IllegalArgumentException {
+        this(orbit, attitude, mass, 0., additional, additionalDot);
+    }
+
+    /** Build a spacecraft state from orbit, attitude, mass (with rate), additional states and derivatives.
+     * @param orbit the orbit
+     * @param attitude attitude
+     * @param mass the mass (kg)
+     * @param massRate mass first-order time derivative (kg/s)
+     * @param additional additional data (may be null if no additional states are available)
+     * @param additionalDot additional states derivatives (may be null if no additional states derivatives are available)
+     * @exception IllegalArgumentException if orbit and attitude dates
+     * or frames are not equal
+     * @since 14.0
+     */
+    public SpacecraftState(final Orbit orbit, final Attitude attitude, final double mass, final double massRate,
+                           final DataDictionary additional, final DoubleArrayDictionary additionalDot)
+            throws IllegalArgumentException {
         checkConsistency(orbit, attitude);
         this.orbit      = orbit;
         this.absPva     = null;
         this.attitude   = attitude;
         this.mass       = mass;
+        this.massRate   = massRate;
         this.additional = additional == null ? new DataDictionary() : additional;
         this.additionalDot = additionalDot == null ? new DoubleArrayDictionary() : new DoubleArrayDictionary(additionalDot);
     }
@@ -190,33 +185,6 @@ public class SpacecraftState implements TimeStamped, TimeShiftable<SpacecraftSta
         this(absPva, attitude, DEFAULT_MASS, null, null);
     }
 
-    /** Create a new instance from position-velocity-acceleration and mass.
-     * <p>Attitude law is set to an unspecified default attitude.</p>
-     * @param absPva position-velocity-acceleration
-     * @param mass the mass (kg)
-     * @deprecated since 13.0, use withXXX
-     */
-    @Deprecated
-    public SpacecraftState(final AbsolutePVCoordinates absPva, final double mass) {
-        this(absPva, getDefaultAttitudeProvider(absPva.getFrame())
-                        .getAttitude(absPva, absPva.getDate(), absPva.getFrame()),
-             mass,  null, null);
-    }
-
-    /** Build a spacecraft state from position-velocity-acceleration, attitude and mass.
-     * @param absPva position-velocity-acceleration
-     * @param attitude attitude
-     * @param mass the mass (kg)
-     * @exception IllegalArgumentException if orbit and attitude dates
-     * or frames are not equal
-     * @deprecated since 13.0, use withXXX
-     */
-    @Deprecated
-    public SpacecraftState(final AbsolutePVCoordinates absPva, final Attitude attitude, final double mass)
-        throws IllegalArgumentException {
-        this(absPva, attitude, mass, null, null);
-    }
-
     /** Build a spacecraft state from position-velocity-acceleration, attitude, mass and additional states and derivatives.
      * @param absPva position-velocity-acceleration
      * @param attitude attitude
@@ -230,12 +198,30 @@ public class SpacecraftState implements TimeStamped, TimeShiftable<SpacecraftSta
     public SpacecraftState(final AbsolutePVCoordinates absPva, final Attitude attitude, final double mass,
                            final DataDictionary additional, final DoubleArrayDictionary additionalDot)
         throws IllegalArgumentException {
+        this(absPva, attitude, mass, 0., additional, additionalDot);
+    }
+
+    /** Build a spacecraft state from position-velocity, attitude, mass (with rate), additional states and derivatives.
+     * @param absPva position-velocity-acceleration
+     * @param attitude attitude
+     * @param mass the mass (kg)
+     * @param massRate mass first-order time derivative (kg/s)
+     * @param additional additional data (may be null if no additional states are available)
+     * @param additionalDot additional states derivatives (may be null if no additional states derivatives are available)
+     * @exception IllegalArgumentException if orbit and attitude dates
+     * or frames are not equal
+     * @since 14.0
+     */
+    public SpacecraftState(final AbsolutePVCoordinates absPva, final Attitude attitude, final double mass, final double massRate,
+                           final DataDictionary additional, final DoubleArrayDictionary additionalDot)
+            throws IllegalArgumentException {
         checkConsistency(absPva, attitude);
-        this.orbit      = null;
         this.absPva     = absPva;
+        this.orbit      = null;
         this.attitude   = attitude;
         this.mass       = mass;
-        this.additional = additional == null ? new DataDictionary() : new DataDictionary(additional);
+        this.massRate   = massRate;
+        this.additional = additional == null ? new DataDictionary() : additional;
         this.additionalDot = additionalDot == null ? new DoubleArrayDictionary() : new DoubleArrayDictionary(additionalDot);
     }
 
@@ -250,6 +236,20 @@ public class SpacecraftState implements TimeStamped, TimeShiftable<SpacecraftSta
             return new SpacecraftState(orbit, attitude, newMass, additional, additionalDot);
         } else {
             return new SpacecraftState(absPva, attitude, newMass, additional, additionalDot);
+        }
+    }
+
+    /**
+     * Create a new instance with input mass rate.
+     * @param newMassRate mass rate
+     * @return new state
+     * @since 14.1
+     */
+    public SpacecraftState withMassRate(final double newMassRate) {
+        if (isOrbitDefined()) {
+            return new SpacecraftState(orbit, attitude, mass, newMassRate, additional, additionalDot);
+        } else {
+            return new SpacecraftState(absPva, attitude, mass, newMassRate, additional, additionalDot);
         }
     }
 
@@ -424,7 +424,8 @@ public class SpacecraftState implements TimeStamped, TimeShiftable<SpacecraftSta
      * simple models. For orbits, the model is a Keplerian one if no derivatives
      * are available in the orbit, or Keplerian plus quadratic effect of the
      * non-Keplerian acceleration if derivatives are available. For attitude,
-     * a polynomial model is used. Neither mass nor additional states change.
+     * a polynomial model is used. A linear extrapolation applies to the mass,
+     * with its rate staying the same. Additional states are also changed linearly if their rates are available.
      * Shifting is <em>not</em> intended as a replacement for proper orbit
      * and attitude propagation but should be sufficient for small time shifts
      * or coarse accuracy.
@@ -449,16 +450,15 @@ public class SpacecraftState implements TimeStamped, TimeShiftable<SpacecraftSta
      * </table>
      * @param dt time shift in seconds
      * @return a new state, shifted with respect to the instance (which is immutable)
-     * except for the mass and additional states which stay unchanged
      */
     @Override
     public SpacecraftState shiftedBy(final double dt) {
         if (isOrbitDefined()) {
-            return new SpacecraftState(orbit.shiftedBy(dt), attitude.shiftedBy(dt),
-                                       mass, shiftAdditional(dt), additionalDot);
+            return new SpacecraftState(orbit.shiftedBy(dt), attitude.shiftedBy(dt), mass + dt * massRate,
+                                       massRate, shiftAdditional(dt), additionalDot);
         } else {
-            return new SpacecraftState(absPva.shiftedBy(dt), attitude.shiftedBy(dt),
-                                       mass, shiftAdditional(dt), additionalDot);
+            return new SpacecraftState(absPva.shiftedBy(dt), attitude.shiftedBy(dt), mass + dt * massRate,
+                                       massRate, shiftAdditional(dt), additionalDot);
         }
     }
 
@@ -468,7 +468,8 @@ public class SpacecraftState implements TimeStamped, TimeShiftable<SpacecraftSta
      * simple models. For orbits, the model is a Keplerian one if no derivatives
      * are available in the orbit, or Keplerian plus quadratic effect of the
      * non-Keplerian acceleration if derivatives are available. For attitude,
-     * a polynomial model is used. Neither mass nor additional states change.
+     * a polynomial model is used. A linear extrapolation applies to the mass,
+     * with its rate staying the same. Additional states are also changed linearly if their rates are available.
      * Shifting is <em>not</em> intended as a replacement for proper orbit
      * and attitude propagation but should be sufficient for small time shifts
      * or coarse accuracy.
@@ -493,17 +494,17 @@ public class SpacecraftState implements TimeStamped, TimeShiftable<SpacecraftSta
      * </table>
      * @param dt time shift in seconds
      * @return a new state, shifted with respect to the instance (which is immutable)
-     * except for the mass and additional states which stay unchanged
      * @since 13.0
      */
     @Override
     public SpacecraftState shiftedBy(final TimeOffset dt) {
+        final double dtDouble = dt.toDouble();
         if (isOrbitDefined()) {
-            return new SpacecraftState(orbit.shiftedBy(dt), attitude.shiftedBy(dt),
-                                       mass, shiftAdditional(dt.toDouble()), additionalDot);
+            return new SpacecraftState(orbit.shiftedBy(dt), attitude.shiftedBy(dt), mass + dtDouble * massRate,
+                                       massRate, shiftAdditional(dtDouble), additionalDot);
         } else {
-            return new SpacecraftState(absPva.shiftedBy(dt), attitude.shiftedBy(dt),
-                                       mass, shiftAdditional(dt.toDouble()), additionalDot);
+            return new SpacecraftState(absPva.shiftedBy(dt), attitude.shiftedBy(dt), mass + dtDouble * massRate,
+                                       massRate, shiftAdditional(dtDouble), additionalDot);
         }
     }
 
@@ -835,12 +836,22 @@ public class SpacecraftState implements TimeStamped, TimeShiftable<SpacecraftSta
         return mass;
     }
 
+    /** Gets the current mass rate.
+     * @return the mass (kg/S)
+     * @since 14.0
+     */
+    public double getMassRate() {
+        return massRate;
+    }
+
     @Override
     public String toString() {
         return "SpacecraftState{" +
                 "orbit=" + orbit +
+                ", absPva=" + absPva +
                 ", attitude=" + attitude +
                 ", mass=" + mass +
+                ", massRate=" + massRate +
                 ", additional=" + additional +
                 ", additionalDot=" + additionalDot +
                 '}';
