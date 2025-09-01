@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.orekit.orbits;
+package org.orekit.propagation;
 
 import org.hipparchus.Field;
 import org.hipparchus.analysis.polynomials.SmoothStepFactory;
@@ -31,6 +31,8 @@ import org.orekit.Utils;
 import org.orekit.errors.OrekitIllegalArgumentException;
 import org.orekit.frames.Frame;
 import org.orekit.frames.FramesFactory;
+import org.orekit.orbits.FieldCartesianOrbit;
+import org.orekit.orbits.FieldOrbit;
 import org.orekit.propagation.analytical.FieldAbstractAnalyticalPropagator;
 import org.orekit.propagation.analytical.FieldKeplerianPropagator;
 import org.orekit.time.AbsoluteDate;
@@ -61,7 +63,7 @@ class FieldOrbitBlenderTest {
     }
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         Utils.setDataRoot("regular-data");
     }
 

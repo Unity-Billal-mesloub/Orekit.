@@ -14,13 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.orekit.orbits;
+package org.orekit.propagation;
 
 import org.hipparchus.analysis.polynomials.SmoothStepFactory;
 import org.orekit.errors.OrekitException;
 import org.orekit.frames.Frame;
-import org.orekit.propagation.Propagator;
-import org.orekit.propagation.SpacecraftState;
+import org.orekit.orbits.AbstractOrbitInterpolator;
+import org.orekit.orbits.CartesianOrbit;
+import org.orekit.orbits.Orbit;
 import org.orekit.propagation.analytical.AbstractAnalyticalPropagator;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.PVCoordinates;
