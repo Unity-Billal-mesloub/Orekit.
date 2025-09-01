@@ -36,7 +36,6 @@ import org.orekit.forces.gravity.potential.OceanLoadDeformationCoefficients;
 import org.orekit.frames.Frame;
 import org.orekit.frames.LOFType;
 import org.orekit.orbits.Orbit;
-import org.orekit.orbits.OrbitBlender;
 import org.orekit.orbits.OrbitType;
 import org.orekit.orbits.PositionAngleType;
 import org.orekit.propagation.analytical.AbstractAnalyticalPropagator;
@@ -54,11 +53,11 @@ class StateCovarianceBlenderTest {
     private static Frame           sergeiFrame;
 
     // Constants
-    private final double DEFAULT_SERGEI_PROPAGATION_TIME   = 2400;
-    private final double DEFAUTL_SERGEI_TABULATED_TIMESTEP = 2400;
+    private static final double DEFAULT_SERGEI_PROPAGATION_TIME   = 2400;
+    private static final double DEFAUTL_SERGEI_TABULATED_TIMESTEP = 2400;
 
     @BeforeAll
-    public static void setUp() {
+    static void setUp() {
         Utils.setDataRoot("regular-data:potential/egm-format:atmosphere:tides:regular-data/de405-ephemerides");
         GravityFieldFactory.addPotentialCoefficientsReader(new EGMFormatReader("EGM96-truncated-21x21", true));
         AstronomicalAmplitudeReader aaReader =

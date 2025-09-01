@@ -20,6 +20,9 @@
   </properties>
   <body>
     <release version="14.0" date="TBD" description="TBD">
+        <action dev="serrof" type="update" issue="1806">
+            Moved (Field)OrbitBlender to propagation package.
+        </action>
         <action dev="serrof" type="add" issue="1808">
             Added mass rate in state.
         </action>

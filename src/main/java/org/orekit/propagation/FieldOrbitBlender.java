@@ -14,13 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.orekit.orbits;
+package org.orekit.propagation;
 
 import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.analysis.polynomials.SmoothStepFactory;
 import org.orekit.errors.OrekitException;
 import org.orekit.frames.Frame;
-import org.orekit.propagation.FieldSpacecraftState;
+import org.orekit.orbits.AbstractFieldOrbitInterpolator;
+import org.orekit.orbits.FieldCartesianOrbit;
+import org.orekit.orbits.FieldOrbit;
 import org.orekit.propagation.analytical.AbstractAnalyticalPropagator;
 import org.orekit.propagation.analytical.FieldAbstractAnalyticalPropagator;
 import org.orekit.time.FieldAbsoluteDate;
@@ -41,19 +43,20 @@ import java.util.List;
  * compared to Hermite interpolation when time steps between tabulated values get significant (In LEO, &gt; 10 mn for
  * example).
  *
- * @param <KK> type of field element
+ * @param <T> type of field element
  *
  * @author Vincent Cucchietti
  * @see org.hipparchus.analysis.polynomials.SmoothStepFactory
  * @see org.hipparchus.analysis.polynomials.SmoothStepFactory.FieldSmoothStepFunction
+ * @see OrbitBlender
  */
-public class FieldOrbitBlender<KK extends CalculusFieldElement<KK>> extends AbstractFieldOrbitInterpolator<KK> {
+public class FieldOrbitBlender<T extends CalculusFieldElement<T>> extends AbstractFieldOrbitInterpolator<T> {
 
     /** Analytical propagator used to propagate tabulated orbits to interpolating time. */
-    private final FieldAbstractAnalyticalPropagator<KK> analyticalPropagator;
+    private final FieldAbstractAnalyticalPropagator<T> analyticalPropagator;
 
     /** Blending function. */
-    private final SmoothStepFactory.FieldSmoothStepFunction<KK> blendingFunction;
+    private final SmoothStepFactory.FieldSmoothStepFunction<T> blendingFunction;
 
     /**
      * Default constructor.
@@ -66,8 +69,8 @@ public class FieldOrbitBlender<KK extends CalculusFieldElement<KK>> extends Abst
      *
      * @throws OrekitException if output frame is not inertial
      */
-    public FieldOrbitBlender(final SmoothStepFactory.FieldSmoothStepFunction<KK> blendingFunction,
-                             final FieldAbstractAnalyticalPropagator<KK> analyticalPropagator,
+    public FieldOrbitBlender(final SmoothStepFactory.FieldSmoothStepFunction<T> blendingFunction,
+                             final FieldAbstractAnalyticalPropagator<T> analyticalPropagator,
                              final Frame outputInertialFrame) {
         super(DEFAULT_INTERPOLATION_POINTS, 0., outputInertialFrame);
         this.blendingFunction     = blendingFunction;
@@ -76,29 +79,29 @@ public class FieldOrbitBlender<KK extends CalculusFieldElement<KK>> extends Abst
 
     /** {@inheritDoc} */
     @Override
-    public FieldOrbit<KK> interpolate(final InterpolationData interpolationData) {
+    public FieldOrbit<T> interpolate(final InterpolationData interpolationData) {
 
         // Get interpolation date
-        final FieldAbsoluteDate<KK> interpolationDate = interpolationData.getInterpolationDate();
+        final FieldAbsoluteDate<T> interpolationDate = interpolationData.getInterpolationDate();
 
         // Get first and last entry
-        final List<FieldOrbit<KK>> neighborList  = interpolationData.getNeighborList();
-        final FieldOrbit<KK>       previousOrbit = neighborList.get(0);
-        final FieldOrbit<KK>       nextOrbit     = neighborList.get(1);
+        final List<FieldOrbit<T>> neighborList  = interpolationData.getNeighborList();
+        final FieldOrbit<T>       previousOrbit = neighborList.get(0);
+        final FieldOrbit<T>       nextOrbit     = neighborList.get(1);
 
         // Propagate orbits
-        final FieldOrbit<KK> forwardedOrbit  = propagateOrbitAnalytically(previousOrbit, interpolationDate);
-        final FieldOrbit<KK> backwardedOrbit = propagateOrbitAnalytically(nextOrbit, interpolationDate);
+        final FieldOrbit<T> forwardedOrbit  = propagateOrbitAnalytically(previousOrbit, interpolationDate);
+        final FieldOrbit<T> backwardedOrbit = propagateOrbitAnalytically(nextOrbit, interpolationDate);
 
         // Extract position-velocity-acceleration coordinates
-        final FieldPVCoordinates<KK> forwardedPV  = forwardedOrbit.getPVCoordinates(getOutputInertialFrame());
-        final FieldPVCoordinates<KK> backwardedPV = backwardedOrbit.getPVCoordinates(getOutputInertialFrame());
+        final FieldPVCoordinates<T> forwardedPV  = forwardedOrbit.getPVCoordinates(getOutputInertialFrame());
+        final FieldPVCoordinates<T> backwardedPV = backwardedOrbit.getPVCoordinates(getOutputInertialFrame());
 
         // Blend PV coordinates
-        final KK timeParameter = getTimeParameter(interpolationDate, previousOrbit.getDate(), nextOrbit.getDate());
-        final KK blendingValue = blendingFunction.value(timeParameter);
+        final T timeParameter = getTimeParameter(interpolationDate, previousOrbit.getDate(), nextOrbit.getDate());
+        final T blendingValue = blendingFunction.value(timeParameter);
 
-        final FieldPVCoordinates<KK> blendedPV = forwardedPV.blendArithmeticallyWith(backwardedPV, blendingValue);
+        final FieldPVCoordinates<T> blendedPV = forwardedPV.blendArithmeticallyWith(backwardedPV, blendingValue);
 
         // Output new blended instance
         return new FieldCartesianOrbit<>(blendedPV, getOutputInertialFrame(), interpolationDate, previousOrbit.getMu());
@@ -112,8 +115,8 @@ public class FieldOrbitBlender<KK extends CalculusFieldElement<KK>> extends Abst
      *
      * @return orbit propagated to propagation date
      */
-    private FieldOrbit<KK> propagateOrbitAnalytically(final FieldOrbit<KK> tabulatedOrbit,
-                                                      final FieldAbsoluteDate<KK> propagationDate) {
+    private FieldOrbit<T> propagateOrbitAnalytically(final FieldOrbit<T> tabulatedOrbit,
+                                                     final FieldAbsoluteDate<T> propagationDate) {
 
         analyticalPropagator.resetInitialState(new FieldSpacecraftState<>(tabulatedOrbit));
 

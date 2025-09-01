@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.orekit.orbits;
+package org.orekit.propagation;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -35,12 +35,10 @@ import org.orekit.errors.OrekitIllegalArgumentException;
 import org.orekit.errors.OrekitMessages;
 import org.orekit.frames.Frame;
 import org.orekit.frames.FramesFactory;
-import org.orekit.propagation.MatricesHarvester;
-import org.orekit.propagation.SpacecraftState;
-import org.orekit.propagation.SpacecraftStateInterpolator;
-import org.orekit.propagation.StateCovariance;
-import org.orekit.propagation.StateCovarianceKeplerianHermiteInterpolatorTest;
-import org.orekit.propagation.StateCovarianceMatrixProvider;
+import org.orekit.orbits.CartesianOrbit;
+import org.orekit.orbits.Orbit;
+import org.orekit.orbits.OrbitType;
+import org.orekit.orbits.PositionAngleType;
 import org.orekit.propagation.analytical.AbstractAnalyticalPropagator;
 import org.orekit.propagation.analytical.BrouwerLyddanePropagator;
 import org.orekit.propagation.analytical.EcksteinHechlerPropagator;
@@ -57,14 +55,14 @@ import org.orekit.utils.PVCoordinates;
 class OrbitBlenderTest {
 
     private static SpacecraftState sergeiState;
-    private static Orbit           sergeiOrbit;
+    private static Orbit sergeiOrbit;
     private static Frame           sergeiFrame;
     // Constants
     private final  double          DEFAULT_SERGEI_PROPAGATION_TIME   = 2400;
     private final  double          DEFAUTL_SERGEI_TABULATED_TIMESTEP = 2400;
 
     @BeforeAll
-    public static void setUp() {
+    static void setUp() {
         StateCovarianceKeplerianHermiteInterpolatorTest.setUp();
         sergeiState = StateCovarianceKeplerianHermiteInterpolatorTest.generateSergeiReferenceState();
         sergeiOrbit = sergeiState.getOrbit();
@@ -224,7 +222,7 @@ class OrbitBlenderTest {
         // Given
         final SmoothStepFactory.SmoothStepFunction quadratic    = SmoothStepFactory.getQuadratic();
         final AbstractAnalyticalPropagator         propagator   = new KeplerianPropagator(sergeiOrbit);
-        final OrbitBlender                         orbitBlender = new OrbitBlender(quadratic, propagator, sergeiFrame);
+        final OrbitBlender orbitBlender = new OrbitBlender(quadratic, propagator, sergeiFrame);
 
         final TimeInterpolator<SpacecraftState> stateInterpolator =
                 new SpacecraftStateInterpolator(2, 1.0e-3, sergeiFrame, orbitBlender, null, null, null, null);
