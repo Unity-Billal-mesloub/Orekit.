@@ -78,6 +78,11 @@
             Add abstract classes for detectors based on body shape.
         </action>
     </release>
+    <release version="13.1.1" date="TBC" description="TBC">
+        <action dev="luc" type="fix" issue="1811">
+          Fixed observables ordering error when writing Rinex observation header.
+        </action>
+    </release>
     <release version="13.1" date="2025-08-01" description="13.1 is a minor release.">
         <action dev="serrof" type="fix" issue="1782">
             Improve performance and accuracy of getJd.
