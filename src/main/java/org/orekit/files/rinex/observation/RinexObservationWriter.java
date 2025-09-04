@@ -617,7 +617,7 @@ public class RinexObservationWriter implements AutoCloseable {
             outputField(sis.toString(), 6, false);
             // list the entries in the order specified in SYS / # / OBS TYPES
             for (final ObservationType obsType : header.getTypeObs().get(sis.getSystem())) {
-                Integer nbObs = entry1.getValue().get(obsType);
+                final Integer nbObs = entry1.getValue().get(obsType);
                 int next = column + 6;
                 if (next > LABEL_INDEX) {
                     // we need to set up a continuation line
