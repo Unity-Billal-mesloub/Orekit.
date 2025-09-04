@@ -528,7 +528,9 @@ public class RinexObservationWriter extends BaseRinexWriter<RinexObservationHead
         for (final Map.Entry<SatInSystem, Map<String, Integer>> entry1 : header.getNbObsPerSat().entrySet()) {
             final SatInSystem sis = entry1.getKey();
             outputField(sis.toString(), 6, false);
-            for (final Map.Entry<String, Integer> entry2 : entry1.getValue().entrySet()) {
+            // list the entries in the order specified in SYS / # / OBS TYPES
+            for (final String obsType : header.getTypeObs().get(sis.getSystem())) {
+                Integer nbObs = entry1.getValue().get(obsType);
                 int next = getColumn() + 6;
                 if (exceedsHeaderLength(next)) {
                     // we need to set up a continuation line
@@ -536,7 +538,7 @@ public class RinexObservationWriter extends BaseRinexWriter<RinexObservationHead
                     outputField("", 6, true);
                     next = getColumn() + 6;
                 }
-                outputField(SIX_DIGITS_INTEGER, entry2.getValue(), next);
+                outputField(SIX_DIGITS_INTEGER, nbObs == null ? 0 : nbObs, next);
             }
             finishHeaderLine(ObservationLabel.PRN_NB_OF_OBS);
         }
