@@ -226,7 +226,7 @@ public enum OrekitMessages implements Localizable {
     NON_EXISTENT_MONTH("non-existent month {0}"),
 
     /** NON_EXISTENT_YEAR_MONTH_DAY. */
-    NON_EXISTENT_YEAR_MONTH_DAY("non-existent date {0}-{1}-{2}"),
+    NON_EXISTENT_YEAR_MONTH_DAY("non-existent date {0,number,0000}-{1,number,00}-{2,number,00}"),
 
     /** NON_EXISTENT_WEEK_DATE. */
     NON_EXISTENT_WEEK_DATE("non-existent week date {0}-W{1}-{2}"),
