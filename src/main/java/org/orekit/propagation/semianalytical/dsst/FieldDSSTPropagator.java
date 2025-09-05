@@ -965,7 +965,8 @@ public class FieldDSSTPropagator<T extends CalculusFieldElement<T>> extends Fiel
         Main(final FieldODEIntegrator<T> integrator) {
             yDot = MathArrays.buildArray(field, 7);
 
-            // Setup event detectors for each force model
+            // Setup event detectors from attitude provider and each force model
+            getAttitudeProvider().getFieldEventDetectors(field).forEach(eventDetector -> setUpEventDetector(integrator, eventDetector));
             forceModels.forEach(dsstForceModel -> dsstForceModel.getFieldEventDetectors(field).
                                 forEach(eventDetector -> setUpEventDetector(integrator, eventDetector)));
         }

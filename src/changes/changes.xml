@@ -19,12 +19,30 @@
     <title>Orekit Changes</title>
   </properties>
   <body>
-    <release version="13.1.1" date="TBC" description="TBC">
+    <release version="13.1.1" date="TBD" description="13.1 is a patch release.">
         <action dev="luc" type="fix" issue="1812">
           Fixed NullPointerException in Sinex bias handling.
         </action>
         <action dev="luc" type="fix" issue="1811">
           Fixed observables ordering error when writing Rinex observation header.
+        </action>
+        <action dev="sdinot" type="fix" issue="1790">
+            Fixed duplicated 13.1 version in faq.md.
+        </action>
+        <action dev="sdinot" type="fix" issue="1783">
+            Link to "changes" web page on technical site not working on develop version.
+        </action>
+        <action dev="serrof" type="fix" issue="1788">
+            Pass event detectors from attitude provider in (Field)DSSTPropagator.
+        </action>
+        <action dev="bryan" type="fix" issue="1629">
+            Fixed limitation of ECOM2 model to default data context.
+        </action>
+        <action dev="sdinot" type="fix" issue="1564">
+            Fixed dead link to in "Development Guidelines" site page.
+        </action>
+        <action dev="evan" type="fix">
+            Fix exception message when parsing a CDM with an invalid date.
         </action>
     </release>
     <release version="13.1" date="2025-08-01" description="13.1 is a minor release.">
@@ -5942,7 +5960,7 @@
       </action>
       <action dev="pascal" type="update">
         Orekit supports the two different naming patterns for bulletins B provided by IERS
-        on http://www.iers.org/ and http://hpiers.obspm.fr/eop-pc/.
+        on https://www.iers.org/ and https://hpiers.obspm.fr/eop-pc/.
       </action>
       <action dev="luc" type="update">
         the predefined times scales (TAI, UTC ...) are now built using a factory. The various
@@ -6212,7 +6230,6 @@
         Added the changes page to the generated site.
       </action>
     </release>
-    <release version="3.1" date="2008-07-16" description="This release is the first public release of Orekit.">
-    </release>
+    <release version="3.1" date="2008-07-16" description="This release is the first public release of Orekit."/>
   </body>
 </document>
