@@ -87,7 +87,6 @@ public class FieldHansenTesseralLinear <T extends CalculusFieldElement<T>> {
      * @param maxHansen maximum power of the eccentricity to use in Hansen coefficient Kernel expansion.
      * @param field field used by default
      */
-    @SuppressWarnings("unchecked")
     public FieldHansenTesseralLinear(final int nMax, final int s, final int j, final int n0,
                                      final int maxHansen, final Field<T> field) {
         //Initialize the fields

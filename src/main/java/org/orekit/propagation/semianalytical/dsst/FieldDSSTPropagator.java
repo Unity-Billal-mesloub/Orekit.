@@ -521,7 +521,6 @@ public class FieldDSSTPropagator<T extends CalculusFieldElement<T>> extends Fiel
      * @param <T> type of the elements
      * @return osculating state in a DSST sense
      */
-    @SuppressWarnings("unchecked")
     public static <T extends CalculusFieldElement<T>> FieldSpacecraftState<T> computeOsculatingState(final FieldSpacecraftState<T> mean,
                                                                                                      final AttitudeProvider attitudeProvider,
                                                                                                      final Collection<DSSTForceModel> forces) {
@@ -674,7 +673,6 @@ public class FieldDSSTPropagator<T extends CalculusFieldElement<T>> extends Fiel
      * @param initialState initial state
      * @param tEnd target date at which state should be propagated
      */
-    @SuppressWarnings("unchecked")
     @Override
     protected void beforeIntegration(final FieldSpacecraftState<T> initialState,
                                      final FieldAbsoluteDate<T> tEnd) {
@@ -1090,7 +1088,6 @@ public class FieldDSSTPropagator<T extends CalculusFieldElement<T>> extends Fiel
         }
 
         /** {@inheritDoc} */
-        @SuppressWarnings("unchecked")
         @Override
         public void handleStep(final FieldODEStateInterpolator<T> interpolator) {
 
