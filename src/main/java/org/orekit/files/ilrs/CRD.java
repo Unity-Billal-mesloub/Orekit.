@@ -1299,13 +1299,13 @@ public class CRD {
         private final AbsoluteDate lastDate;
 
         /** Previous set of meteorological parameters. */
-        private transient MeteorologicalMeasurement previousParam;
+        private MeteorologicalMeasurement previousParam;
 
         /** Next set of solar meteorological parameters. */
-        private transient MeteorologicalMeasurement nextParam;
+        private MeteorologicalMeasurement nextParam;
 
         /** List of meteo data. */
-        private final transient ImmutableTimeStampedCache<MeteorologicalMeasurement> meteo;
+        private final ImmutableTimeStampedCache<MeteorologicalMeasurement> meteo;
 
         /**
          * Constructor.
@@ -1829,6 +1829,7 @@ public class CRD {
          * @return a string representation of the instance, in the CRD format.
          */
         @DefaultDataContext
+        @Override
         public String toCrdString() {
             return String.format(Locale.US, "41 %s", toString());
         }

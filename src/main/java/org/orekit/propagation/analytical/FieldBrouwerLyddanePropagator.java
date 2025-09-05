@@ -113,7 +113,7 @@ public class FieldBrouwerLyddanePropagator<T extends CalculusFieldElement<T>> ex
     private FieldBLModel<T> initialModel;
 
     /** All models. */
-    private transient FieldTimeSpanMap<FieldBLModel<T>, T> models;
+    private FieldTimeSpanMap<FieldBLModel<T>, T> models;
 
     /** Reference radius of the central body attraction model (m). */
     private double referenceRadius;

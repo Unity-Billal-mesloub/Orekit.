@@ -65,7 +65,7 @@ public abstract class AbstractSolarActivityData<L extends AbstractSolarActivityD
     private final String supportedNames;
 
     /** UTC time scale. */
-    private final TimeScale utc;
+    private final transient TimeScale utc;
 
     /** First available date. */
     private final AbsoluteDate firstDate;

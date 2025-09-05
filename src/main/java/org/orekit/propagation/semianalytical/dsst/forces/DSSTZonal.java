@@ -1502,7 +1502,7 @@ public class DSSTZonal implements DSSTForceModel {
         private final int interpolationPoints;
 
         /** All coefficients slots. */
-        private final transient TimeSpanMap<Slot> slots;
+        private final TimeSpanMap<Slot> slots;
 
         /** Constructor.
          * @param maxFrequencyShortPeriodics maximum value for j index
@@ -1651,7 +1651,7 @@ public class DSSTZonal implements DSSTForceModel {
         private final int interpolationPoints;
 
         /** All coefficients slots. */
-        private final transient FieldTimeSpanMap<FieldSlot<T>, T> slots;
+        private final FieldTimeSpanMap<FieldSlot<T>, T> slots;
 
        /** Constructor.
         * @param maxFrequencyShortPeriodics maximum value for j index

@@ -42,10 +42,10 @@ class TODProvider implements EOPBasedTransformProvider {
     private final EOPHistory eopHistory;
 
     /** Function computing the mean obliquity. */
-    private final transient TimeScalarFunction obliquityFunction;
+    private final TimeScalarFunction obliquityFunction;
 
     /** Function computing the nutation angles. */
-    private final transient TimeVectorFunction nutationFunction;
+    private final TimeVectorFunction nutationFunction;
 
 
     /**

@@ -53,7 +53,7 @@ class JPLCelestialBody implements CelestialBody {
     private final JPLEphemeridesLoader.EphemerisType generateType;
 
     /** Raw position-velocity provider. */
-    private final transient JPLEphemeridesLoader.RawPVProvider rawPVProvider;
+    private final JPLEphemeridesLoader.RawPVProvider rawPVProvider;
 
     /** Attraction coefficient of the body (m³/s²). */
     private final double gm;
@@ -101,6 +101,7 @@ class JPLCelestialBody implements CelestialBody {
     }
 
     /** {@inheritDoc} */
+    @Override
     public TimeStampedPVCoordinates getPVCoordinates(final AbsoluteDate date, final Frame frame) {
 
         // apply the scale factor to raw position-velocity
@@ -121,6 +122,7 @@ class JPLCelestialBody implements CelestialBody {
      * @param <T> type of the field elements
      * @return time-stamped position/velocity of the body (m and m/s)
      */
+    @Override
     public <T extends CalculusFieldElement<T>> TimeStampedFieldPVCoordinates<T> getPVCoordinates(final FieldAbsoluteDate<T> date,
                                                                                                  final Frame frame) {
 

@@ -71,7 +71,7 @@ public class FieldEcksteinHechlerPropagator<T extends CalculusFieldElement<T>> e
     private FieldEHModel<T> initialModel;
 
     /** All models. */
-    private transient FieldTimeSpanMap<FieldEHModel<T>, T> models;
+    private FieldTimeSpanMap<FieldEHModel<T>, T> models;
 
     /** Reference radius of the central body attraction model (m). */
     private double referenceRadius;

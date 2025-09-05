@@ -130,7 +130,7 @@ public class BrouwerLyddanePropagator extends AbstractAnalyticalPropagator imple
     private BLModel initialModel;
 
     /** All models. */
-    private transient TimeSpanMap<BLModel> models;
+    private TimeSpanMap<BLModel> models;
 
     /** Reference radius of the central body attraction model (m). */
     private final double referenceRadius;

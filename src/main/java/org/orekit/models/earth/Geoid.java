@@ -146,7 +146,7 @@ public class Geoid implements EarthShape {
      * the geo-potential combined with an algorithm for evaluating the spherical
      * harmonics. The Holmes and Featherstone method is very robust.
      */
-    private final transient HolmesFeatherstoneAttractionModel harmonics;
+    private final HolmesFeatherstoneAttractionModel harmonics;
 
     /**
      * Creates a geoid from the given geopotential, reference ellipsoid and the
