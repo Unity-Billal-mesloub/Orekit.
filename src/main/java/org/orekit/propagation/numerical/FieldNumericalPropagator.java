@@ -395,9 +395,10 @@ public class FieldNumericalPropagator<T extends CalculusFieldElement<T>> extends
     }
 
     /** {@inheritDoc} */
+    @Override
     protected FieldStateMapper<T> createMapper(final FieldAbsoluteDate<T> referenceDate, final T mu,
-                                       final OrbitType orbitType, final PositionAngleType positionAngleType,
-                                       final AttitudeProvider attitudeProvider, final Frame frame) {
+                                               final OrbitType orbitType, final PositionAngleType positionAngleType,
+                                               final AttitudeProvider attitudeProvider, final Frame frame) {
         return new FieldOsculatingMapper(referenceDate, mu, orbitType, positionAngleType, attitudeProvider, frame);
     }
 
@@ -425,6 +426,7 @@ public class FieldNumericalPropagator<T extends CalculusFieldElement<T>> extends
         }
 
         /** {@inheritDoc} */
+        @Override
         public FieldSpacecraftState<T> mapArrayToState(final FieldAbsoluteDate<T> date, final T[] y, final T[] yDot,
                                                        final PropagationType type) {
             // the parameter type is ignored for the Numerical Propagator
@@ -459,6 +461,7 @@ public class FieldNumericalPropagator<T extends CalculusFieldElement<T>> extends
         }
 
         /** {@inheritDoc} */
+        @Override
         public void mapStateToArray(final FieldSpacecraftState<T> state, final T[] y, final T[] yDot) {
             if (superGetOrbitType() == null) {
                 // propagation uses absolute position-velocity-acceleration
@@ -481,6 +484,7 @@ public class FieldNumericalPropagator<T extends CalculusFieldElement<T>> extends
     }
 
     /** {@inheritDoc} */
+    @Override
     protected MainStateEquations<T> getMainStateEquations(final FieldODEIntegrator<T> integrator) {
         return new Main(integrator);
     }
