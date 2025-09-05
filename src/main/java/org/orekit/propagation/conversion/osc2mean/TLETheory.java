@@ -192,7 +192,7 @@ public class TLETheory implements MeanTheory {
     @Override
     public <T extends CalculusFieldElement<T>> FieldOrbit<T> preprocessing(final FieldOrbit<T> osculating) {
         final T mu = osculating.getDate().getField().getZero().newInstance(TLEConstants.MU);
-        return new FieldKeplerianOrbit<T>(osculating.getPVCoordinates(teme), teme, mu);
+        return new FieldKeplerianOrbit<>(osculating.getPVCoordinates(teme), teme, mu);
     }
 
     /** {@inheritDoc} */
@@ -200,7 +200,7 @@ public class TLETheory implements MeanTheory {
     public <T extends CalculusFieldElement<T>> FieldOrbit<T> meanToOsculating(final FieldOrbit<T> mean) {
         final FieldAbsoluteDate<T> date = mean.getDate();
         final Field<T> field = date.getField();
-        final FieldTLE<T> fieldTmpTle = new FieldTLE<T>(field, tmpTle.getLine1(), tmpTle.getLine2(), utc);
+        final FieldTLE<T> fieldTmpTle = new FieldTLE<>(field, tmpTle.getLine1(), tmpTle.getLine2(), utc);
         final T bStar = field.getZero().newInstance(fieldTmpTle.getBStar());
         // Build TLE from mean and template
         final FieldKeplerianOrbit<T> meanKepl = (FieldKeplerianOrbit<T>) OrbitType.KEPLERIAN.convertType(mean);

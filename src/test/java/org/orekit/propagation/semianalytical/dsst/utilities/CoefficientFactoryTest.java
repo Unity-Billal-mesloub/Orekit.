@@ -43,7 +43,7 @@ public class CoefficientFactoryTest {
     private static final double eps12 = 1e-12;
 
     /** Map of the Qns derivatives, for each (n, s) couple. */
-    private static Map<NSKey, PolynomialFunction> QNS_MAP = new TreeMap<NSKey, PolynomialFunction>();
+    private static Map<NSKey, PolynomialFunction> QNS_MAP = new TreeMap<>();
 
     @Test
     public void testVns() {

@@ -1181,7 +1181,7 @@ class FieldSpacecraftStateTest {
         // test most complete constructor
         T[] dd = MathArrays.buildArray(field, 1);
         dd[0] = zero.add(-6.0);
-        FieldArrayDictionary<T> dictionary = new FieldArrayDictionary<T>(field);
+        FieldArrayDictionary<T> dictionary = new FieldArrayDictionary<>(field);
         dictionary.put("test-3", dd);
         FieldSpacecraftState<T> s = new FieldSpacecraftState<>(state.getAbsPVA(), state.getAttitude(), state.getMass(), null, dictionary);
         Assertions.assertFalse(s.hasAdditionalData("test-3"));

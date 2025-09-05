@@ -131,14 +131,14 @@ public class RangeAnalytic extends Range {
 
         // Prepare the evaluation
         final EstimatedMeasurement<Range> estimated =
-                        new EstimatedMeasurement<Range>(this, iteration, evaluation,
-                                                        new SpacecraftState[] {
-                                                            transitState
-                                                        }, new TimeStampedPVCoordinates[] {
-                                                            stationUplink,
-                                                            transitState.getPVCoordinates(),
-                                                            stationDownlink
-                                                        });
+                new EstimatedMeasurement<>(this, iteration, evaluation,
+                        new SpacecraftState[]{
+                                transitState
+                        }, new TimeStampedPVCoordinates[]{
+                        stationUplink,
+                        transitState.getPVCoordinates(),
+                        stationDownlink
+                });
 
         // Set range value
         final double cOver2 = 0.5 * Constants.SPEED_OF_LIGHT;
@@ -331,10 +331,10 @@ public class RangeAnalytic extends Range {
 
         // Prepare the evaluation
         final EstimatedMeasurement<Range> estimated =
-                        new EstimatedMeasurement<Range>(this, iteration, evaluation,
-                                                        new SpacecraftState[] {
-                                                            transitState
-                                                        }, null);
+                new EstimatedMeasurement<>(this, iteration, evaluation,
+                        new SpacecraftState[]{
+                                transitState
+                        }, null);
 
         // Range value
         final Gradient tau    = tauD.add(tauU);

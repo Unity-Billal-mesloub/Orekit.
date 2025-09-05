@@ -702,7 +702,7 @@ public abstract class FieldCloseEventsAbstractTest<T extends CalculusFieldElemen
                 .withMaxCheck(maxCheck)
                 .withThreshold(v(tolerance));
         FieldLatitudeCrossingDetector<T> detectorB =
-                new FieldLatitudeCrossingDetector<T>(field, earth, FastMath.toRadians(80))
+                new FieldLatitudeCrossingDetector<>(field, earth, FastMath.toRadians(80))
                         .withHandler(new FieldRecordAndContinue<>(events))
                         .withMaxCheck(maxCheck)
                         .withThreshold(v(tolerance));
@@ -1706,7 +1706,7 @@ public abstract class FieldCloseEventsAbstractTest<T extends CalculusFieldElemen
         double maxCheck = 10;
         double tolerance = 1e-6;
         double t1 = -15.0;
-        FieldSpacecraftState<T> newState = new FieldSpacecraftState<T>(new FieldKeplerianOrbit<T>(
+        FieldSpacecraftState<T> newState = new FieldSpacecraftState<>(new FieldKeplerianOrbit<>(
                 v(6378137 + 500e3), v(0), v(FastMath.PI / 2), v(0), v(0),
                 v(FastMath.PI / 2), PositionAngleType.TRUE, eci, epoch.shiftedBy(t1), v(mu)));
         // shared event list so we know the order in which they occurred
@@ -1722,7 +1722,7 @@ public abstract class FieldCloseEventsAbstractTest<T extends CalculusFieldElemen
                 .withMaxCheck(maxCheck)
                 .withThreshold(v(tolerance));
         FieldLatitudeCrossingDetector<T> detectorB =
-                new FieldLatitudeCrossingDetector<T>(field, earth, FastMath.toRadians(80))
+                new FieldLatitudeCrossingDetector<>(field, earth, FastMath.toRadians(80))
                         .withHandler(new FieldRecordAndContinue<>(events))
                         .withMaxCheck(maxCheck)
                         .withThreshold(v(tolerance));

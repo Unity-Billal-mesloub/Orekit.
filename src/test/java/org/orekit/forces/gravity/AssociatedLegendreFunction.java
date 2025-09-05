@@ -34,7 +34,7 @@ import java.util.Map;
  */
 class AssociatedLegendreFunction {
 
-    static final Map<Integer, List<Dfp[]>> LEGENDRE_POLYNOMIALS = new HashMap<Integer, List<Dfp[]>>();
+    static final Map<Integer, List<Dfp[]>> LEGENDRE_POLYNOMIALS = new HashMap<>();
     final int m;
     final Dfp[] polynomial;
     final Dfp normalization;
@@ -44,7 +44,7 @@ class AssociatedLegendreFunction {
         // get (or create) the list of polynomials for the specified field
         List<Dfp[]> list = LEGENDRE_POLYNOMIALS.get(dfpField.getRadixDigits());
         if (list == null) {
-            list = new ArrayList<Dfp[]>();
+            list = new ArrayList<>();
             list.add(new Dfp[] {
                 dfpField.getOne()                     // P0(X) = 1
             });

@@ -73,7 +73,7 @@ public class TimeSpanEstimatedModelTest {
     }
 
     @Test
-    public void testFixedHeight() {
+    void testFixedHeight() {
         final AbsoluteDate date = new AbsoluteDate();
         GeodeticPoint point = new GeodeticPoint(FastMath.toRadians(45.0), FastMath.toRadians(45.0), 350.0);
         TroposphereMappingFunction mapping = new NiellMappingFunctionModel();
@@ -91,7 +91,7 @@ public class TimeSpanEstimatedModelTest {
     }
 
     @Test
-    public void testDelay() {
+    void testDelay() {
         final double elevation = 10d;
         final double height = 100d;
         final AbsoluteDate date = new AbsoluteDate();
@@ -107,7 +107,7 @@ public class TimeSpanEstimatedModelTest {
     }
 
     @Test
-    public void testStateDerivativesGMF() {
+    void testStateDerivativesGMF() {
         final double latitude     = FastMath.toRadians(45.0);
         final double longitude    = FastMath.toRadians(45.0);
         GeodeticPoint point = new GeodeticPoint(latitude, longitude, 0.0);
@@ -116,7 +116,7 @@ public class TimeSpanEstimatedModelTest {
     }
 
     @Test
-    public void testStateDerivativesNMF() {
+    void testStateDerivativesNMF() {
         final double latitude     = FastMath.toRadians(45.0);
         final double longitude    = FastMath.toRadians(45.0);
         GeodeticPoint point = new GeodeticPoint(latitude, longitude, 0.0);
@@ -256,7 +256,7 @@ public class TimeSpanEstimatedModelTest {
     }
 
     @Test
-    public void testDelayParameterDerivative() {
+    void testDelayParameterDerivative() {
         doTestParametersDerivatives(EstimatedModel.TOTAL_ZENITH_DELAY, 5.0e-15);
     }
 
@@ -408,7 +408,7 @@ public class TimeSpanEstimatedModelTest {
     }
 
     @Test
-    public void testComparisonWithEstimatedModel() {
+    void testComparisonWithEstimatedModel() {
         final AbsoluteDate date = new AbsoluteDate();
         TroposphereMappingFunction mapping = new NiellMappingFunctionModel();
         EstimatedModel estimatedModel = new EstimatedModel(mapping, 2.0);
@@ -429,7 +429,7 @@ public class TimeSpanEstimatedModelTest {
     }
 
     @Test
-    public void testFieldComparisonWithEstimatedModel() {
+    void testFieldComparisonWithEstimatedModel() {
         doTestFieldComparisonWithEstimatedModel(Binary64Field.getInstance());
     }
 
@@ -439,9 +439,9 @@ public class TimeSpanEstimatedModelTest {
         TroposphereMappingFunction mapping = new NiellMappingFunctionModel();
         EstimatedModel estimatedModel = new EstimatedModel(mapping, 2.0);
         TroposphericModel  timeSpanModel  = new TimeSpanEstimatedModel(estimatedModel);
-        final FieldTrackingCoordinates<T> trackingCoordinates = new FieldTrackingCoordinates<T>(zero,
-                                                                                                zero.newInstance(FastMath.toRadians(45.0)),
-                                                                                                zero);
+        final FieldTrackingCoordinates<T> trackingCoordinates = new FieldTrackingCoordinates<>(zero,
+                zero.newInstance(FastMath.toRadians(45.0)),
+                zero);
         final T height    = zero.add(100.0);
         final T[] estimatedParameters = estimatedModel.getParameters(field);
         final T[] timeSpanParameters = estimatedModel.getParameters(field);

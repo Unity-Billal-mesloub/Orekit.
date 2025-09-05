@@ -199,7 +199,7 @@ public class DOPComputerTest {
         Assertions.assertThrows(OrekitException.class, () -> {
 
             // Get the TLEs for 3 SV from the GPS constellation ...
-            List<Propagator> gps = new ArrayList<Propagator>();
+            List<Propagator> gps = new ArrayList<>();
             gps.add(TLEPropagator.selectExtrapolator(new TLE("1 24876U 97035A   16084.84459975 -.00000010  00000-0  00000-0 0  9993",
                     "2 24876  55.6874 244.8168 0043829 115.0986 245.3138  2.00562757137015")));
             gps.add(TLEPropagator.selectExtrapolator(new TLE("1 25933U 99055A   16085.52437157 -.00000002  00000-0  00000+0 0  9996",
@@ -224,7 +224,7 @@ public class DOPComputerTest {
         final List<GPSAlmanac> almanacs = reader.getAlmanacs();
 
         // Creates the GPS propagators from the almanacs
-        final List<Propagator> propagators = new ArrayList<Propagator>();
+        final List<Propagator> propagators = new ArrayList<>();
         for (GPSAlmanac almanac: almanacs) {
             propagators.add(new GNSSPropagatorBuilder(almanac).build());
         }
@@ -233,7 +233,7 @@ public class DOPComputerTest {
 
     private List<Propagator> getTlePropagators() {
 
-        List<Propagator> propagators = new ArrayList<Propagator>();
+        List<Propagator> propagators = new ArrayList<>();
 
         // the following map corresponds to the GPS constellation status in early 2016
         propagators.add(TLEPropagator.selectExtrapolator(new TLE("1 37753U 11036A   16059.51505483 -.00000016  00000-0  00000+0 0  9995",

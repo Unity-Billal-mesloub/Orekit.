@@ -98,7 +98,7 @@ public class EphemerisEventsTest {
         Propagator propagator =
                 new EcksteinHechlerPropagator(transPar, mass, ae, mu, c20, c30, c40, c50, c60);
 
-        List<SpacecraftState> tab = new ArrayList<SpacecraftState>(nbIntervals + 1);
+        List<SpacecraftState> tab = new ArrayList<>(nbIntervals + 1);
         for (int j = 0; j<= nbIntervals; j++) {
             SpacecraftState state = propagator.propagate(initDate.shiftedBy((j * deltaT) / nbIntervals));
             tab.add(new SpacecraftState(type.convertType(state.getOrbit()),

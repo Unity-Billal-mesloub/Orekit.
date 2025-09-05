@@ -145,7 +145,7 @@ public class FieldLatitudeCrossingDetectorTest {
                                           Constants.EIGEN5C_EARTH_C50,
                                           Constants.EIGEN5C_EARTH_C60);
 
-        FieldEventsLogger<Binary64> logger = new FieldEventsLogger<Binary64>();
+        FieldEventsLogger<Binary64> logger = new FieldEventsLogger<>();
         propagator.addEventDetector(logger.monitorDetector(d));
 
         propagator.propagate(date.shiftedBy(Constants.JULIAN_DAY));

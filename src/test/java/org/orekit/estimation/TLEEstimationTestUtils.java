@@ -100,7 +100,7 @@ public class TLEEstimationTestUtils {
         // Turn-around range stations
         // Map entry = primary station
         // Map value = secondary station associated
-        context.TARstations = new HashMap<GroundStation, GroundStation>();
+        context.TARstations = new HashMap<>();
 
         context.TARstations.put(context.createStation(-53.05388,  -75.01551, 1750.0, "Isla Desolación"),
                                 context.createStation(-54.815833,  -68.317778, 6.0, "Ushuaïa"));
@@ -167,7 +167,7 @@ public class TLEEstimationTestUtils {
         // Turn-around range stations
         // Map entry = primary station
         // Map value = secondary station associated
-        context.TARstations = new HashMap<GroundStation, GroundStation>();
+        context.TARstations = new HashMap<>();
 
         context.TARstations.put(context.createStation(  41.977, 13.600,  671.354, "Fucino"),
                                 context.createStation(  43.604,  1.444,  263.0  , "ToulouMEANse"));

@@ -260,7 +260,7 @@ class EventShifterTest {
                                                      FramesFactory.getGCRF(), iniDate, mu);
             propagator =
                 new EcksteinHechlerPropagator(orbit, ae, mu, c20, c30, c40, c50, c60);
-            log = new ArrayList<EventEntry>();
+            log = new ArrayList<>();
         } catch (OrekitException oe) {
             Assertions.fail(oe.getLocalizedMessage());
         }

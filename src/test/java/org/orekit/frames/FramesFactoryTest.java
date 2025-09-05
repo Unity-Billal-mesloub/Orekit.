@@ -296,7 +296,7 @@ public class FramesFactoryTest {
         Utils.setDataRoot("rapid-data-columns");
         IERSConventions.NutationCorrectionConverter converter =
                 IERSConventions.IERS_1996.getNutationCorrectionConverter();
-        SortedSet<EOPEntry> rawEquinox = new TreeSet<EOPEntry>(new ChronologicalComparator());
+        SortedSet<EOPEntry> rawEquinox = new TreeSet<>(new ChronologicalComparator());
         DataProvidersManager manager = DataContext.getDefault().getDataProvidersManager();
         UTCScale utc = DataContext.getDefault().getTimeScales().getUTC();
         new RapidDataAndPredictionColumnsLoader(false, "^finals\\.daily$", manager, () -> utc)
@@ -315,7 +315,7 @@ public class FramesFactoryTest {
         Utils.setDataRoot("rapid-data-columns");
         IERSConventions.NutationCorrectionConverter converter =
                 IERSConventions.IERS_2003.getNutationCorrectionConverter();
-        final SortedSet<EOPEntry> rawNRO = new TreeSet<EOPEntry>(new ChronologicalComparator());
+        final SortedSet<EOPEntry> rawNRO = new TreeSet<>(new ChronologicalComparator());
         DataProvidersManager manager = DataContext.getDefault().getDataProvidersManager();
         UTCScale utc = DataContext.getDefault().getTimeScales().getUTC();
         new RapidDataAndPredictionColumnsLoader(true, "^finals2000A\\.daily$", manager, () -> utc)
@@ -340,7 +340,7 @@ public class FramesFactoryTest {
     }
 
     private void testCIP(IERSConventions conventions, double threshold) {
-        Utils.setLoaders(conventions, new ArrayList<EOPEntry>());
+        Utils.setLoaders(conventions, new ArrayList<>());
         Frame cirf = FramesFactory.getCIRF(conventions, false);
         Frame tod  = FramesFactory.getTOD(conventions, false);
         AbsoluteDate t0 = new AbsoluteDate(new DateComponents(2003, 06, 21), TimeComponents.H00,

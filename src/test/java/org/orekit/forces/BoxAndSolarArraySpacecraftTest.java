@@ -421,8 +421,8 @@ public class BoxAndSolarArraySpacecraftTest {
         Binary64[] srpParam = getRadiationParameters(s, field);
 
         FieldSpacecraftState<Binary64> fState = new FieldSpacecraftState<>(field, state);
-        FieldVector3D<Binary64> flux = new FieldVector3D<Binary64>(field.getOne(),
-                        new Vector3D(Precision.SAFE_MIN / 2, Vector3D.PLUS_I));
+        FieldVector3D<Binary64> flux = new FieldVector3D<>(field.getOne(),
+                new Vector3D(Precision.SAFE_MIN / 2, Vector3D.PLUS_I));
 
 
         FieldVector3D<Binary64> a = s.radiationPressureAcceleration(fState, flux, srpParam);
@@ -495,9 +495,9 @@ public class BoxAndSolarArraySpacecraftTest {
             Field<Binary64> field = Binary64Field.getInstance();
             FieldSpacecraftState<Binary64> fState = new FieldSpacecraftState<>(field, state);
 
-            FieldVector3D<Binary64> fluxF = new FieldVector3D<Binary64>(field.getOne(), flux);
+            FieldVector3D<Binary64> fluxF = new FieldVector3D<>(field.getOne(), flux);
             Binary64 densityF = new Binary64(density);
-            FieldVector3D<Binary64> relativeVelocityF = new FieldVector3D<Binary64>(field.getOne(), relativeVelocity);
+            FieldVector3D<Binary64> relativeVelocityF = new FieldVector3D<>(field.getOne(), relativeVelocity);
 
 
             // Acceleration in Binary64

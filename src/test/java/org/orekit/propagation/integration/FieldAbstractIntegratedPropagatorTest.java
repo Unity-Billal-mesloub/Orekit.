@@ -135,7 +135,7 @@ class FieldAbstractIntegratedPropagatorTest {
 
         // Init numerical propagator
         final FieldSpacecraftState<T> state = new FieldSpacecraftState<>(startOrbit);
-        final FieldNumericalPropagator<T> propagator = new FieldNumericalPropagator<>(new ClassicalRungeKuttaFieldIntegrator<T>(field, zero.newInstance(300.)));
+        final FieldNumericalPropagator<T> propagator = new FieldNumericalPropagator<>(new ClassicalRungeKuttaFieldIntegrator<>(field, zero.newInstance(300.)));
         propagator.setInitialState(state);
 
         // WHEN

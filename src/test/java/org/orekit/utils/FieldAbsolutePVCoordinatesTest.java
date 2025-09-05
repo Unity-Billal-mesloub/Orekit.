@@ -180,17 +180,17 @@ public class FieldAbsolutePVCoordinatesTest {
                                                                 new FieldVector3D<>(one.multiply(4.0), one.multiply(0.4), one.multiply(40.0)),
                                                                 new FieldVector3D<>(one.multiply(-4.0), one.multiply(-0.4), one.multiply(-40.0)),
                                                                 new FieldVector3D<>(one.multiply(40.0), one.multiply(-4.0), one.multiply(-400.0)));
-        checkPV(pv4, new FieldAbsolutePVCoordinates<T>(FieldAbsoluteDate.getJulianEpoch(field), one.multiply(4.0), pv1), 1.0e-15);
-        checkPV(pv2, new FieldAbsolutePVCoordinates<T>(FieldAbsoluteDate.getFiftiesEpoch(field), pv1, pv3), 1.0e-15);
-        checkPV(pv3, new FieldAbsolutePVCoordinates<T>(FieldAbsoluteDate.getGalileoEpoch(field), one, pv1, one, pv2), 1.0e-15);
-        checkPV(new FieldAbsolutePVCoordinates<T>(FieldAbsoluteDate.getJ2000Epoch(field), one.multiply(2.0), pv4),
-                new FieldAbsolutePVCoordinates<T>(FieldAbsoluteDate.getJ2000Epoch(field), one.multiply(3.0), pv1, one, pv2, one, pv3),
+        checkPV(pv4, new FieldAbsolutePVCoordinates<>(FieldAbsoluteDate.getJulianEpoch(field), one.multiply(4.0), pv1), 1.0e-15);
+        checkPV(pv2, new FieldAbsolutePVCoordinates<>(FieldAbsoluteDate.getFiftiesEpoch(field), pv1, pv3), 1.0e-15);
+        checkPV(pv3, new FieldAbsolutePVCoordinates<>(FieldAbsoluteDate.getGalileoEpoch(field), one, pv1, one, pv2), 1.0e-15);
+        checkPV(new FieldAbsolutePVCoordinates<>(FieldAbsoluteDate.getJ2000Epoch(field), one.multiply(2.0), pv4),
+                new FieldAbsolutePVCoordinates<>(FieldAbsoluteDate.getJ2000Epoch(field), one.multiply(3.0), pv1, one, pv2, one, pv3),
                 1.0e-15);
-        checkPV(new FieldAbsolutePVCoordinates<T>(FieldAbsoluteDate.getJ2000Epoch(field), one.multiply(3.0), pv3),
-                new FieldAbsolutePVCoordinates<T>(FieldAbsoluteDate.getJ2000Epoch(field), one.multiply(3.0), pv1, one, pv2, one, pv4),
+        checkPV(new FieldAbsolutePVCoordinates<>(FieldAbsoluteDate.getJ2000Epoch(field), one.multiply(3.0), pv3),
+                new FieldAbsolutePVCoordinates<>(FieldAbsoluteDate.getJ2000Epoch(field), one.multiply(3.0), pv1, one, pv2, one, pv4),
                 1.0e-15);
-        checkPV(new FieldAbsolutePVCoordinates<T>(FieldAbsoluteDate.getJ2000Epoch(field), one.multiply(5.0), pv4),
-                new FieldAbsolutePVCoordinates<T>(FieldAbsoluteDate.getJ2000Epoch(field), one.multiply(4.0), pv1, one.multiply(3.0), pv2, one.multiply(2.0), pv3, one, pv4),
+        checkPV(new FieldAbsolutePVCoordinates<>(FieldAbsoluteDate.getJ2000Epoch(field), one.multiply(5.0), pv4),
+                new FieldAbsolutePVCoordinates<>(FieldAbsoluteDate.getJ2000Epoch(field), one.multiply(4.0), pv1, one.multiply(3.0), pv2, one.multiply(2.0), pv3, one, pv4),
                 1.0e-15);
     }
 

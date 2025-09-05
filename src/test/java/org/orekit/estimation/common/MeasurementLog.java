@@ -38,7 +38,7 @@ abstract class MeasurementLog<T extends ObservedMeasurement<T>> implements Evalu
     /** Simple constructor.
      */
     MeasurementLog() {
-        this.evaluations = new TreeSet<EstimatedMeasurement<T>>(Comparator.naturalOrder());
+        this.evaluations = new TreeSet<>(Comparator.naturalOrder());
     }
 
     /** Compute residual value.

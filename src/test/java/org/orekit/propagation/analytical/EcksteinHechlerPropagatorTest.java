@@ -556,7 +556,7 @@ public class EcksteinHechlerPropagatorTest {
         EcksteinHechlerPropagator propagator =
             new EcksteinHechlerPropagator(orbit, provider);
         AbsoluteDate target = AbsoluteDate.J2000_EPOCH.shiftedBy(10000.0);
-        List<TimeStampedPVCoordinates> sample = new ArrayList<TimeStampedPVCoordinates>();
+        List<TimeStampedPVCoordinates> sample = new ArrayList<>();
         for (double dt : Arrays.asList(-0.5, 0.0, 0.5)) {
             sample.add(propagator.propagate(target.shiftedBy(dt)).getPVCoordinates());
         }

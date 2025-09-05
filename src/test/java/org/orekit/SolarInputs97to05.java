@@ -76,7 +76,7 @@ public class SolarInputs97to05 implements DTM2000InputParameters {
      */
     private SolarInputs97to05() {
 
-        data = new TreeSet<TimeStamped>(new ChronologicalComparator());
+        data = new TreeSet<>(new ChronologicalComparator());
         InputStream in = SolarInputs97to05.class.getResourceAsStream("/atmosphere/JB_All_97-05.txt");
         BufferedReader rFlux = new BufferedReader(new InputStreamReader(in));
 

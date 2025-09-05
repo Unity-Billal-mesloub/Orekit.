@@ -113,7 +113,7 @@ public class OemParserTest {
                             file.getSegments().get(0).getMetadata().getUseableStopTime());
         Assertions.assertEquals(InterpolationMethod.HERMITE, file.getSegments().get(0).getMetadata().getInterpolationMethod());
         Assertions.assertEquals(7, file.getSegments().get(0).getMetadata().getInterpolationDegree());
-        ArrayList<String> ephemeridesDataLinesComment = new ArrayList<String>();
+        ArrayList<String> ephemeridesDataLinesComment = new ArrayList<>();
         ephemeridesDataLinesComment.add("This file was produced by M.R. Somebody, MSOO NAV/JPL, 1996NOV 04. It is");
         ephemeridesDataLinesComment.add("to be used for DSN scheduling purposes only.");
         Assertions.assertEquals(ephemeridesDataLinesComment, file.getSegments().get(0).getData().getComments());
@@ -187,10 +187,10 @@ public class OemParserTest {
                            buildOemParser();
 
         final Oem file = parser.parseMessage(source);
-        final List<String> headerComment = new ArrayList<String>();
+        final List<String> headerComment = new ArrayList<>();
         headerComment.add("comment");
         Assertions.assertEquals(headerComment, file.getHeader().getComments());
-        final List<String> metadataComment = new ArrayList<String>();
+        final List<String> metadataComment = new ArrayList<>();
         metadataComment.add("comment 1");
         metadataComment.add("comment 2");
         Assertions.assertEquals(metadataComment, file.getSegments().get(0).getMetadata().getComments());

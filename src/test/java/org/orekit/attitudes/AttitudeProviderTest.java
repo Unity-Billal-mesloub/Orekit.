@@ -172,7 +172,7 @@ class AttitudeProviderTest {
         @SuppressWarnings("unchecked")
         final FieldPVCoordinatesProvider<T> mockPvCoordinatesProvider = Mockito.mock(FieldPVCoordinatesProvider.class);
         final AbsoluteDate date = AbsoluteDate.ARBITRARY_EPOCH;
-        final FieldAbsoluteDate<T> fieldDate = new FieldAbsoluteDate<T>(field, date);
+        final FieldAbsoluteDate<T> fieldDate = new FieldAbsoluteDate<>(field, date);
         // WHEN
         final FieldRotation<T> actualRotation = attitudeProvider.getAttitudeRotation(mockPvCoordinatesProvider, fieldDate, REFERENCE_FRAME);
         // THEN

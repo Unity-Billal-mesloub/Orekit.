@@ -60,7 +60,7 @@ public class AbstractConstantThrustPropulsionModelTest {
 
             @Override
             public <T extends CalculusFieldElement<T>> FieldVector3D<T> getThrustVector(T[] parameters) {
-                return new FieldVector3D<T>(parameters[0].getField(), thrustVector);
+                return new FieldVector3D<>(parameters[0].getField(), thrustVector);
             }
 
             @Override

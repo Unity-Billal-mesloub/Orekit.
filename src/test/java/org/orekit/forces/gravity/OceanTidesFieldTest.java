@@ -99,7 +99,7 @@ public class OceanTidesFieldTest {
         };
 
         // filter waves
-        List<OceanTidesWave> filtered = new ArrayList<OceanTidesWave>(doodson.length);
+        List<OceanTidesWave> filtered = new ArrayList<>(doodson.length);
         for (final int d : doodson) {
             for (final OceanTidesWave wave : complete) {
                 if (wave.getDoodson() == d) {

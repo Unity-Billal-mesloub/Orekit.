@@ -105,7 +105,7 @@ public class OrekitAttitudeEphemerisFileTest {
 
         final double propagationDurationSeconds = 1200.0;
         final double stepSizeSeconds = 60.0;
-        List<SpacecraftState> states = new ArrayList<SpacecraftState>();
+        List<SpacecraftState> states = new ArrayList<>();
 
         for (double dt = 0.0; dt < propagationDurationSeconds; dt += stepSizeSeconds) {
             states.add(propagator.propagate(date.shiftedBy(dt)));
@@ -172,7 +172,7 @@ public class OrekitAttitudeEphemerisFileTest {
         final String satId = "SATELLITE1";
 
         // Create an empty list of states
-        List<SpacecraftState> states = new ArrayList<SpacecraftState>();
+        List<SpacecraftState> states = new ArrayList<>();
 
         // Create a new satellite attitude ephemeris
         OrekitAttitudeEphemerisFile ephemerisFile = new OrekitAttitudeEphemerisFile();
@@ -211,7 +211,7 @@ public class OrekitAttitudeEphemerisFileTest {
         SpacecraftState state = new SpacecraftState(initialOrbit);
 
         // Add the state to the list of spacecraft states
-        List<SpacecraftState> states = new ArrayList<SpacecraftState>();
+        List<SpacecraftState> states = new ArrayList<>();
         states.add(state);
 
         // Create a new satellite attitude ephemeris

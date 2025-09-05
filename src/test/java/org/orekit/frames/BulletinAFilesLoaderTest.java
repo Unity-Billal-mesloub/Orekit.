@@ -37,7 +37,7 @@ public class BulletinAFilesLoaderTest extends AbstractFilesLoaderTest {
     @Test
     public void testStartDate() {
         setRoot("bulletinA");
-        SortedSet<EOPEntry> history = new TreeSet<EOPEntry>(new ChronologicalComparator());
+        SortedSet<EOPEntry> history = new TreeSet<>(new ChronologicalComparator());
         new BulletinAFilesLoader("bulletina-xxvi-\\d\\d\\d\\.txt", manager, () -> utc).fillHistory(null, history);
         Assertions.assertEquals(new AbsoluteDate(new DateComponents(DateComponents.MODIFIED_JULIAN_EPOCH, 56475),
                                              TimeScalesFactory.getUTC()),
@@ -48,7 +48,7 @@ public class BulletinAFilesLoaderTest extends AbstractFilesLoaderTest {
     @Test
     public void testEndDate() {
         setRoot("bulletinA");
-        SortedSet<EOPEntry> history = new TreeSet<EOPEntry>(new ChronologicalComparator());
+        SortedSet<EOPEntry> history = new TreeSet<>(new ChronologicalComparator());
         new BulletinAFilesLoader("bulletina-xxvi-\\d\\d\\d\\.txt", manager, () -> utc).fillHistory(null, history);
         Assertions.assertTrue(getMaxGap(history) < 2);
         Assertions.assertEquals(new AbsoluteDate(new DateComponents(DateComponents.MODIFIED_JULIAN_EPOCH, 56968),
@@ -60,7 +60,7 @@ public class BulletinAFilesLoaderTest extends AbstractFilesLoaderTest {
     @Test
     public void testSingleFile() {
         setRoot("bulletinA");
-        SortedSet<EOPEntry> data = new TreeSet<EOPEntry>(new ChronologicalComparator());
+        SortedSet<EOPEntry> data = new TreeSet<>(new ChronologicalComparator());
         new BulletinAFilesLoader("bulletina-xxvi-039.txt", manager, () -> utc).fillHistory(null, data);
         EOPHistory history = new EOPHistory(IERSConventions.IERS_2010, EOPHistory.DEFAULT_INTERPOLATION_DEGREE,
                                             data, true);
@@ -82,7 +82,7 @@ public class BulletinAFilesLoaderTest extends AbstractFilesLoaderTest {
     @Test
     public void testRapidDataContent() {
         setRoot("bulletinA");
-        SortedSet<EOPEntry> data = new TreeSet<EOPEntry>(new ChronologicalComparator());
+        SortedSet<EOPEntry> data = new TreeSet<>(new ChronologicalComparator());
         new BulletinAFilesLoader(FramesFactory.BULLETINA_FILENAME, manager, () -> utc).fillHistory(null, data);
         EOPHistory history = new EOPHistory(IERSConventions.IERS_2010, EOPHistory.DEFAULT_INTERPOLATION_DEGREE,
                                             data, true);
@@ -96,7 +96,7 @@ public class BulletinAFilesLoaderTest extends AbstractFilesLoaderTest {
     @Test
     public void testFinalValuesContent() {
         setRoot("bulletinA");
-        SortedSet<EOPEntry> data = new TreeSet<EOPEntry>(new ChronologicalComparator());
+        SortedSet<EOPEntry> data = new TreeSet<>(new ChronologicalComparator());
         new BulletinAFilesLoader(FramesFactory.BULLETINA_FILENAME, manager, () -> utc).fillHistory(null, data);
         EOPHistory history = new EOPHistory(IERSConventions.IERS_2010, EOPHistory.DEFAULT_INTERPOLATION_DEGREE,
                                             data, true);
@@ -130,7 +130,7 @@ public class BulletinAFilesLoaderTest extends AbstractFilesLoaderTest {
     }
 
     private void checkTruncated(String name, OrekitMessages expected) {
-        SortedSet<EOPEntry> history = new TreeSet<EOPEntry>(new ChronologicalComparator());
+        SortedSet<EOPEntry> history = new TreeSet<>(new ChronologicalComparator());
         try {
             new BulletinAFilesLoader(name, manager, () -> utc).fillHistory(null, history);
             Assertions.fail("an exception should have been thrown");
@@ -149,7 +149,7 @@ public class BulletinAFilesLoaderTest extends AbstractFilesLoaderTest {
     }
 
     private void checkInconsistent(String name) {
-        SortedSet<EOPEntry> history = new TreeSet<EOPEntry>(new ChronologicalComparator());
+        SortedSet<EOPEntry> history = new TreeSet<>(new ChronologicalComparator());
         try {
             new BulletinAFilesLoader(name, manager, () -> utc).fillHistory(null, history);
             Assertions.fail("an exception should have been thrown");
