@@ -52,10 +52,10 @@ public abstract class AbstractInterSatellitesMeasurement<T extends ObservedMeasu
      * @param local satellite which receives the signal and performs the measurement
      * @param remote remote satellite which simply emits the signal
      */
-    public AbstractInterSatellitesMeasurement(final AbsoluteDate date, final double observed,
-                                              final double sigma, final double baseWeight,
-                                              final ObservableSatellite local,
-                                              final ObservableSatellite remote) {
+    protected AbstractInterSatellitesMeasurement(final AbsoluteDate date, final double observed,
+                                                 final double sigma, final double baseWeight,
+                                                 final ObservableSatellite local,
+                                                 final ObservableSatellite remote) {
         // Call to super constructor
         super(date, observed, sigma, baseWeight, Arrays.asList(local, remote));
     }

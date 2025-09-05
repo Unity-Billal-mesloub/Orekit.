@@ -54,9 +54,9 @@ public abstract class AbstractOnBoardMeasurement<T extends ObservedMeasurement<T
      * @param baseWeight base weight
      * @param satellites satellites related to this measurement
      */
-    public AbstractOnBoardMeasurement(final AbsoluteDate date, final double observed,
-                                      final double sigma, final double baseWeight,
-                                      final List<ObservableSatellite> satellites) {
+    protected AbstractOnBoardMeasurement(final AbsoluteDate date, final double observed,
+                                         final double sigma, final double baseWeight,
+                                         final List<ObservableSatellite> satellites) {
         // Call to super constructor
         super(date, observed, sigma, baseWeight, satellites);
 

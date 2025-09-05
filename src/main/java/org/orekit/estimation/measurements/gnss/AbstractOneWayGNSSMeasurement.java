@@ -70,11 +70,11 @@ public abstract class AbstractOneWayGNSSMeasurement<T extends ObservedMeasuremen
      * @param baseWeight base weight
      * @param local satellite which receives the signal and perform the measurement
      */
-    public AbstractOneWayGNSSMeasurement(final PVCoordinatesProvider remotePV,
-                                         final QuadraticClockModel remoteClock,
-                                         final AbsoluteDate date,
-                                         final double range, final double sigma,
-                                         final double baseWeight, final ObservableSatellite local) {
+    protected AbstractOneWayGNSSMeasurement(final PVCoordinatesProvider remotePV,
+                                            final QuadraticClockModel remoteClock,
+                                            final AbsoluteDate date,
+                                            final double range, final double sigma,
+                                            final double baseWeight, final ObservableSatellite local) {
         // Call super constructor
         super(date, range, sigma, baseWeight, Collections.singletonList(local));
 

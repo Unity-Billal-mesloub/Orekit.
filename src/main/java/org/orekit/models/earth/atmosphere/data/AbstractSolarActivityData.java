@@ -120,8 +120,8 @@ public abstract class AbstractSolarActivityData<L extends AbstractSolarActivityD
      *
      * @since 12.0
      */
-    public AbstractSolarActivityData(final DataSource source, final D loader, final TimeScale utc, final int maxSlots,
-                                     final double maxSpan, final double maxInterval, final double minimumStep) {
+    protected AbstractSolarActivityData(final DataSource source, final D loader, final TimeScale utc, final int maxSlots,
+                                        final double maxSpan, final double maxInterval, final double minimumStep) {
         try {
             // Load file
             try (InputStream is = source.getOpener().openStreamOnce();

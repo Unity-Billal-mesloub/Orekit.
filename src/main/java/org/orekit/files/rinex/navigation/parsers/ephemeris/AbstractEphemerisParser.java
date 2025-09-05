@@ -39,7 +39,7 @@ public abstract class AbstractEphemerisParser<T extends AbstractEphemerisMessage
      * @param parseInfo container for parsing data
      * @param message container for navigation message
      */
-    public AbstractEphemerisParser(final ParseInfo parseInfo, final T message) {
+    protected AbstractEphemerisParser(final ParseInfo parseInfo, final T message) {
         this.parseInfo = parseInfo;
         this.message   = message;
     }

@@ -92,7 +92,7 @@ public abstract class BaseRinexWriter<T extends RinexBaseHeader> implements Auto
      * @param output destination of generated output
      * @param outputName output name for error messages
      */
-    public BaseRinexWriter(final Appendable output, final String outputName) {
+    protected BaseRinexWriter(final Appendable output, final String outputName) {
         this.output        = output;
         this.outputName    = outputName;
         this.savedComments = Collections.emptyList();

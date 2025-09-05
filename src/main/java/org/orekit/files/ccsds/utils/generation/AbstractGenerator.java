@@ -77,9 +77,9 @@ public abstract class AbstractGenerator implements Generator {
      * @param formatter how to format date and double to string.
      * @param writeUnits if true, units must be written
      */
-    public AbstractGenerator(final Appendable output, final String outputName,
-                             final double maxRelativeOffset, final boolean writeUnits,
-                             final Formatter formatter) {
+    protected AbstractGenerator(final Appendable output, final String outputName,
+                                final double maxRelativeOffset, final boolean writeUnits,
+                                final Formatter formatter) {
         this.output            = output;
         this.outputName        = outputName;
         this.maxRelativeOffset = maxRelativeOffset;
@@ -99,8 +99,8 @@ public abstract class AbstractGenerator implements Generator {
      * Use {@link AbstractGenerator#AbstractGenerator(Appendable, String, double, boolean, Formatter)} instead.
      */
     @Deprecated
-    public AbstractGenerator(final Appendable output, final String outputName,
-                             final double maxRelativeOffset, final boolean writeUnits) {
+    protected AbstractGenerator(final Appendable output, final String outputName,
+                                final double maxRelativeOffset, final boolean writeUnits) {
         this(output, outputName, maxRelativeOffset, writeUnits, new AccurateFormatter());
     }
 
@@ -191,7 +191,7 @@ public abstract class AbstractGenerator implements Generator {
     /** {@inheritDoc} */
     @Override
     public void writeEntry(final String key, final Double value, final Unit unit, final boolean mandatory) throws IOException {
-        writeEntry(key, value == null ? (String) null : doubleToString(unit.fromSI(value.doubleValue())), unit, mandatory);
+        writeEntry(key, value == null ? null : doubleToString(unit.fromSI(value.doubleValue())), unit, mandatory);
     }
 
     /** {@inheritDoc} */

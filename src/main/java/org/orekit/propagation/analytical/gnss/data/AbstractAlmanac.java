@@ -45,8 +45,8 @@ public abstract class AbstractAlmanac<O extends AbstractAlmanac<O>> extends Comm
      *                        (may be different from real system, for example in Rinex nav, weeks
      *                        are always according to GPS)
      */
-    public AbstractAlmanac(final double mu, final double angularVelocity, final int weeksInCycle,
-                           final TimeScales timeScales, final SatelliteSystem system) {
+    protected AbstractAlmanac(final double mu, final double angularVelocity, final int weeksInCycle,
+                              final TimeScales timeScales, final SatelliteSystem system) {
         super(mu, angularVelocity, weeksInCycle, timeScales, system);
     }
 

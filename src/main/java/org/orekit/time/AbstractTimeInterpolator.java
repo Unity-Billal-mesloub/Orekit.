@@ -57,7 +57,7 @@ public abstract class AbstractTimeInterpolator<T extends TimeStamped> implements
      * @param interpolationPoints number of interpolation points
      * @param extrapolationThreshold extrapolation threshold beyond which the propagation will fail
      */
-    public AbstractTimeInterpolator(final int interpolationPoints, final double extrapolationThreshold) {
+    protected AbstractTimeInterpolator(final int interpolationPoints, final double extrapolationThreshold) {
         this.interpolationPoints    = interpolationPoints;
         this.extrapolationThreshold = extrapolationThreshold;
     }

@@ -46,7 +46,7 @@ public abstract class AbstractRelativisticClockOnBoardRangeRateModifier<T extend
     /** Simple constructor.
      * @param gm gravitational constant for main body in signal path vicinity.
      */
-    public AbstractRelativisticClockOnBoardRangeRateModifier(final double gm) {
+    protected AbstractRelativisticClockOnBoardRangeRateModifier(final double gm) {
         super();
         this.gm = gm;
     }

@@ -47,8 +47,8 @@ public abstract class AbstractFieldOrbitInterpolator<KK extends CalculusFieldEle
      * @param extrapolationThreshold extrapolation threshold beyond which the propagation will fail
      * @param outputInertialFrame output inertial frame
      */
-    public AbstractFieldOrbitInterpolator(final int interpolationPoints, final double extrapolationThreshold,
-                                          final Frame outputInertialFrame) {
+    protected AbstractFieldOrbitInterpolator(final int interpolationPoints, final double extrapolationThreshold,
+                                             final Frame outputInertialFrame) {
         super(interpolationPoints, extrapolationThreshold);
         checkFrameIsInertial(outputInertialFrame);
         this.outputInertialFrame = outputInertialFrame;

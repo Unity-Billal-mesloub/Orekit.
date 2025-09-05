@@ -48,7 +48,7 @@ public abstract class LineOrientedFilteringReader extends Reader {
      * @param input underlying raw stream
      * @exception IOException if first lines cannot be read
      */
-    public LineOrientedFilteringReader(final String name, final Reader input) throws IOException {
+    protected LineOrientedFilteringReader(final String name, final Reader input) throws IOException {
         reader         = new BufferedReader(input);
         lastLineNumber = 0;
     }
