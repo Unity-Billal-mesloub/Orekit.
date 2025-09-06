@@ -66,10 +66,10 @@ public class FundamentalNutationArguments {
     private final TimeScale timeScale;
 
     /** Function computing Greenwich Mean Sidereal Time. */
-    private final transient TimeScalarFunction gmstFunction;
+    private final TimeScalarFunction gmstFunction;
 
     /** Function computing Greenwich Mean Sidereal Time rate. */
-    private final transient TimeScalarFunction gmstRateFunction;
+    private final TimeScalarFunction gmstRateFunction;
 
     // luni-solar Delaunay arguments
 
@@ -118,7 +118,7 @@ public class FundamentalNutationArguments {
     private final double[] paCoefficients;
 
     /** Set of time scales to use in computations. */
-    private final transient TimeScales timeScales;
+    private final TimeScales timeScales;
 
     /** Build a model of fundamental arguments from an IERS table file.
      *

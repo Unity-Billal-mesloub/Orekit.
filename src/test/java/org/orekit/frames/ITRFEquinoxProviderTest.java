@@ -222,7 +222,7 @@ public class ITRFEquinoxProviderTest {
 
     @Test
     public void testNROvsEquinoxNoEOP2010() {
-        Utils.setLoaders(IERSConventions.IERS_2010, new ArrayList<EOPEntry>());
+        Utils.setLoaders(IERSConventions.IERS_2010, new ArrayList<>());
         checkFrames(FramesFactory.getITRF(IERSConventions.IERS_2010, true),
                     FramesFactory.getITRFEquinox(IERSConventions.IERS_2010, true),
                     1.7);
@@ -230,7 +230,7 @@ public class ITRFEquinoxProviderTest {
 
     @Test
     public void testNROvsEquinoxNoEOP2003() {
-        Utils.setLoaders(IERSConventions.IERS_2003, new ArrayList<EOPEntry>());
+        Utils.setLoaders(IERSConventions.IERS_2003, new ArrayList<>());
         checkFrames(FramesFactory.getITRF(IERSConventions.IERS_2003, true),
                     FramesFactory.getITRFEquinox(IERSConventions.IERS_2003, true),
                     1.9);
@@ -238,7 +238,7 @@ public class ITRFEquinoxProviderTest {
 
     @Test
     public void testNROvsEquinoxNoEOP1996() {
-        Utils.setLoaders(IERSConventions.IERS_1996, new ArrayList<EOPEntry>());
+        Utils.setLoaders(IERSConventions.IERS_1996, new ArrayList<>());
         checkFrames(FramesFactory.getITRF(IERSConventions.IERS_1996, true),
                     FramesFactory.getITRFEquinox(IERSConventions.IERS_1996, true),
                     100);

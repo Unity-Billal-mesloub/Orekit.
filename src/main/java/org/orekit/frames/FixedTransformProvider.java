@@ -35,7 +35,7 @@ public class FixedTransformProvider implements TransformProvider {
     private final Transform transform;
 
     /** Cached field-based transforms. */
-    private final transient Map<Field<? extends CalculusFieldElement<?>>, FieldTransform<? extends CalculusFieldElement<?>>> cached;
+    private final Map<Field<? extends CalculusFieldElement<?>>, FieldTransform<? extends CalculusFieldElement<?>>> cached;
 
     /** Simple constructor.
      * @param transform fixed transform

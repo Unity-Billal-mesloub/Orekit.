@@ -70,19 +70,19 @@ public class EphemerisOemWriterTest {
     }
 
     @Test
-    public void testOEMWriter() {
+    void testOEMWriter() {
         Assertions.assertNotNull(new WriterBuilder().buildOemWriter());
     }
 
     @Test
-    public void testWriteOEM1Kvn() throws IOException {
+    void testWriteOEM1Kvn() throws IOException {
         final CharArrayWriter caw = new CharArrayWriter();
         final Generator generator = new KvnGenerator(caw, 0, "", Constants.JULIAN_DAY, 60);
         doTestWriteOEM1(caw, generator);
     }
 
     @Test
-    public void testWriteOEM1Xml() throws IOException {
+    void testWriteOEM1Xml() throws IOException {
         final CharArrayWriter caw = new CharArrayWriter();
         final Generator generator = new XmlGenerator(caw, 2, "", Constants.JULIAN_DAY, true, XmlGenerator.NDM_XML_V3_SCHEMA_LOCATION);
         doTestWriteOEM1(caw, generator);
@@ -113,7 +113,7 @@ public class EphemerisOemWriterTest {
     }
 
     @Test
-    public void testUnfoundSpaceId() throws IOException {
+    void testUnfoundSpaceId() throws IOException {
         final String ex = "/ccsds/odm/oem/OEMExample1.txt";
         final DataSource source =  new DataSource(ex, () -> getClass().getResourceAsStream(ex));
         final OemParser parser  = new ParserBuilder().withMu(CelestialBodyFactory.getEarth().getGM()).buildOemParser();
@@ -133,7 +133,7 @@ public class EphemerisOemWriterTest {
     }
 
     @Test
-    public void testNullFile() throws IOException {
+    void testNullFile() throws IOException {
         final String ex = "/ccsds/odm/oem/OEMExample1.txt";
         final DataSource source =  new DataSource(ex, () -> getClass().getResourceAsStream(ex));
         final OemParser parser  = new ParserBuilder().withMu(CelestialBodyFactory.getEarth().getGM()).buildOemParser();
@@ -153,7 +153,7 @@ public class EphemerisOemWriterTest {
     }
 
     @Test
-    public void testNullEphemeris() throws IOException {
+    void testNullEphemeris() throws IOException {
         EphemerisOemWriter writer = new EphemerisOemWriter(new WriterBuilder().buildOemWriter(),
                                                      null, dummyMetadata(), FileFormat.KVN, "nullEphemeris",
                                                      Constants.JULIAN_DAY, 60);
@@ -163,7 +163,7 @@ public class EphemerisOemWriterTest {
     }
 
     @Test
-    public void testUnisatelliteFileWithDefault() throws IOException {
+    void testUnisatelliteFileWithDefault() throws IOException {
         final String ex = "/ccsds/odm/oem/OEMExample1.txt";
         final DataSource source =  new DataSource(ex, () -> getClass().getResourceAsStream(ex));
         final OemParser parser  = new ParserBuilder().withMu(CelestialBodyFactory.getEarth().getGM()).buildOemParser();
@@ -183,7 +183,7 @@ public class EphemerisOemWriterTest {
     }
 
     @Test
-    public void testIssue723() throws IOException {
+    void testIssue723() throws IOException {
         final String ex = "/ccsds/odm/oem/OEMExampleWithHeaderComment.txt";
         final DataSource source =  new DataSource(ex, () -> getClass().getResourceAsStream(ex));
         final OemParser parser  = new ParserBuilder().withMu(CelestialBodyFactory.getEarth().getGM()).buildOemParser();
@@ -211,7 +211,7 @@ public class EphemerisOemWriterTest {
      * @throws IOException on error
      */
     @Test
-    public void testWriteOemFormat() throws IOException {
+    void testWriteOemFormat() throws IOException {
         // setup
         String exampleFile = "/ccsds/odm/oem/OEMExample4.txt";
         final DataSource source =  new DataSource(exampleFile, () -> getClass().getResourceAsStream(exampleFile));
@@ -230,7 +230,7 @@ public class EphemerisOemWriterTest {
     }
 
     @Test
-    public void testMultisatelliteFile() throws IOException {
+    void testMultisatelliteFile() throws IOException {
 
         final DataContext context = DataContext.getDefault();
         final String id1 = "1999-012A";
@@ -324,7 +324,7 @@ public class EphemerisOemWriterTest {
         /** Simple constructor.
          */
         public StandAloneEphemerisFile() {
-            this.satEphem    = new HashMap<String, OemSatelliteEphemeris>();
+            this.satEphem    = new HashMap<>();
         }
 
         private void generate(final String objectID, final String objectName,

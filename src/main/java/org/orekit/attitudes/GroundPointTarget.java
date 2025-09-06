@@ -49,7 +49,7 @@ public class GroundPointTarget implements TargetProvider
     private final PVCoordinates location;
 
     /** Cached field-based locations. */
-    private final transient Map<Field<? extends CalculusFieldElement<?>>, FieldPVCoordinates<?>>
+    private final Map<Field<? extends CalculusFieldElement<?>>, FieldPVCoordinates<?>>
         cachedLocations;
 
     /** Simple constructor.

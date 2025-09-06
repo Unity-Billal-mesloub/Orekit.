@@ -52,7 +52,7 @@ public class EcksteinHechlerBatchLSEstimatorTest {
      * Perfect PV measurements with a perfect start
      */
     @Test
-    public void testPV() {
+    void testPV() {
 
         EcksteinHechlerContext context = EcksteinHechlerEstimationTestUtils.smallEccentricContext("regular-data:potential:tides");
 
@@ -93,7 +93,7 @@ public class EcksteinHechlerBatchLSEstimatorTest {
 
     /** Test PV measurements generation and backward propagation in least-square orbit determination. */
     @Test
-    public void testKeplerPVBackward() {
+    void testKeplerPVBackward() {
 
         EcksteinHechlerContext context = EcksteinHechlerEstimationTestUtils.smallEccentricContext("regular-data:potential:tides");
 
@@ -137,7 +137,7 @@ public class EcksteinHechlerBatchLSEstimatorTest {
      * Perfect range measurements with a perfect start
      */
     @Test
-    public void testKeplerRange() {
+    void testKeplerRange() {
 
         EcksteinHechlerContext context = EcksteinHechlerEstimationTestUtils.smallEccentricContext("regular-data:potential:tides");
 
@@ -174,7 +174,7 @@ public class EcksteinHechlerBatchLSEstimatorTest {
      * Perfect range measurements with a perfect start and an on-board antenna range offset
      */
     @Test
-    public void testKeplerRangeWithOnBoardAntennaOffset() {
+    void testKeplerRangeWithOnBoardAntennaOffset() {
 
         EcksteinHechlerContext context = EcksteinHechlerEstimationTestUtils.smallEccentricContext("regular-data:potential:tides");
 
@@ -220,7 +220,7 @@ public class EcksteinHechlerBatchLSEstimatorTest {
      * Perfect range rate measurements with a perfect start
      */
     @Test
-    public void testKeplerRangeRate() {
+    void testKeplerRangeRate() {
 
         EcksteinHechlerContext context = EcksteinHechlerEstimationTestUtils.smallEccentricContext("regular-data:potential:tides");
 
@@ -240,7 +240,7 @@ public class EcksteinHechlerBatchLSEstimatorTest {
                                                                new RangeRateMeasurementCreator(context, false, satClkDrift),
                                                                1.0, 3.0, 300.0);
 
-        final List<ObservedMeasurement<?>> measurements = new ArrayList<ObservedMeasurement<?>>();
+        final List<ObservedMeasurement<?>> measurements = new ArrayList<>();
         measurements.addAll(measurements1);
 
         // create orbit estimator
@@ -261,7 +261,7 @@ public class EcksteinHechlerBatchLSEstimatorTest {
     }
 
     @Test
-    public void testWrappedException() {
+    void testWrappedException() {
 
         EcksteinHechlerContext context = EcksteinHechlerEstimationTestUtils.smallEccentricContext("regular-data:potential:tides");
 

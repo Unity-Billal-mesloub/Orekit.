@@ -197,10 +197,10 @@ public class CelestialBodyFactoryTest {
 
     private void checkMultiThread(final int threads, final int runs) {
 
-        final AtomicReference<OrekitException> caught = new AtomicReference<OrekitException>();
+        final AtomicReference<OrekitException> caught = new AtomicReference<>();
         ExecutorService executorService = Executors.newFixedThreadPool(threads);
 
-        List<Future<?>> results = new ArrayList<Future<?>>();
+        List<Future<?>> results = new ArrayList<>();
         for (int i = 0; i < threads; i++) {
             Future<?> result = executorService.submit(new Runnable() {
                 public void run() {

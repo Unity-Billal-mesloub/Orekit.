@@ -105,14 +105,14 @@ class DSSTThirdBodyTest {
 
         final DSSTForceModel moon = new DSSTThirdBody(CelestialBodyFactory.getMoon(), meanState.getOrbit().getMu());
 
-        final Collection<DSSTForceModel> forces = new ArrayList<DSSTForceModel>();
+        final Collection<DSSTForceModel> forces = new ArrayList<>();
         forces.add(moon);
 
         //Create the auxiliary object
         final AuxiliaryElements aux = new AuxiliaryElements(meanState.getOrbit(), 1);
 
         // Set the force models
-        final List<ShortPeriodTerms> shortPeriodTerms = new ArrayList<ShortPeriodTerms>();
+        final List<ShortPeriodTerms> shortPeriodTerms = new ArrayList<>();
 
         for (final DSSTForceModel force : forces) {
             force.registerAttitudeProvider(null);

@@ -125,7 +125,7 @@ public class CIRFProviderTest {
         //        12                         86400s / 24 = 1h00    1.25e-13 rad
         //        12                         86400s / 48 = 0h30    1.56e-14 rad
         EOPHistory eopHistory = new EOPHistory(IERSConventions.IERS_2010, EOPHistory.DEFAULT_INTERPOLATION_DEGREE,
-                                               new ArrayList<EOPEntry>(), true);
+                new ArrayList<>(), true);
         TransformProvider nonShifting = new CIRFProvider(eopHistory);
         final TransformProvider shifting =
                 new ShiftingTransformProvider(nonShifting,

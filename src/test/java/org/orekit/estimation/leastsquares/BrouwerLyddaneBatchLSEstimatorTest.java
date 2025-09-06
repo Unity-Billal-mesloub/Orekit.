@@ -242,7 +242,7 @@ public class BrouwerLyddaneBatchLSEstimatorTest {
                                                                new RangeRateMeasurementCreator(context, false, satClkDrift),
                                                                1.0, 3.0, 300.0);
 
-        final List<ObservedMeasurement<?>> measurements = new ArrayList<ObservedMeasurement<?>>();
+        final List<ObservedMeasurement<?>> measurements = new ArrayList<>();
         measurements.addAll(measurements1);
 
         // create orbit estimator

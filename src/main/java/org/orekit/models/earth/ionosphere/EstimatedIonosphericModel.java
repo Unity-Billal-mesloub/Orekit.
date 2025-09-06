@@ -60,10 +60,10 @@ public class EstimatedIonosphericModel implements IonosphericModel, IonosphericD
     private static final double FACTOR = 40.3e16;
 
     /** Ionospheric mapping Function model. */
-    private final transient IonosphericMappingFunction model;
+    private final IonosphericMappingFunction model;
 
     /** Driver for the Vertical Total Electron Content.*/
-    private final transient ParameterDriver vtec;
+    private final ParameterDriver vtec;
 
 
     /**

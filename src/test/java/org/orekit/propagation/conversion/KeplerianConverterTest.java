@@ -71,7 +71,7 @@ class KeplerianConverterTest {
         {
 
         Propagator p = new KeplerianPropagator(orbit);
-        List<SpacecraftState> sample = new ArrayList<SpacecraftState>();
+        List<SpacecraftState> sample = new ArrayList<>();
         for (double dt = 0; dt < duration; dt += stepSize) {
             sample.add(p.propagate(orbit.getDate().shiftedBy(dt)));
         }

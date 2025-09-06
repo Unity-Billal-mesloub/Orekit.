@@ -61,7 +61,7 @@ class FieldApsideDetectorTest {
         FieldEventDetector<T> detector = new FieldApsideDetector<>(propagator.getInitialState().getOrbit()).
                                          withMaxCheck(600.0).
                                          withThreshold(field.getZero().newInstance(1.0e-12)).
-                                         withHandler(new FieldContinueOnEvent<T>());
+                                         withHandler(new FieldContinueOnEvent<>());
 
         Assertions.assertEquals(600.0, detector.getMaxCheckInterval().currentInterval(null, true), 1.0e-15);
         Assertions.assertEquals(1.0e-12, detector.getThreshold().getReal(), 1.0e-15);
@@ -165,11 +165,13 @@ class FieldApsideDetectorTest {
             return detector;
         }
 
+        @Override
         public void init(final FieldSpacecraftState<T> s0, final FieldAbsoluteDate<T> t) {
             FieldDetectorModifier.super.init(s0, t);
             count = 0;
         }
 
+        @Override
         public T g(final FieldSpacecraftState<T> s) {
             ++count;
             return FieldDetectorModifier.super.g(s);

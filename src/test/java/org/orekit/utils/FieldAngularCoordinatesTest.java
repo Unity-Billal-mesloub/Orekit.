@@ -420,7 +420,7 @@ public class FieldAngularCoordinatesTest {
                                                              zero.add( -2.7451871050415643E-12),
                                                              zero.add( -2.781723303703499E-10 ));
 
-        FieldPVCoordinates<Binary64> B = new FieldPVCoordinates<Binary64>(pos_B, vel_B, acc_B);
+        FieldPVCoordinates<Binary64> B = new FieldPVCoordinates<>(pos_B, vel_B, acc_B);
 
 
         FieldVector3D<Binary64> pos_A = new FieldVector3D<>(zero.add(-0.44665912825286425 ),
@@ -621,7 +621,7 @@ public class FieldAngularCoordinatesTest {
         checkInverse(FieldVector3D.getZero(field),  FieldVector3D.getPlusK(field), FieldVector3D.getZero(field));
         checkInverse(FieldVector3D.getPlusK(field), FieldVector3D.getPlusI(field), FieldVector3D.getPlusK(field));
         checkInverse(FieldVector3D.getPlusK(field), FieldVector3D.getPlusI(field), FieldVector3D.getPlusI(field));
-        checkInverse(FieldVector3D.getPlusK(field), FieldVector3D.getPlusI(field), new FieldVector3D<Binary64>(field, new Vector3D(1, 0, -1)).normalize());
+        checkInverse(FieldVector3D.getPlusK(field), FieldVector3D.getPlusI(field), new FieldVector3D<>(field, new Vector3D(1, 0, -1)).normalize());
         checkInverse(FieldVector3D.getZero(field),  FieldVector3D.getPlusI(field), FieldVector3D.getZero(field), FieldVector3D.getPlusJ(field),  FieldVector3D.getZero(field));
     }
 

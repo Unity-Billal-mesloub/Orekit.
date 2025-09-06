@@ -3166,7 +3166,7 @@ public class DSSTThirdBody implements DSSTForceModel {
         private final String prefix;
 
         /** All coefficients slots. */
-        private final transient TimeSpanMap<Slot> slots;
+        private final TimeSpanMap<Slot> slots;
 
         /**
          * Standard constructor.
@@ -3312,7 +3312,7 @@ public class DSSTThirdBody implements DSSTForceModel {
         private final String prefix;
 
         /** All coefficients slots. */
-        private final transient FieldTimeSpanMap<FieldSlot<T>, T> slots;
+        private final FieldTimeSpanMap<FieldSlot<T>, T> slots;
 
         /**
          * Standard constructor.

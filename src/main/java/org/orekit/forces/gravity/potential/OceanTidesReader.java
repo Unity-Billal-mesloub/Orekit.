@@ -61,7 +61,7 @@ public abstract class OceanTidesReader implements DataLoader {
     /** Simple constructor.
      * @param supportedNames regular expression for supported files names
      */
-    public OceanTidesReader(final String supportedNames) {
+    protected OceanTidesReader(final String supportedNames) {
         this.supportedNames = supportedNames;
         this.maxParseDegree = Integer.MAX_VALUE;
         this.maxParseOrder  = Integer.MAX_VALUE;

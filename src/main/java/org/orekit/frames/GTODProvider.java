@@ -50,7 +50,7 @@ public class GTODProvider implements EOPBasedTransformProvider {
     private final EOPHistory eopHistory;
 
     /** GAST function. */
-    private final transient TimeScalarFunction gastFunction;
+    private final TimeScalarFunction gastFunction;
 
     /** Simple constructor.
      * @param conventions IERS conventions to use

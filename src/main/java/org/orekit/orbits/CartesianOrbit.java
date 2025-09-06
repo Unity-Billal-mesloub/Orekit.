@@ -71,10 +71,10 @@ public class CartesianOrbit extends Orbit {
     private static final double[][] SIX_BY_SIX_IDENTITY = MatrixUtils.createRealIdentityMatrix(6).getData();
 
     /** Indicator for non-Keplerian derivatives. */
-    private final transient boolean hasNonKeplerianAcceleration;
+    private final boolean hasNonKeplerianAcceleration;
 
     /** Underlying equinoctial orbit to which high-level methods are delegated. */
-    private transient EquinoctialOrbit equinoctial;
+    private EquinoctialOrbit equinoctial;
 
     /** Constructor from Cartesian parameters.
      *

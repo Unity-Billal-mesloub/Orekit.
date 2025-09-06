@@ -67,7 +67,7 @@ public class SsrVtecIonosphericModel implements IonosphericModel, IonosphericDel
     private static final double FACTOR = 40.3e16;
 
     /** SSR Ionosphere VTEC Spherical Harmonics Message.. */
-    private final transient SsrIm201 vtecMessage;
+    private final SsrIm201 vtecMessage;
 
     /**
      * Constructor.

@@ -322,7 +322,7 @@ public class CPFWriterTest {
 
          final double propagationDurationSeconds = 86400.0;
          final double stepSizeSeconds = 60.0;
-         List<SpacecraftState> states = new ArrayList<SpacecraftState>();
+         List<SpacecraftState> states = new ArrayList<>();
 
          for (double dt = 0.0; dt < propagationDurationSeconds; dt += stepSizeSeconds) {
              states.add(propagator.propagate(date.shiftedBy(dt)));

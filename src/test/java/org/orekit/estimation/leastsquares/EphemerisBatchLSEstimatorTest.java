@@ -91,11 +91,11 @@ public class EphemerisBatchLSEstimatorTest {
     }
 
     @Test
-    public void testRangeWithBias() {
+    void testRangeWithBias() {
 
         double dt = finalDate.durationFrom(initDate);
         double timeStep = dt / 20.0;
-        List<SpacecraftState> states = new ArrayList<SpacecraftState>();
+        List<SpacecraftState> states = new ArrayList<>();
 
         for(double t = 0 ; t <= dt; t+=timeStep) {
             states.add(propagator.propagate(initDate.shiftedBy(t)));
@@ -117,9 +117,9 @@ public class EphemerisBatchLSEstimatorTest {
                                                                         1.0, 5.0, 10.0);
 
         // estimated bias
-        final Bias<Range> rangeBias = new Bias<Range>(new String[] {"rangeBias"}, new double[] {0.0},
-        	                                          new double[] {1.0},
-        	                                          new double[] {0.0}, new double[] {10000.0});
+        final Bias<Range> rangeBias = new Bias<>(new String[]{"rangeBias"}, new double[]{0.0},
+                new double[]{1.0},
+                new double[]{0.0}, new double[]{10000.0});
         rangeBias.getParametersDrivers().get(0).setSelected(true);
 
         // create orbit estimator
@@ -145,11 +145,11 @@ public class EphemerisBatchLSEstimatorTest {
     }
 
     @Test
-    public void testRangeRateWithClockDrift() {
+    void testRangeRateWithClockDrift() {
 
         double dt = finalDate.durationFrom(initDate);
         double timeStep = dt / 20.0;
-        List<SpacecraftState> states = new ArrayList<SpacecraftState>();
+        List<SpacecraftState> states = new ArrayList<>();
 
         for(double t = 0 ; t <= dt; t+=timeStep) {
             states.add(propagator.propagate(initDate.shiftedBy(t)));
@@ -192,11 +192,11 @@ public class EphemerisBatchLSEstimatorTest {
     }
 
     @Test
-    public void testAzElWithBias() {
+    void testAzElWithBias() {
 
         double dt = finalDate.durationFrom(initDate);
         double timeStep = dt / 20.0;
-        List<SpacecraftState> states = new ArrayList<SpacecraftState>();
+        List<SpacecraftState> states = new ArrayList<>();
 
         for(double t = 0 ; t <= dt; t+=timeStep) {
             states.add(propagator.propagate(initDate.shiftedBy(t)));

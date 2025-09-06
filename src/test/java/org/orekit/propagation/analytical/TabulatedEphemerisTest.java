@@ -132,7 +132,7 @@ public class TabulatedEphemerisTest {
             Assertions.assertEquals(OrekitMessages.ADDITIONAL_STATE_NAME_ALREADY_IN_USE,
                                 oe.getSpecifier());
         }
-        List<SpacecraftState> tab = new ArrayList<SpacecraftState>(nbIntervals + 1);
+        List<SpacecraftState> tab = new ArrayList<>(nbIntervals + 1);
         for (int j = 0; j<= nbIntervals; j++) {
             AbsoluteDate current = initDate.shiftedBy((j * deltaT) / nbIntervals);
             tab.add(f.filter(eck.propagate(current)));

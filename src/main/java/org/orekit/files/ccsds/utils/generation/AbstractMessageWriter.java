@@ -77,8 +77,8 @@ public abstract class AbstractMessageWriter<H extends Header, S extends Segment<
      * @param defaultVersion default format version
      * @param context context binding (may be reset for each segment)
      */
-    public AbstractMessageWriter(final String root, final String formatVersionKey,
-                                 final double defaultVersion, final ContextBinding context) {
+    protected AbstractMessageWriter(final String root, final String formatVersionKey,
+                                    final double defaultVersion, final ContextBinding context) {
 
         this.root             = root;
         this.defaultVersion   = defaultVersion;

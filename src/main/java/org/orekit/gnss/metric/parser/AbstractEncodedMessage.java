@@ -45,7 +45,7 @@ public abstract class AbstractEncodedMessage implements EncodedMessage {
      * </p>
      * @since 12.0
      */
-    public AbstractEncodedMessage() {
+    protected AbstractEncodedMessage() {
         // nothing to do
     }
 

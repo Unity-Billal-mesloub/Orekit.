@@ -133,7 +133,7 @@ class DSSTTesseralTest {
         //Create the auxiliary object
         final AuxiliaryElements aux = new AuxiliaryElements(orbit, 1);
 
-        final List<ShortPeriodTerms> shortPeriodTerms = new ArrayList<ShortPeriodTerms>();
+        final List<ShortPeriodTerms> shortPeriodTerms = new ArrayList<>();
 
         force.registerAttitudeProvider(null);
 
@@ -292,7 +292,7 @@ class DSSTTesseralTest {
                                          Constants.WGS84_EARTH_ANGULAR_VELOCITY, provider);
 
         // Initialize short period terms
-        final List<ShortPeriodTerms> shortPeriodTerms = new ArrayList<ShortPeriodTerms>();
+        final List<ShortPeriodTerms> shortPeriodTerms = new ArrayList<>();
         final AuxiliaryElements aux = new AuxiliaryElements(orbit, 1);
         shortPeriodTerms.addAll(dsstTesseral.initializeShortPeriodTerms(aux,
                                                                         PropagationType.OSCULATING,

@@ -65,7 +65,7 @@ public abstract class AbstractSolarActivityData<L extends AbstractSolarActivityD
     private final String supportedNames;
 
     /** UTC time scale. */
-    private final TimeScale utc;
+    private final transient TimeScale utc;
 
     /** First available date. */
     private final AbsoluteDate firstDate;
@@ -120,8 +120,8 @@ public abstract class AbstractSolarActivityData<L extends AbstractSolarActivityD
      *
      * @since 12.0
      */
-    public AbstractSolarActivityData(final DataSource source, final D loader, final TimeScale utc, final int maxSlots,
-                                     final double maxSpan, final double maxInterval, final double minimumStep) {
+    protected AbstractSolarActivityData(final DataSource source, final D loader, final TimeScale utc, final int maxSlots,
+                                        final double maxSpan, final double maxInterval, final double minimumStep) {
         try {
             // Load file
             try (InputStream is = source.getOpener().openStreamOnce();

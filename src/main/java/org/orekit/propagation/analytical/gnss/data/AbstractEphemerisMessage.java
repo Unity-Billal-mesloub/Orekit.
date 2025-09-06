@@ -69,7 +69,7 @@ public abstract class AbstractEphemerisMessage implements TimeStamped, Navigatio
     private double health;
 
     /** Constructor. */
-    public AbstractEphemerisMessage() {
+    protected AbstractEphemerisMessage() {
         // Nothing to do ...
     }
 

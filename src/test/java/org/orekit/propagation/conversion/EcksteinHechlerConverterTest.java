@@ -72,7 +72,7 @@ public class EcksteinHechlerConverterTest {
                                                    orbit.getFrame(),
                                                    orbit.getMu());
         Propagator p = new EcksteinHechlerPropagator(modified, provider);
-        List<SpacecraftState> sample = new ArrayList<SpacecraftState>();
+        List<SpacecraftState> sample = new ArrayList<>();
         for (double dt = 0; dt < duration; dt += stepSize) {
             sample.add(p.propagate(modified.getDate().shiftedBy(dt)));
         }

@@ -48,7 +48,7 @@ public abstract class IntervalEventTrigger<T extends EventDetector> extends Abst
     private final ManeuverTriggerDetector<T> firingIntervalDetector;
 
     /** Cached field-based detectors. */
-    private final transient Map<Field<? extends CalculusFieldElement<?>>, FieldEventDetector<? extends CalculusFieldElement<?>>> cached;
+    private final Map<Field<? extends CalculusFieldElement<?>>, FieldEventDetector<? extends CalculusFieldElement<?>>> cached;
 
     /** Simple constructor.
      * <p>

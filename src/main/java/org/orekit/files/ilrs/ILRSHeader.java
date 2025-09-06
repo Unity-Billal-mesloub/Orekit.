@@ -74,7 +74,7 @@ public abstract class ILRSHeader {
      * </p>
      * @since 12.0
      */
-    public ILRSHeader() {
+    protected ILRSHeader() {
         // nothing to do
     }
 

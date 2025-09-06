@@ -45,7 +45,7 @@ public class FieldKeplerianPropagator<T extends CalculusFieldElement<T>> extends
 
 
     /** All states. */
-    private transient FieldTimeSpanMap<FieldSpacecraftState<T>, T> states;
+    private FieldTimeSpanMap<FieldSpacecraftState<T>, T> states;
 
     /** Build a propagator from orbit only.
      * <p>The central attraction coefficient μ is set to the same value used

@@ -180,7 +180,7 @@ public class TLE implements TimeStamped, ParameterDriversProvider {
     private final TimeScale utc;
 
     /** Driver for ballistic coefficient parameter. */
-    private final transient ParameterDriver bStarParameterDriver;
+    private final ParameterDriver bStarParameterDriver;
 
 
     /** Simple constructor from unparsed two lines. This constructor uses the {@link

@@ -41,7 +41,7 @@ import org.orekit.time.TimeScalesFactory;
 import org.orekit.utils.FieldPVCoordinates;
 import org.orekit.utils.FieldPVCoordinatesProvider;
 
-public class FieldBetaAngleDetectorTest {
+class FieldBetaAngleDetectorTest {
     private FieldPropagator<Binary64> propagator;
     private FieldAbsoluteDate<Binary64> date;
 
@@ -50,8 +50,8 @@ public class FieldBetaAngleDetectorTest {
         Utils.setDataRoot("regular-data");
         final FieldVector3D<Binary64> position  = new FieldVector3D<>(
             new Binary64(-6142438.668), new Binary64(3492467.560), new Binary64(-25767.25680));
-        final FieldVector3D<Binary64> velocity  = new FieldVector3D<Binary64>(
-            new Binary64(505.8479685), new Binary64(942.7809215), new Binary64(7435.922231));
+        final FieldVector3D<Binary64> velocity  = new FieldVector3D<>(
+                new Binary64(505.8479685), new Binary64(942.7809215), new Binary64(7435.922231));
         final FieldAbsoluteDate<Binary64> iniDate = new FieldAbsoluteDate<>(Binary64Field.getInstance(), 1969, 7, 28, 4, 0, 0.0, TimeScalesFactory.getTT());
         final FieldOrbit<Binary64> orbit = 
                 new FieldEquinoctialOrbit<>(new FieldPVCoordinates<>(position,  velocity),

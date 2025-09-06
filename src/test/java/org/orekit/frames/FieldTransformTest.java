@@ -77,7 +77,7 @@ public class FieldTransformTest {
         // WHEN
         final FieldPVCoordinates<Binary64> transformed = identity.transformPVCoordinates(pvCoordinates);
         // THEN
-        final FieldPVCoordinates<Binary64> fieldPVCoordinates = new FieldPVCoordinates<Binary64>(field, pvCoordinates);
+        final FieldPVCoordinates<Binary64> fieldPVCoordinates = new FieldPVCoordinates<>(field, pvCoordinates);
         Assertions.assertEquals(position, transformed.getPosition().toVector3D());
         Assertions.assertEquals(velocity, transformed.getVelocity().toVector3D());
         Assertions.assertEquals(acceleration, transformed.getAcceleration().toVector3D());
@@ -232,7 +232,7 @@ public class FieldTransformTest {
             FieldPVCoordinates<T> transformedPV = evolvingTransform(FieldAbsoluteDate.getJ2000Epoch(field), dt).transformPVCoordinates(basePV);
 
             // rebuild transformed acceleration, relying only on transformed position and velocity
-            List<TimeStampedFieldPVCoordinates<T>> sample = new ArrayList<TimeStampedFieldPVCoordinates<T>>();
+            List<TimeStampedFieldPVCoordinates<T>> sample = new ArrayList<>();
             double h = 1.0e-2;
             for (int i = -3; i < 4; ++i) {
                 FieldTransform<T> t = evolvingTransform(FieldAbsoluteDate.getJ2000Epoch(field), dt + i * h);
@@ -1321,7 +1321,7 @@ public class FieldTransformTest {
 
     private <T extends CalculusFieldElement<T>> void doTestInterpolation(Field<T> field) {
         FieldAbsoluteDate<T> t0 = FieldAbsoluteDate.getGalileoEpoch(field);
-        List<FieldTransform<T>> sample = new ArrayList<FieldTransform<T>>();
+        List<FieldTransform<T>> sample = new ArrayList<>();
         for (int i = 0; i < 5; ++i) {
             sample.add(evolvingTransform(t0, i * 0.8));
         }

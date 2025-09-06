@@ -58,13 +58,13 @@ public class InterpolatingTransformProvider implements TransformProvider {
     private final double step;
 
     /** Cache for sample points. */
-    private final transient GenericTimeStampedCache<Transform> cache;
+    private final GenericTimeStampedCache<Transform> cache;
 
     /** Field caches for sample points. */
     // we use Object as the value of fieldCaches because despite numerous attempts,
     // we could not find a way to use GenericTimeStampedCache<FieldTransform<? extends CalculusFieldElement<?>>
     // without the compiler complaining
-    private final transient Map<Field<? extends CalculusFieldElement<?>>, Object> fieldCaches;
+    private final Map<Field<? extends CalculusFieldElement<?>>, Object> fieldCaches;
 
     /** Simple constructor.
      * @param rawProvider provider for raw (non-interpolated) transforms

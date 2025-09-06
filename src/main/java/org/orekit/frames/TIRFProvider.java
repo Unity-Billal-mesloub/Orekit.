@@ -43,10 +43,10 @@ class TIRFProvider implements EOPBasedTransformProvider {
     private final EOPHistory eopHistory;
 
     /** UT1 time scale. */
-    private final transient TimeScale ut1;
+    private final TimeScale ut1;
 
     /** ERA function. */
-    private final transient TimeScalarFunction era;
+    private final TimeScalarFunction era;
 
     /** Simple constructor.
      * @param eopHistory EOP history

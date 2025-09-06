@@ -42,7 +42,7 @@ import org.orekit.time.TimeVectorFunction;
 class CIRFProvider implements EOPBasedTransformProvider {
 
     /** Function computing CIP/CIO components. */
-    private final transient TimeVectorFunction xysPxy2Function;
+    private final TimeVectorFunction xysPxy2Function;
 
     /** EOP history. */
     private final EOPHistory eopHistory;

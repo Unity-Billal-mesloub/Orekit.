@@ -78,25 +78,25 @@ public class EstimatedEarthFrameProvider implements TransformProvider {
     private final UT1Scale baseUT1;
 
     /** Estimated UT1. */
-    private final transient UT1Scale estimatedUT1;
+    private final UT1Scale estimatedUT1;
 
     /** Driver for prime meridian offset. */
-    private final transient ParameterDriver primeMeridianOffsetDriver;
+    private final ParameterDriver primeMeridianOffsetDriver;
 
     /** Driver for prime meridian drift. */
-    private final transient ParameterDriver primeMeridianDriftDriver;
+    private final ParameterDriver primeMeridianDriftDriver;
 
     /** Driver for pole offset along X. */
-    private final transient ParameterDriver polarOffsetXDriver;
+    private final ParameterDriver polarOffsetXDriver;
 
     /** Driver for pole drift along X. */
-    private final transient ParameterDriver polarDriftXDriver;
+    private final ParameterDriver polarDriftXDriver;
 
     /** Driver for pole offset along Y. */
-    private final transient ParameterDriver polarOffsetYDriver;
+    private final ParameterDriver polarOffsetYDriver;
 
     /** Driver for pole drift along Y. */
-    private final transient ParameterDriver polarDriftYDriver;
+    private final ParameterDriver polarDriftYDriver;
 
     /** Build an estimated Earth frame.
      * <p>

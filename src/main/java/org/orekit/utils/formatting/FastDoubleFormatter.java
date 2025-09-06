@@ -52,7 +52,7 @@ public abstract class FastDoubleFormatter {
      * </p>
      * @param width number of characters to output
      */
-    public FastDoubleFormatter(final int width) {
+    protected FastDoubleFormatter(final int width) {
         this.width = width;
     }
 

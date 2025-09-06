@@ -60,9 +60,9 @@ public abstract class GroundReceiverMeasurement<T extends GroundReceiverMeasurem
      * @param baseWeight base weight
      * @param satellite satellite related to this measurement
      */
-    public GroundReceiverMeasurement(final GroundStation station, final boolean twoWay, final AbsoluteDate date,
-                                     final double observed, final double sigma, final double baseWeight,
-                                     final ObservableSatellite satellite) {
+    protected GroundReceiverMeasurement(final GroundStation station, final boolean twoWay, final AbsoluteDate date,
+                                        final double observed, final double sigma, final double baseWeight,
+                                        final ObservableSatellite satellite) {
         super(date, observed, sigma, baseWeight, Collections.singletonList(satellite));
         addParameterDriver(station.getClockOffsetDriver());
         addParameterDriver(station.getClockDriftDriver());
@@ -95,9 +95,9 @@ public abstract class GroundReceiverMeasurement<T extends GroundReceiverMeasurem
      * @param baseWeight base weight
      * @param satellite satellite related to this measurement
      */
-    public GroundReceiverMeasurement(final GroundStation station, final boolean twoWay, final AbsoluteDate date,
-                                     final double[] observed, final double[] sigma, final double[] baseWeight,
-                                     final ObservableSatellite satellite) {
+    protected GroundReceiverMeasurement(final GroundStation station, final boolean twoWay, final AbsoluteDate date,
+                                        final double[] observed, final double[] sigma, final double[] baseWeight,
+                                        final ObservableSatellite satellite) {
         super(date, observed, sigma, baseWeight, Collections.singletonList(satellite));
         addParameterDriver(station.getClockOffsetDriver());
         addParameterDriver(station.getClockDriftDriver());

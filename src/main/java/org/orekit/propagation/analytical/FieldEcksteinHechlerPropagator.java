@@ -71,7 +71,7 @@ public class FieldEcksteinHechlerPropagator<T extends CalculusFieldElement<T>> e
     private FieldEHModel<T> initialModel;
 
     /** All models. */
-    private transient FieldTimeSpanMap<FieldEHModel<T>, T> models;
+    private FieldTimeSpanMap<FieldEHModel<T>, T> models;
 
     /** Reference radius of the central body attraction model (m). */
     private double referenceRadius;
@@ -826,15 +826,15 @@ public class FieldEcksteinHechlerPropagator<T extends CalculusFieldElement<T>> e
         // compute circular parameters from the model
         final FieldEHModel<T> current = models.get(date);
         final FieldUnivariateDerivative2<T>[] parameter = current.propagateParameters(date);
-        return new FieldCircularOrbit<T>(parameter[0].getValue(),
-                                         parameter[1].getValue(),
-                                         parameter[2].getValue(),
-                                         parameter[3].getValue(),
-                                         parameter[4].getValue(),
-                                         parameter[5].getValue(),
-                                         PositionAngleType.MEAN,
-                                         current.mean.getFrame(),
-                                         date, mu);
+        return new FieldCircularOrbit<>(parameter[0].getValue(),
+                parameter[1].getValue(),
+                parameter[2].getValue(),
+                parameter[3].getValue(),
+                parameter[4].getValue(),
+                parameter[5].getValue(),
+                PositionAngleType.MEAN,
+                current.mean.getFrame(),
+                date, mu);
     }
 
     /** Local class for Eckstein-Hechler model, with fixed mean parameters. */

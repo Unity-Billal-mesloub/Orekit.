@@ -129,7 +129,7 @@ public class FieldEclipseDetectorTest {
         FieldEclipseDetector<T> e = new FieldEclipseDetector<>(field, sun, sunRadius, earth).
                                     withMaxCheck(60.0).
                                     withThreshold(zero.newInstance(1e-3)).
-                                    withHandler(new FieldStopOnDecreasing<T>()).
+                                    withHandler(new FieldStopOnDecreasing<>()).
                                     withUmbra();
         Assertions.assertEquals(60.0, e.getMaxCheckInterval().currentInterval(null, true), 1.0e-15);
         Assertions.assertEquals(1.0e-3, e.getThreshold().getReal(), 1.0e-15);
@@ -316,7 +316,7 @@ public class FieldEclipseDetectorTest {
         FieldEclipseDetector<T> e = new FieldEclipseDetector<>(field, sun, sunRadius, earth).
                                     withMaxCheck(120.0).
                                     withThreshold(zero.newInstance(1e-4)).
-                                    withHandler(new FieldStopOnDecreasing<T>()).
+                                    withHandler(new FieldStopOnDecreasing<>()).
                                     withMaxIter(n);
        propagator.addEventDetector(e);
         try {

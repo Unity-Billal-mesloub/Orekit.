@@ -54,10 +54,10 @@ public abstract class StartStopEventsTrigger<A extends EventDetector, O extends 
     private final ManeuverTriggerDetector<O> stopDetector;
 
     /** Cached field-based start detectors. */
-    private final transient Map<Field<? extends CalculusFieldElement<?>>, FieldEventDetector<? extends CalculusFieldElement<?>>> cachedStart;
+    private final Map<Field<? extends CalculusFieldElement<?>>, FieldEventDetector<? extends CalculusFieldElement<?>>> cachedStart;
 
     /** Cached field-based stop detectors. */
-    private final transient Map<Field<? extends CalculusFieldElement<?>>, FieldEventDetector<? extends CalculusFieldElement<?>>> cachedStop;
+    private final Map<Field<? extends CalculusFieldElement<?>>, FieldEventDetector<? extends CalculusFieldElement<?>>> cachedStop;
 
     /** Simple constructor.
      * <p>

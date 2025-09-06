@@ -175,7 +175,7 @@ class DSSTAtmosphericDragTest {
         final AuxiliaryElements aux = new AuxiliaryElements(meanState.getOrbit(), 1);
 
         // Set the force models
-        final List<ShortPeriodTerms> shortPeriodTerms = new ArrayList<ShortPeriodTerms>();
+        final List<ShortPeriodTerms> shortPeriodTerms = new ArrayList<>();
 
         drag.registerAttitudeProvider(attitudeProvider);
         shortPeriodTerms.addAll(drag.initializeShortPeriodTerms(aux, PropagationType.OSCULATING, drag.getParameters(meanState.getDate())));

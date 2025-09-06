@@ -73,16 +73,16 @@ public class EOPHistory {
     private final boolean hasData;
 
     /** EOP history entries. */
-    private final transient ImmutableTimeStampedCache<EOPEntry> cache;
+    private final ImmutableTimeStampedCache<EOPEntry> cache;
 
     /** IERS conventions to which EOP refers. */
     private final IERSConventions conventions;
 
     /** Correction to apply to EOP (may be null). */
-    private final transient TimeVectorFunction tidalCorrection;
+    private final TimeVectorFunction tidalCorrection;
 
     /** Time scales to use when computing corrections. */
-    private final transient TimeScales timeScales;
+    private final TimeScales timeScales;
 
     /** Simple constructor.
      *
@@ -144,7 +144,7 @@ public class EOPHistory {
         this.interpolationDegree = interpolationDegree;
         this.tidalCorrection     = tidalCorrection;
         this.timeScales          = timeScales;
-        if (data.size() >= 1) {
+        if (!data.isEmpty()) {
             // enough data to interpolate
             if (missSomeDerivatives(data)) {
                 // we need to estimate the missing derivatives
@@ -948,7 +948,7 @@ public class EOPHistory {
          * @param tidalCorrection function computing the tidal correction
          */
         CachedCorrection(final TimeVectorFunction tidalCorrection) {
-            this.step            = 60 * 60;
+            this.step            = 60. * 60;
             this.tidalCorrection = tidalCorrection;
             this.cache           =
                     new GenericTimeStampedCache<>(8,

@@ -264,8 +264,8 @@ class OneAxisEllipsoidTest {
 
     private double[] derivativesErrors(PVCoordinatesProvider provider, AbsoluteDate date, Frame frame,
                                        OneAxisEllipsoid model) {
-        List<TimeStampedPVCoordinates> pvList       = new ArrayList<TimeStampedPVCoordinates>();
-        List<TimeStampedPVCoordinates> groundPVList = new ArrayList<TimeStampedPVCoordinates>();
+        List<TimeStampedPVCoordinates> pvList       = new ArrayList<>();
+        List<TimeStampedPVCoordinates> groundPVList = new ArrayList<>();
         for (double dt = -0.25; dt <= 0.25; dt += 0.125) {
             TimeStampedPVCoordinates shiftedPV = provider.getPVCoordinates(date.shiftedBy(dt), frame);
             Vector3D p = model.projectToGround(shiftedPV.getPosition(), shiftedPV.getDate(), frame);
@@ -708,9 +708,9 @@ class OneAxisEllipsoidTest {
         Vector3D rebuiltNadir = Vector3D.crossProduct(gp.getSouth(), gp.getWest());
         Assertions.assertEquals(0, rebuiltNadir.subtract(gp.getNadir()).getNorm(), 1.0e-15);
 
-        FieldGeodeticPoint<Binary64> gp64 = model.transform(new FieldVector3D<Binary64>(new Binary64(x),
-                                                                                          new Binary64(y),
-                                                                                          new Binary64(z)),
+        FieldGeodeticPoint<Binary64> gp64 = model.transform(new FieldVector3D<>(new Binary64(x),
+                        new Binary64(y),
+                        new Binary64(z)),
                                                              frame,
                                                              new FieldAbsoluteDate<>(Binary64Field.getInstance(), date));
         Assertions.assertEquals(longitude, MathUtils.normalizeAngle(gp64.getLongitude().getReal(), longitude), 1.0e-10);

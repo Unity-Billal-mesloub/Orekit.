@@ -1188,7 +1188,7 @@ class NumericalPropagatorTest {
         final SpacecraftState initialState = new SpacecraftState(initialOrbit).withMass( 1000);
 
         // initialize the testing points
-        final List<SpacecraftState> states = new ArrayList<SpacecraftState>();
+        final List<SpacecraftState> states = new ArrayList<>();
         final NumericalPropagator propagator = createPropagator(initialState, OrbitType.CARTESIAN, PositionAngleType.TRUE);
         final double samplingStep = 10000.0;
         propagator.setStepHandler(samplingStep, state -> states.add(state));

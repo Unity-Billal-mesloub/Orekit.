@@ -51,9 +51,9 @@ public abstract class AbstractFrames implements Frames {
     /** Provider of the ICRF frame, usually delegated to {@link CelestialBodies}. */
     private final Supplier<Frame> icrfSupplier;
     /** Predefined frames. */
-    private transient Map<Predefined, FactoryManagedFrame> frames;
+    private Map<Predefined, FactoryManagedFrame> frames;
     /** Predefined versioned ITRF frames. */
-    private transient Map<ITRFKey, VersionedITRF> versionedItrfFrames;
+    private Map<ITRFKey, VersionedITRF> versionedItrfFrames;
 
     /**
      * Simple constructor.
@@ -61,8 +61,8 @@ public abstract class AbstractFrames implements Frames {
      * @param timeScales   to use when creating frames.
      * @param icrfSupplier used to implement {@link #getICRF()};
      */
-    public AbstractFrames(final TimeScales timeScales,
-                          final Supplier<Frame> icrfSupplier) {
+    protected AbstractFrames(final TimeScales timeScales,
+                             final Supplier<Frame> icrfSupplier) {
         this.timeScales = timeScales;
         this.icrfSupplier = icrfSupplier;
         this.frames = new HashMap<>();
@@ -206,6 +206,7 @@ public abstract class AbstractFrames implements Frames {
                     factoryKey = Predefined.ECLIPTIC_CONVENTIONS_2010;
                     break;
                 default :
+
                     // this should never happen
                     throw new OrekitInternalError(null);
             }

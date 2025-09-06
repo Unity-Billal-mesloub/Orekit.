@@ -45,13 +45,13 @@ class MODProvider implements TransformProvider {
     private final IERSConventions conventions;
 
     /** Function computing the precession angles. */
-    private final transient TimeVectorFunction precessionFunction;
+    private final TimeVectorFunction precessionFunction;
 
     /** Constant rotation between ecliptic and equator poles at J2000.0. */
     private final Rotation r4;
 
     /** Constant rotations between ecliptic and equator poles at J2000.0. */
-    private final transient Map<Field<? extends CalculusFieldElement<?>>, FieldRotation<? extends CalculusFieldElement<?>>> fieldR4;
+    private final Map<Field<? extends CalculusFieldElement<?>>, FieldRotation<? extends CalculusFieldElement<?>>> fieldR4;
 
     /** Simple constructor.
      * @param conventions IERS conventions to apply

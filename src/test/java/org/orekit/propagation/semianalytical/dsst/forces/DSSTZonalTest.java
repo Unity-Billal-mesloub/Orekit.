@@ -143,7 +143,7 @@ class DSSTZonalTest {
         final AuxiliaryElements aux = new AuxiliaryElements(meanState.getOrbit(), 1);
 
         // Set the force models
-        final List<ShortPeriodTerms> shortPeriodTerms = new ArrayList<ShortPeriodTerms>();
+        final List<ShortPeriodTerms> shortPeriodTerms = new ArrayList<>();
 
         zonal.registerAttitudeProvider(null);
         shortPeriodTerms.addAll(zonal.initializeShortPeriodTerms(aux, PropagationType.OSCULATING, zonal.getParameters(meanState.getDate())));

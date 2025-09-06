@@ -144,10 +144,10 @@ public class FixedPointTleGenerationAlgorithmTest {
         // Changes frame
         final Frame eme2000 = FramesFactory.getEME2000();
         final TimeStampedFieldPVCoordinates<T> pv = state.getPVCoordinates(eme2000);
-        final FieldCartesianOrbit<T> orbit = new FieldCartesianOrbit<T>(pv, eme2000, state.getOrbit().getMu());
+        final FieldCartesianOrbit<T> orbit = new FieldCartesianOrbit<>(pv, eme2000, state.getOrbit().getMu());
 
         // Convert to TLE
-        final FieldTLE<T> rebuilt = new FixedPointTleGenerationAlgorithm().generate(new FieldSpacecraftState<T>(orbit), tleISS);
+        final FieldTLE<T> rebuilt = new FixedPointTleGenerationAlgorithm().generate(new FieldSpacecraftState<>(orbit), tleISS);
 
         // Verify
         Assertions.assertEquals(tleISS.getLine1(), rebuilt.getLine1());

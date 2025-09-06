@@ -306,7 +306,7 @@ public class CRDConfiguration {
          * </p>
          * @since 12.0
          */
-        public BaseConfiguration() {
+        protected BaseConfiguration() {
             // nothing to do
         }
 

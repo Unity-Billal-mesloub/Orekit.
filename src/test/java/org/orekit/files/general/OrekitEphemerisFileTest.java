@@ -124,7 +124,7 @@ public class OrekitEphemerisFileTest {
 
         final double propagationDurationSeconds = 86400.0;
         final double stepSizeSeconds = 60.0;
-        List<SpacecraftState> states = new ArrayList<SpacecraftState>();
+        List<SpacecraftState> states = new ArrayList<>();
 
         for (double dt = 0.0; dt < propagationDurationSeconds; dt += stepSizeSeconds) {
             states.add(propagator.propagate(date.shiftedBy(dt)));
@@ -222,7 +222,7 @@ public class OrekitEphemerisFileTest {
 
         }
 
-        final List<SpacecraftState> readInStates = new ArrayList<SpacecraftState>();
+        final List<SpacecraftState> readInStates = new ArrayList<>();
         segment.getCoordinates().forEach(c -> {
             try {
                 readInStates.add(new SpacecraftState(new CartesianOrbit(c, frame, mu)));

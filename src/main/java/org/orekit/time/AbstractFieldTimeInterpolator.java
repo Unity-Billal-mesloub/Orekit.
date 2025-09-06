@@ -61,7 +61,7 @@ public abstract class AbstractFieldTimeInterpolator<T extends FieldTimeStamped<K
      * @param interpolationPoints number of interpolation points
      * @param extrapolationThreshold extrapolation threshold beyond which the propagation will fail
      */
-    public AbstractFieldTimeInterpolator(final int interpolationPoints, final double extrapolationThreshold) {
+    protected AbstractFieldTimeInterpolator(final int interpolationPoints, final double extrapolationThreshold) {
         this.interpolationPoints    = interpolationPoints;
         this.extrapolationThreshold = extrapolationThreshold;
     }

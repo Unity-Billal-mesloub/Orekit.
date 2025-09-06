@@ -44,7 +44,7 @@ import org.orekit.utils.TimeStampedFieldAngularCoordinatesHermiteInterpolator;
 public class TabulatedProvider implements BoundedAttitudeProvider {
 
     /** Cached attitude table. */
-    private final transient ImmutableTimeStampedCache<? extends TimeStampedAngularCoordinates> table;
+    private final ImmutableTimeStampedCache<? extends TimeStampedAngularCoordinates> table;
 
     /** Filter for derivatives from the sample to use in interpolation. */
     private final AngularDerivativesFilter filter;
@@ -87,7 +87,7 @@ public class TabulatedProvider implements BoundedAttitudeProvider {
                              final int n, final AngularDerivativesFilter filter,
                              final AbsoluteDate minDate, final AbsoluteDate maxDate,
                              final AttitudeBuilder builder) {
-        this.table          = new ImmutableTimeStampedCache<TimeStampedAngularCoordinates>(n, table);
+        this.table          = new ImmutableTimeStampedCache<>(n, table);
         this.filter         = filter;
         this.minDate        = minDate;
         this.maxDate        = maxDate;

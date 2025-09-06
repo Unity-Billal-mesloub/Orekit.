@@ -544,7 +544,7 @@ public class TdmParserTest {
         Assertions.assertEquals(1.0, file.getHeader().getFormatVersion(), 0.0);
         Assertions.assertEquals(new AbsoluteDate("2005-160T20:15:00", utc).durationFrom(file.getHeader().getCreationDate()), 0.0, 0.0);
         Assertions.assertEquals("NASA/JPL",file.getHeader().getOriginator());
-        final List<String> headerComment = new ArrayList<String>();
+        final List<String> headerComment = new ArrayList<>();
         headerComment.add("TDM example created by yyyyy-nnnA Nav Team (NASA/JPL)");
         headerComment.add("StarTrek 1-way data, Ka band down");
         Assertions.assertEquals(headerComment, file.getHeader().getComments());
@@ -565,7 +565,7 @@ public class TdmParserTest {
         Assertions.assertEquals(0.000077, metadata.getTransmitDelays().get(1), 0.0);
         Assertions.assertEquals(0.000077, metadata.getReceiveDelays().get(1), 0.0);
         Assertions.assertEquals(DataQuality.RAW, metadata.getDataQuality());
-        final List<String> metaDataComment = new ArrayList<String>();
+        final List<String> metaDataComment = new ArrayList<>();
         metaDataComment.add("This is a meta-data comment");
         Assertions.assertEquals(metaDataComment, metadata.getComments());
 
@@ -589,7 +589,7 @@ public class TdmParserTest {
         }
 
         // Comment
-        final List<String> dataComment = new ArrayList<String>();
+        final List<String> dataComment = new ArrayList<>();
         dataComment.add("This is a data comment");
         Assertions.assertEquals(dataComment, file.getSegments().get(0).getData().getComments());
 
@@ -619,7 +619,7 @@ public class TdmParserTest {
         Assertions.assertEquals(1.0, file.getHeader().getFormatVersion(), 0.0);
         Assertions.assertEquals(new AbsoluteDate("2005-191T23:00:00", utc).durationFrom(file.getHeader().getCreationDate()), 0.0, 0.0);
         Assertions.assertEquals("NASA/JPL",file.getHeader().getOriginator());
-        final List<String> headerComment = new ArrayList<String>();
+        final List<String> headerComment = new ArrayList<>();
         headerComment.add("TDM example created by yyyyy-nnnA Nav Team (NASA/JPL)");
         Assertions.assertEquals(headerComment, file.getHeader().getComments());
 
@@ -643,7 +643,7 @@ public class TdmParserTest {
         Assertions.assertEquals(46.7741, metadata.getCorrectionRange(new IdentityConverter()), 0.0);
         Assertions.assertEquals(46.7741, metadata.getRawCorrectionRange(), 0.0);
         Assertions.assertEquals(CorrectionApplied.YES, metadata.getCorrectionsApplied());
-        final List<String> metaDataComment = new ArrayList<String>();
+        final List<String> metaDataComment = new ArrayList<>();
         metaDataComment.add("Range correction applied is range calibration to DSS-24.");
         metaDataComment.add("Estimated RTLT at begin of pass = 950 seconds");
         metaDataComment.add("Antenna Z-height correction 0.0545 km applied to uplink signal");
@@ -677,7 +677,7 @@ public class TdmParserTest {
             Assertions.assertEquals(values[i], observations.get(i).getMeasurement(), 0.0);
         }
         // Comment
-        final List<String> dataComment = new ArrayList<String>();
+        final List<String> dataComment = new ArrayList<>();
         dataComment.add("This is a data comment");
         Assertions.assertEquals(dataComment, file.getSegments().get(0).getData().getComments());
     }
@@ -694,7 +694,7 @@ public class TdmParserTest {
         Assertions.assertEquals(1.0, file.getHeader().getFormatVersion(), 0.0);
         Assertions.assertEquals(new AbsoluteDate("1998-06-10T01:00:00", utc).durationFrom(file.getHeader().getCreationDate()), 0.0, 0.0);
         Assertions.assertEquals("JAXA",file.getHeader().getOriginator());
-        final List<String> headerComment = new ArrayList<String>();
+        final List<String> headerComment = new ArrayList<>();
         headerComment.add("TDM example created by yyyyy-nnnA Nav Team (JAXA)");
         Assertions.assertEquals(headerComment, file.getHeader().getComments());
 
@@ -745,7 +745,7 @@ public class TdmParserTest {
             Assertions.assertEquals(values[i], observations.get(i).getMeasurement(), 1.0e-12 * FastMath.abs(values[i]));
         }
         // Comment
-        final List<String> dataComment = new ArrayList<String>();
+        final List<String> dataComment = new ArrayList<>();
         dataComment.add("This is a data comment");
         Assertions.assertEquals(dataComment, file.getSegments().get(0).getData().getComments());
     }
@@ -762,7 +762,7 @@ public class TdmParserTest {
         Assertions.assertEquals(1.0, file.getHeader().getFormatVersion(), 0.0);
         Assertions.assertEquals(new AbsoluteDate("2007-08-30T12:01:44.749", utc).durationFrom(file.getHeader().getCreationDate()), 0.0, 0.0);
         Assertions.assertEquals("GSOC",file.getHeader().getOriginator());
-        final List<String> headerComment = new ArrayList<String>();
+        final List<String> headerComment = new ArrayList<>();
         headerComment.add("GEOSCX INP");
         Assertions.assertEquals(headerComment, file.getHeader().getComments());
 
@@ -780,7 +780,7 @@ public class TdmParserTest {
         Assertions.assertEquals(IntegrationReference.END, metadata.getIntegrationRef());
         Assertions.assertEquals(AngleType.XSYE, metadata.getAngleType());
         Assertions.assertEquals(DataQuality.RAW, metadata.getDataQuality());
-        final List<String> metaDataComment = new ArrayList<String>();
+        final List<String> metaDataComment = new ArrayList<>();
         metaDataComment.add("This is a meta-data comment");
         Assertions.assertEquals(metaDataComment, metadata.getComments());
 
@@ -806,7 +806,7 @@ public class TdmParserTest {
             Assertions.assertEquals(values[i], observations.get(i).getMeasurement(), 1.0e-12 * FastMath.abs(values[i]));
         }
         // Comment
-        final List<String> dataComment = new ArrayList<String>();
+        final List<String> dataComment = new ArrayList<>();
         dataComment.add("This is a data comment");
         Assertions.assertEquals(dataComment, file.getSegments().get(0).getData().getComments());
 
@@ -830,7 +830,7 @@ public class TdmParserTest {
         Assertions.assertEquals(2.0, metadata2.getRawCorrectionRange(), 0.0);
         Assertions.assertEquals(2.0 * Constants.SPEED_OF_LIGHT, metadata2.getCorrectionRange(new IdentityConverter()), 0.0);
         Assertions.assertEquals(CorrectionApplied.YES, metadata2.getCorrectionsApplied());
-        final List<String> metaDataComment2 = new ArrayList<String>();
+        final List<String> metaDataComment2 = new ArrayList<>();
         metaDataComment2.add("This is a meta-data comment");
         Assertions.assertEquals(metaDataComment2, metadata2.getComments());
 
@@ -856,7 +856,7 @@ public class TdmParserTest {
             Assertions.assertEquals(values2[i], observations2.get(i).getMeasurement(), 1.0e-12 * FastMath.abs(values2[i]));
         }
         // Comment
-        final List<String> dataComment2 = new ArrayList<String>();
+        final List<String> dataComment2 = new ArrayList<>();
         dataComment2.add("This is a data comment");
         Assertions.assertEquals(dataComment2, file.getSegments().get(1).getData().getComments());
     }
@@ -873,7 +873,7 @@ public class TdmParserTest {
         Assertions.assertEquals(1.0, file.getHeader().getFormatVersion(), 0.0);
         Assertions.assertEquals(new AbsoluteDate("2005-161T15:45:00", utc).durationFrom(file.getHeader().getCreationDate()), 0.0, 0.0);
         Assertions.assertEquals("NASA/JPL",file.getHeader().getOriginator());
-        final List<String> headerComment = new ArrayList<String>();
+        final List<String> headerComment = new ArrayList<>();
         headerComment.add("TDM example created by yyyyy-nnnA Nav Team (NASA/JPL)");
         headerComment.add("The following are clock offsets, in seconds between the");
         headerComment.add("clocks at each DSN complex relative to UTC(NIST). The offset");
@@ -889,7 +889,7 @@ public class TdmParserTest {
         Assertions.assertEquals(new AbsoluteDate("2005-145T12:00:00", utc).durationFrom(metadata.getStopTime()), 0.0, 0.0);
         Assertions.assertEquals("DSS-10", metadata.getParticipants().get(1));
         Assertions.assertEquals("UTC-NIST", metadata.getParticipants().get(2));
-        final List<String> metaDataComment = new ArrayList<String>();
+        final List<String> metaDataComment = new ArrayList<>();
         metaDataComment.add("Note: SPC10 switched back to Maser1 from Maser2 on 2005-142");
         Assertions.assertEquals(metaDataComment, metadata.getComments());
 
@@ -918,7 +918,7 @@ public class TdmParserTest {
             Assertions.assertEquals(values[i], observations.get(i).getMeasurement(), 0.0);
         }
         // Comment
-        final List<String> dataComment = new ArrayList<String>();
+        final List<String> dataComment = new ArrayList<>();
         dataComment.add("This is a data comment");
         Assertions.assertEquals(dataComment, file.getSegments().get(0).getData().getComments());
 
@@ -931,7 +931,7 @@ public class TdmParserTest {
         Assertions.assertEquals(new AbsoluteDate("2005-145T12:00:00", utc).durationFrom(metadata2.getStopTime()), 0.0, 0.0);
         Assertions.assertEquals("DSS-40", metadata2.getParticipants().get(1));
         Assertions.assertEquals("UTC-NIST", metadata2.getParticipants().get(2));
-        final List<String> metaDataComment2 = new ArrayList<String>();
+        final List<String> metaDataComment2 = new ArrayList<>();
         metaDataComment2.add("This is a meta-data comment");
         Assertions.assertEquals(metaDataComment2, metadata2.getComments());
 
@@ -951,7 +951,7 @@ public class TdmParserTest {
             Assertions.assertEquals(values2[i], observations2.get(i).getMeasurement(), 0.0);
         }
         // Comment
-        final List<String> dataComment2 = new ArrayList<String>();
+        final List<String> dataComment2 = new ArrayList<>();
         dataComment2.add("This is a data comment");
         Assertions.assertEquals(dataComment2, file.getSegments().get(1).getData().getComments());
 
@@ -964,7 +964,7 @@ public class TdmParserTest {
         Assertions.assertEquals(new AbsoluteDate("2005-145T12:00:00", utc).durationFrom(metadata3.getStopTime()), 0.0, 0.0);
         Assertions.assertEquals("DSS-60", metadata3.getParticipants().get(1));
         Assertions.assertEquals("UTC-NIST", metadata3.getParticipants().get(2));
-        final List<String> metaDataComment3 = new ArrayList<String>();
+        final List<String> metaDataComment3 = new ArrayList<>();
         metaDataComment3.add("This is a meta-data comment");
         Assertions.assertEquals(metaDataComment3, metadata3.getComments());
 
@@ -984,7 +984,7 @@ public class TdmParserTest {
             Assertions.assertEquals(values3[i], observations3.get(i).getMeasurement(), 0.0);
         }
         // Comment
-        final List<String> dataComment3 = new ArrayList<String>();
+        final List<String> dataComment3 = new ArrayList<>();
         dataComment3.add("This is a data comment");
         Assertions.assertEquals(dataComment3, file.getSegments().get(2).getData().getComments());
     }
@@ -1025,7 +1025,7 @@ public class TdmParserTest {
         Assertions.assertEquals(new AbsoluteDate("2017-06-14T10:53:00.000", utc).durationFrom(file.getHeader().getCreationDate()), 0.0, 0.0);
         Assertions.assertEquals("CS GROUP",file.getHeader().getOriginator());
         Assertions.assertEquals("04655f62-1ba0-4ca6-92e9-eb3411db3d44", file.getHeader().getMessageId().toLowerCase());
-        final List<String> headerComment = new ArrayList<String>();
+        final List<String> headerComment = new ArrayList<>();
         headerComment.add("TDM example created by CS GROUP");
         headerComment.add("Testing all TDM known meta-data and data keywords");
         Assertions.assertEquals(headerComment, file.getHeader().getComments());
@@ -1133,7 +1133,7 @@ public class TdmParserTest {
         Assertions.assertEquals(FastMath.toRadians(10.0), metadata.getCorrectionAberrationDiurnal(), 0.0);
         Assertions.assertEquals(CorrectionApplied.YES, metadata.getCorrectionsApplied());
 
-        final List<String> metaDataComment = new ArrayList<String>();
+        final List<String> metaDataComment = new ArrayList<>();
         metaDataComment.add("All known meta-data keywords displayed");
         Assertions.assertEquals(metaDataComment, metadata.getComments());
 
@@ -1150,7 +1150,7 @@ public class TdmParserTest {
         }
 
         // Comment
-        final List<String> dataComment = new ArrayList<String>();
+        final List<String> dataComment = new ArrayList<>();
         dataComment.add("Data Related Keywords");
         Assertions.assertEquals(dataComment, file.getSegments().get(0).getData().getComments());
     }

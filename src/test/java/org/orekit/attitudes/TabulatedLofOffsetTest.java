@@ -121,7 +121,7 @@ public class TabulatedLofOffsetTest {
 
         // create a sample from Yaw compensation law
         final LOFType type = LOFType.VNC;
-        final List<TimeStampedAngularCoordinates> sample = new ArrayList<TimeStampedAngularCoordinates>();
+        final List<TimeStampedAngularCoordinates> sample = new ArrayList<>();
         final AttitudeProvider yawCompensLaw =
                 new YawCompensation(orbit.getFrame(), new NadirPointing(orbit.getFrame(), earth));
         final Propagator originalPropagator = new KeplerianPropagator(orbit);

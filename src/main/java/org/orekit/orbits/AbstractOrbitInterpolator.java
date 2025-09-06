@@ -43,8 +43,8 @@ public abstract class AbstractOrbitInterpolator extends AbstractTimeInterpolator
      * @param extrapolationThreshold extrapolation threshold beyond which the propagation will fail
      * @param outputInertialFrame output inertial frame
      */
-    public AbstractOrbitInterpolator(final int interpolationPoints, final double extrapolationThreshold,
-                                     final Frame outputInertialFrame) {
+    protected AbstractOrbitInterpolator(final int interpolationPoints, final double extrapolationThreshold,
+                                        final Frame outputInertialFrame) {
         super(interpolationPoints, extrapolationThreshold);
         checkFrameIsInertial(outputInertialFrame);
         this.outputInertialFrame = outputInertialFrame;

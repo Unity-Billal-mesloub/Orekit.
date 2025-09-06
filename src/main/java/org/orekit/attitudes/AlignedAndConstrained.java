@@ -75,7 +75,7 @@ public class AlignedAndConstrained implements AttitudeProvider
     private final Frame inertialFrame;
 
     /** Cached field-based satellite vectors. */
-    private final transient Map<Field<? extends CalculusFieldElement<?>>, Cache<? extends CalculusFieldElement<?>>>
+    private final Map<Field<? extends CalculusFieldElement<?>>, Cache<? extends CalculusFieldElement<?>>>
         cachedSatelliteVectors;
 
     /**

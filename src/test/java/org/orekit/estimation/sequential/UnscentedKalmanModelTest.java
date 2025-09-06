@@ -126,11 +126,11 @@ public class UnscentedKalmanModelTest {
         // Exact range value is 1.8616150246470984E7 m
 
         // Add sat range bias to PV and select it
-        final Bias<Range> satRangeBias = new Bias<Range>(new String[] {"sat range bias"},
-                                                         new double[] {100.},
-                                                         new double[] {10.},
-                                                         new double[] {0.},
-                                                         new double[] {150.});
+        final Bias<Range> satRangeBias = new Bias<>(new String[]{"sat range bias"},
+                new double[]{100.},
+                new double[]{10.},
+                new double[]{0.},
+                new double[]{150.});
         this.satRangeBiasDriver = satRangeBias.getParametersDrivers().get(0);
         satRangeBiasDriver.setSelected(true);
         satRangeBiasDriver.setReferenceDate(date);

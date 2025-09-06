@@ -213,7 +213,7 @@ class FieldDSSTSolarRadiationPressureTest {
         final FieldAuxiliaryElements<T> aux = new FieldAuxiliaryElements<>(meanState.getOrbit(), 1);
 
         // Set the force models
-        final List<FieldShortPeriodTerms<T>> shortPeriodTerms = new ArrayList<FieldShortPeriodTerms<T>>();
+        final List<FieldShortPeriodTerms<T>> shortPeriodTerms = new ArrayList<>();
 
         srp.registerAttitudeProvider(attitudeProvider);
         shortPeriodTerms.addAll(srp.initializeShortPeriodTerms(aux, PropagationType.OSCULATING, srp.getParameters(field)));
@@ -285,7 +285,7 @@ class FieldDSSTSolarRadiationPressureTest {
         final Gradient zero = dsState.getDate().getField().getZero();
 
         // Compute state Jacobian using directly the method
-        final List<FieldShortPeriodTerms<Gradient>> shortPeriodTerms = new ArrayList<FieldShortPeriodTerms<Gradient>>();
+        final List<FieldShortPeriodTerms<Gradient>> shortPeriodTerms = new ArrayList<>();
         shortPeriodTerms.addAll(srp.initializeShortPeriodTerms(fieldAuxiliaryElements, PropagationType.OSCULATING,
                                 converter.getParametersAtStateDate(dsState, srp)));
         srp.updateShortPeriodTerms(converter.getParameters(dsState, srp), dsState);
@@ -422,7 +422,7 @@ class FieldDSSTSolarRadiationPressureTest {
         final Gradient zero = dsState.getDate().getField().getZero();
 
         // Compute Jacobian using directly the method
-        final List<FieldShortPeriodTerms<Gradient>> shortPeriodTerms = new ArrayList<FieldShortPeriodTerms<Gradient>>();
+        final List<FieldShortPeriodTerms<Gradient>> shortPeriodTerms = new ArrayList<>();
         shortPeriodTerms.addAll(srp.initializeShortPeriodTerms(fieldAuxiliaryElements, PropagationType.OSCULATING, converter.getParametersAtStateDate(dsState, srp)));
         srp.updateShortPeriodTerms(converter.getParameters(dsState, srp), dsState);
         final Gradient[] shortPeriod = new Gradient[6];
@@ -513,7 +513,7 @@ class FieldDSSTSolarRadiationPressureTest {
 
         AuxiliaryElements auxiliaryElements = new AuxiliaryElements(state.getOrbit(), 1);
 
-        List<ShortPeriodTerms> shortPeriodTerms = new ArrayList<ShortPeriodTerms>();
+        List<ShortPeriodTerms> shortPeriodTerms = new ArrayList<>();
         shortPeriodTerms.addAll(force.initializeShortPeriodTerms(auxiliaryElements, PropagationType.OSCULATING, force.getParameters(state.getDate())));
         force.updateShortPeriodTerms(force.getParametersAllValues(), state);
         

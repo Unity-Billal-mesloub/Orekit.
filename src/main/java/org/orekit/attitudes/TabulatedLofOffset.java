@@ -59,7 +59,7 @@ public class TabulatedLofOffset implements BoundedAttitudeProvider {
     private final LOF type;
 
     /** Cached attitude table. */
-    private final transient ImmutableTimeStampedCache<? extends TimeStampedAngularCoordinates> table;
+    private final ImmutableTimeStampedCache<? extends TimeStampedAngularCoordinates> table;
 
     /** Filter for derivatives from the sample to use in interpolation. */
     private final AngularDerivativesFilter filter;
