@@ -20,6 +20,9 @@
   </properties>
   <body>
     <release version="13.1.1" date="TBD" description="13.1 is a patch release.">
+        <action dev="serrof" type="fix" issue="1820">
+            Fix numerical error in FieldEclipseDetector.
+        </action>
         <action dev="luc" type="fix" issue="1798">
           Fixed time interpolation in Global Ionospheric Model (ionex files).
         </action>
