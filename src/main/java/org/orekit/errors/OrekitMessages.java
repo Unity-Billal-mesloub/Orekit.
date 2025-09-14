@@ -985,6 +985,12 @@ public enum OrekitMessages implements Localizable {
     /** EXPUNGED_SPAN. */
     EXPUNGED_SPAN("data at date {0} has already been automatically expunged"),
 
+    /** LINE_NEVER_CROSSES_ALTITUDE. */
+    LINE_NEVER_CROSSES_ALTITUDE("line never crosses altitude {0}"),
+
+    /** BODY_SHAPE_MUST_BE_A_ONE_AXIS_ELLIPSOID. */
+    BODY_SHAPE_MUST_BE_A_ONE_AXIS_ELLIPSOID("body shape must be a one-axis ellipsoid"),
+
     /** MISSING_TIME_SYSTEM_DEFINITION. */
     MISSING_TIME_SYSTEM_DEFINITION("missing time system definition in file {0}"),
 
