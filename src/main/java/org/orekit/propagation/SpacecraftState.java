@@ -121,6 +121,7 @@ public class SpacecraftState implements TimeStamped, TimeShiftable<SpacecraftSta
     public SpacecraftState(final Orbit orbit, final Attitude attitude)
         throws IllegalArgumentException {
         this(orbit, attitude, DEFAULT_MASS, null, null);
+        checkConsistency(orbit, attitude);
     }
 
     /** Build a spacecraft state from orbit, attitude, mass, additional states and derivatives.
@@ -136,31 +137,8 @@ public class SpacecraftState implements TimeStamped, TimeShiftable<SpacecraftSta
     public SpacecraftState(final Orbit orbit, final Attitude attitude, final double mass,
                            final DataDictionary additional, final DoubleArrayDictionary additionalDot)
         throws IllegalArgumentException {
-        this(orbit, attitude, mass, 0., additional, additionalDot);
-    }
-
-    /** Build a spacecraft state from orbit, attitude, mass (with rate), additional states and derivatives.
-     * @param orbit the orbit
-     * @param attitude attitude
-     * @param mass the mass (kg)
-     * @param massRate mass first-order time derivative (kg/s)
-     * @param additional additional data (may be null if no additional states are available)
-     * @param additionalDot additional states derivatives (may be null if no additional states derivatives are available)
-     * @exception IllegalArgumentException if orbit and attitude dates
-     * or frames are not equal
-     * @since 14.0
-     */
-    public SpacecraftState(final Orbit orbit, final Attitude attitude, final double mass, final double massRate,
-                           final DataDictionary additional, final DoubleArrayDictionary additionalDot)
-            throws IllegalArgumentException {
+        this(orbit, null, attitude, mass, 0., additional, additionalDot, true);
         checkConsistency(orbit, attitude);
-        this.orbit      = orbit;
-        this.absPva     = null;
-        this.attitude   = attitude;
-        this.mass       = mass;
-        this.massRate   = massRate;
-        this.additional = additional == null ? new DataDictionary() : additional;
-        this.additionalDot = additionalDot == null ? new DoubleArrayDictionary() : new DoubleArrayDictionary(additionalDot);
     }
 
     /** Build a spacecraft state from position-velocity-acceleration only.
@@ -183,6 +161,7 @@ public class SpacecraftState implements TimeStamped, TimeShiftable<SpacecraftSta
     public SpacecraftState(final AbsolutePVCoordinates absPva, final Attitude attitude)
         throws IllegalArgumentException {
         this(absPva, attitude, DEFAULT_MASS, null, null);
+        checkConsistency(absPva, attitude);
     }
 
     /** Build a spacecraft state from position-velocity-acceleration, attitude, mass and additional states and derivatives.
@@ -198,31 +177,40 @@ public class SpacecraftState implements TimeStamped, TimeShiftable<SpacecraftSta
     public SpacecraftState(final AbsolutePVCoordinates absPva, final Attitude attitude, final double mass,
                            final DataDictionary additional, final DoubleArrayDictionary additionalDot)
         throws IllegalArgumentException {
-        this(absPva, attitude, mass, 0., additional, additionalDot);
+        this(null, absPva, attitude, mass, 0., additional, additionalDot, true);
+        checkConsistency(absPva, attitude);
     }
 
-    /** Build a spacecraft state from position-velocity, attitude, mass (with rate), additional states and derivatives.
-     * @param absPva position-velocity-acceleration
+    /** Full, private constructor.
+     * @param orbit the orbit
+     * @param absPva absolute position-velocity
      * @param attitude attitude
      * @param mass the mass (kg)
-     * @param massRate mass first-order time derivative (kg/s)
+     * @param massRate the mass rate (kg/s)
      * @param additional additional data (may be null if no additional states are available)
      * @param additionalDot additional states derivatives (may be null if no additional states derivatives are available)
+     * @param deepCopy flag to copy dictionaries (additional data and derivatives)
      * @exception IllegalArgumentException if orbit and attitude dates
      * or frames are not equal
      * @since 14.0
      */
-    public SpacecraftState(final AbsolutePVCoordinates absPva, final Attitude attitude, final double mass, final double massRate,
-                           final DataDictionary additional, final DoubleArrayDictionary additionalDot)
+    private SpacecraftState(final Orbit orbit, final AbsolutePVCoordinates absPva,
+                            final Attitude attitude, final double mass, final double massRate,
+                            final DataDictionary additional, final DoubleArrayDictionary additionalDot,
+                            final boolean deepCopy)
             throws IllegalArgumentException {
-        checkConsistency(absPva, attitude);
+        this.orbit      = orbit;
         this.absPva     = absPva;
-        this.orbit      = null;
         this.attitude   = attitude;
         this.mass       = mass;
         this.massRate   = massRate;
-        this.additional = additional == null ? new DataDictionary() : additional;
-        this.additionalDot = additionalDot == null ? new DoubleArrayDictionary() : new DoubleArrayDictionary(additionalDot);
+        if (deepCopy) {
+            this.additional = additional == null ? new DataDictionary() : new DataDictionary(additional);
+            this.additionalDot = additionalDot == null ? new DoubleArrayDictionary() : new DoubleArrayDictionary(additionalDot);
+        } else {
+            this.additional = additional == null ? new DataDictionary() : additional;
+            this.additionalDot = additionalDot == null ? new DoubleArrayDictionary() : additionalDot;
+        }
     }
 
     /**
@@ -232,25 +220,17 @@ public class SpacecraftState implements TimeStamped, TimeShiftable<SpacecraftSta
      * @since 13.0
      */
     public SpacecraftState withMass(final double newMass) {
-        if (isOrbitDefined()) {
-            return new SpacecraftState(orbit, attitude, newMass, additional, additionalDot);
-        } else {
-            return new SpacecraftState(absPva, attitude, newMass, additional, additionalDot);
-        }
+        return new SpacecraftState(orbit, absPva, attitude, newMass, massRate, additional, additionalDot, false);
     }
 
     /**
      * Create a new instance with input mass rate.
      * @param newMassRate mass rate
      * @return new state
-     * @since 14.1
+     * @since 14.0
      */
     public SpacecraftState withMassRate(final double newMassRate) {
-        if (isOrbitDefined()) {
-            return new SpacecraftState(orbit, attitude, mass, newMassRate, additional, additionalDot);
-        } else {
-            return new SpacecraftState(absPva, attitude, mass, newMassRate, additional, additionalDot);
-        }
+        return new SpacecraftState(orbit, absPva, attitude, mass, newMassRate, additional, additionalDot, false);
     }
 
     /**
@@ -261,10 +241,11 @@ public class SpacecraftState implements TimeStamped, TimeShiftable<SpacecraftSta
      */
     public SpacecraftState withAttitude(final Attitude newAttitude) {
         if (isOrbitDefined()) {
-            return new SpacecraftState(orbit, newAttitude, mass, additional, additionalDot);
+            checkConsistency(orbit, newAttitude);
         } else {
-            return new SpacecraftState(absPva, newAttitude, mass, additional, additionalDot);
+            checkConsistency(absPva, newAttitude);
         }
+        return new SpacecraftState(orbit, absPva, newAttitude, mass, massRate, additional, additionalDot, false);
     }
 
     /**
@@ -274,11 +255,7 @@ public class SpacecraftState implements TimeStamped, TimeShiftable<SpacecraftSta
      * @since 13.0
      */
     public SpacecraftState withAdditionalData(final DataDictionary dataDictionary) {
-        if (isOrbitDefined()) {
-            return new SpacecraftState(orbit, attitude, mass, dataDictionary, additionalDot);
-        } else {
-            return new SpacecraftState(absPva, attitude, mass, dataDictionary, additionalDot);
-        }
+        return new SpacecraftState(orbit, absPva, attitude, mass, massRate, dataDictionary, additionalDot, false);
     }
 
     /**
@@ -288,11 +265,7 @@ public class SpacecraftState implements TimeStamped, TimeShiftable<SpacecraftSta
      * @since 13.0
      */
     public SpacecraftState withAdditionalStatesDerivatives(final DoubleArrayDictionary additionalStateDerivatives) {
-        if (isOrbitDefined()) {
-            return new SpacecraftState(orbit, attitude, mass, additional, additionalStateDerivatives);
-        } else {
-            return new SpacecraftState(absPva, attitude, mass, additional, additionalStateDerivatives);
-        }
+        return new SpacecraftState(orbit, absPva, attitude, mass, massRate, additional, additionalStateDerivatives, false);
     }
 
     /** Add an additional data.
@@ -454,11 +427,11 @@ public class SpacecraftState implements TimeStamped, TimeShiftable<SpacecraftSta
     @Override
     public SpacecraftState shiftedBy(final double dt) {
         if (isOrbitDefined()) {
-            return new SpacecraftState(orbit.shiftedBy(dt), attitude.shiftedBy(dt), mass + dt * massRate,
-                                       massRate, shiftAdditional(dt), additionalDot);
+            return new SpacecraftState(orbit.shiftedBy(dt), null, attitude.shiftedBy(dt), mass + dt * massRate,
+                                       massRate, shiftAdditional(dt), new DoubleArrayDictionary(additionalDot), false);
         } else {
-            return new SpacecraftState(absPva.shiftedBy(dt), attitude.shiftedBy(dt), mass + dt * massRate,
-                                       massRate, shiftAdditional(dt), additionalDot);
+            return new SpacecraftState(null, absPva.shiftedBy(dt), attitude.shiftedBy(dt), mass + dt * massRate,
+                                       massRate, shiftAdditional(dt), new DoubleArrayDictionary(additionalDot), false);
         }
     }
 
@@ -500,11 +473,11 @@ public class SpacecraftState implements TimeStamped, TimeShiftable<SpacecraftSta
     public SpacecraftState shiftedBy(final TimeOffset dt) {
         final double dtDouble = dt.toDouble();
         if (isOrbitDefined()) {
-            return new SpacecraftState(orbit.shiftedBy(dt), attitude.shiftedBy(dt), mass + dtDouble * massRate,
-                                       massRate, shiftAdditional(dtDouble), additionalDot);
+            return new SpacecraftState(orbit.shiftedBy(dt), null, attitude.shiftedBy(dt), mass + dtDouble * massRate,
+                                       massRate, shiftAdditional(dtDouble), new DoubleArrayDictionary(additionalDot), false);
         } else {
-            return new SpacecraftState(absPva.shiftedBy(dt), attitude.shiftedBy(dt), mass + dtDouble * massRate,
-                                       massRate, shiftAdditional(dtDouble), additionalDot);
+            return new SpacecraftState(null, absPva.shiftedBy(dt), attitude.shiftedBy(dt), mass + dtDouble * massRate,
+                                       massRate, shiftAdditional(dtDouble), new DoubleArrayDictionary(additionalDot), false);
         }
     }
 
@@ -700,11 +673,11 @@ public class SpacecraftState implements TimeStamped, TimeShiftable<SpacecraftSta
      * @since 13.0
      */
     public Object getAdditionalData(final String name) {
-        final DataDictionary.Entry entry = additional.getEntry(name);
-        if (entry == null) {
+        final Object value = additional.get(name);
+        if (value == null) {
             throw new OrekitException(OrekitMessages.UNKNOWN_ADDITIONAL_DATA, name);
         }
-        return entry.getValue();
+        return value;
     }
 
     /** Get an additional state derivative.

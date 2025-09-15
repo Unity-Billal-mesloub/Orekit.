@@ -434,7 +434,7 @@ public class FieldNumericalPropagator<T extends CalculusFieldElement<T>> extends
             final T mass = y[6];
             final T massRate = yDot == null ? mass.getField().getZero() : yDot[6];
             if (mass.getReal() <= 0.0) {
-                throw new OrekitException(OrekitMessages.NOT_POSITIVE_SPACECRAFT_MASS, mass);
+                throw new OrekitException(OrekitMessages.NOT_POSITIVE_SPACECRAFT_MASS, mass.getReal());
             }
 
             if (superGetOrbitType() == null) {
@@ -451,12 +451,12 @@ public class FieldNumericalPropagator<T extends CalculusFieldElement<T>> extends
                 }
 
                 final FieldAttitude<T> attitude = getAttitudeProvider().getAttitude(absPva, date, getFrame());
-                return new FieldSpacecraftState<>(absPva, attitude, mass, massRate, null, null);
+                return new FieldSpacecraftState<>(absPva, attitude).withMassRate(massRate).withMass(mass);
             } else {
                 // propagation uses regular orbits
                 final FieldOrbit<T> orbit       = superGetOrbitType().mapArrayToOrbit(y, yDot, super.getPositionAngleType(), date, getMu(), getFrame());
                 final FieldAttitude<T> attitude = getAttitudeProvider().getAttitude(orbit, date, getFrame());
-                return new FieldSpacecraftState<>(orbit, attitude, mass, massRate, null, null);
+                return new FieldSpacecraftState<>(orbit, attitude).withMassRate(massRate).withMass(mass);
             }
         }
 
@@ -614,7 +614,7 @@ public class FieldNumericalPropagator<T extends CalculusFieldElement<T>> extends
         @Override
         public void addMassDerivative(final T q) {
             if (q.getReal() > 0) {
-                throw new OrekitIllegalArgumentException(OrekitMessages.POSITIVE_FLOW_RATE, q);
+                throw new OrekitIllegalArgumentException(OrekitMessages.POSITIVE_FLOW_RATE, q.getReal());
             }
             yDot[6] = yDot[6].add(q);
         }

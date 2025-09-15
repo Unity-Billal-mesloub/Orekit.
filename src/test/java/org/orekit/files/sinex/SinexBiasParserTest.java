@@ -85,7 +85,7 @@ public class SinexBiasParserTest {
         Assertions.assertEquals(86400, parameterSpacing);
         Assertions.assertEquals(30, observationSampling);
     }
-    
+
     @Test
     public void testDsbDescriptionStation() {
         SinexBias sinexBias = load("/sinex/DLR0MGXFIN_20212740000_03L_01D_DSB_trunc_sat.BSX");
@@ -102,7 +102,7 @@ public class SinexBiasParserTest {
         Assertions.assertEquals(86400, parameterSpacing);
         Assertions.assertEquals(30, observationSampling);
     }
-    
+
     @Test
     public void testDsbfile() {
         SinexBias sinexBias = load("/sinex/DLR0MGXFIN_20212740000_03L_01D_DSB_trunc_sat.BSX");
@@ -110,10 +110,9 @@ public class SinexBiasParserTest {
         DifferentialSignalBias dsb = satDsb.getDsb();
         Assertions.assertTrue(sinexBias.getSatellitesOsb().isEmpty());
         Assertions.assertTrue(sinexBias.getStationsOsb().isEmpty());
-        
+
         // Observation Pair test
         HashSet<Pair<String, String>> ObsPairs = dsb.getAvailableObservationPairs();
-        
         // Defining the observation pair present in the truncated file.
         Pair<String, String> OP1 = new Pair<>(PredefinedObservationType.C1C.getName(),
                                               PredefinedObservationType.C1W.getName());
@@ -123,7 +122,7 @@ public class SinexBiasParserTest {
                                               PredefinedObservationType.C5Q.getName());
         Pair<String, String> OP4 = new Pair<>(PredefinedObservationType.C2W.getName(),
                                               PredefinedObservationType.C2L.getName());
-        
+
         HashSet<Pair<String, String>> observationSetsRef = new HashSet<>();
         observationSetsRef.add(OP1);
         observationSetsRef.add(OP2);
@@ -132,37 +131,36 @@ public class SinexBiasParserTest {
 
         // Check
         Assertions.assertEquals(ObsPairs, observationSetsRef);
-        
+
         // Defining observation codes for further checks.
         String Obs1 = PredefinedObservationType.C1C.getName();
         String Obs2 = PredefinedObservationType.C1W.getName();
-        
         // Minimum Date test
         AbsoluteDate refFirstDate = new AbsoluteDate(new DateComponents(2021, 274),
                                                      TimeComponents.H00,
                                                      TimeScalesFactory.getGPS());
         AbsoluteDate firstDate =  dsb.getMinimumValidDateForObservationPair(Obs1, Obs2);
-        
+
         Assertions.assertEquals(refFirstDate, firstDate);
-        
+
         // Max Date Test
         AbsoluteDate refLastDate = new AbsoluteDate(new DateComponents(2021, 283),
                                                     TimeComponents.H00,
                                                     TimeScalesFactory.getGPS());
         AbsoluteDate lastDate =  dsb.getMaximumValidDateForObservationPair(Obs1, Obs2);
-        
+
         Assertions.assertEquals(refLastDate, lastDate);
 
         // Value test for Satellites
         AbsoluteDate refDate = new AbsoluteDate(new DateComponents(2021, 280),
                                                 new TimeComponents(43200),
                                                 TimeScalesFactory.getGPS());
-        
+
         double valueDsb = dsb.getBias(Obs1, Obs2, refDate);
         double valueDsbReal = -1.0697e-9 * Constants.SPEED_OF_LIGHT;
-        
+
         Assertions.assertEquals(valueDsbReal, valueDsb, 1e-5);
-        
+
         final TimeSpanMap<Double> tsm = dsb.getTimeSpanMap(Obs1, Obs2);
         tsm.getFirstTransition().resetDate(AbsoluteDate.PAST_INFINITY, true);
         tsm.getFirstTransition().resetDate(AbsoluteDate.FUTURE_INFINITY, true);
@@ -178,22 +176,20 @@ public class SinexBiasParserTest {
         AbsoluteDate refDateStation = new AbsoluteDate(new DateComponents(2021, 300),
                                                        new TimeComponents(43200),
                                                        TimeScalesFactory.getGPS());
-        
+
         double valueDsbStation = differentialSignalBiasTestStation.
                                  getBias(PredefinedObservationType.C1C.getName(),
                                          PredefinedObservationType.C1P.getName(),
                                          refDateStation);
         double valueDsbRealStation = -0.6458e-9 * Constants.SPEED_OF_LIGHT;
-        
+
         Assertions.assertEquals(valueDsbRealStation, valueDsbStation, 1e-13);
-        
-                
+
         // Test getSatelliteSystem
         Assertions.assertEquals(SatelliteSystem.GPS, satDsb.getSatellite().getSystem());
-        
         // Test getPRN
         Assertions.assertEquals(1, satDsb.getSatellite().getPRN());
-        
+
     }
 
     @Test

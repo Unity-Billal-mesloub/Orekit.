@@ -87,12 +87,30 @@
             Add abstract classes for detectors based on body shape.
         </action>
     </release>
-    <release version="13.1.1" date="TBC" description="13.1 is a patch release.">
+    <release version="13.1.1" date="2025-09-14" description="Orekit 13.1 is a patch release. It fixes documentation issues and various bugs, including some related to performance.">
+        <action dev="luc" type="fix" issue="1817">
+            Fixed Ionosphere Piercing Point computation in Global Ionosphere Model.
+        </action>
+        <action dev="luc" type="fix" issue="1819">
+            Added pointAtAltitude in OneAxisEllipsoid.
+        </action>
+        <action dev="serrof" type="fix" issue="1820">
+            Fix numerical error in FieldEclipseDetector.
+        </action>
+        <action dev="luc" type="fix" issue="1798">
+            Fixed time interpolation in Global Ionospheric Model (ionex files).
+        </action>
+        <action dev="serrof" type="fix" issue="1816">
+            Improved performance of STM propagation with many forces.
+        </action>
         <action dev="luc" type="fix" issue="1812">
           Fixed NullPointerException in Sinex bias handling.
         </action>
         <action dev="luc" type="fix" issue="1811">
           Fixed observables ordering error when writing Rinex observation header.
+        </action>
+        <action dev="bryan" type="fix" issue="1808">
+            Fixed inconsistency between Abstract{Field}ODEStateInterpolator and {Field}DetectorBasedEventState for event time handling.
         </action>
         <action dev="sdinot" type="fix" issue="1790">
             Fixed duplicated 13.1 version in faq.md.
@@ -111,6 +129,9 @@
         </action>
         <action dev="evan" type="fix">
             Fix exception message when parsing a CDM with an invalid date.
+        </action>
+        <action dev="evan" type="fix">
+            Fix exception messages with FieldElements.
         </action>
     </release>
     <release version="13.1" date="2025-08-01" description="13.1 is a minor release.">
