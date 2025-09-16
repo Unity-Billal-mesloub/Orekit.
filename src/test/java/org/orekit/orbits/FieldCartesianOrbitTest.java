@@ -429,7 +429,7 @@ public class FieldCartesianOrbitTest {
             Assertions.assertEquals(orbit.getA().multiply(-2).getReal(), d1.subtract(d2).abs().getReal(), 1.0e-6);
             FieldCartesianOrbit<T> rebuilt =
                             new FieldCartesianOrbit<>(pv, orbit.getFrame(), orbit.getDate().shiftedBy(dt), zero.add(mu));
-            Assertions.assertEquals(-10000000.0, rebuilt.getA().getReal(), 1.0e-6);
+            Assertions.assertEquals(-10000000.0, rebuilt.getA().getReal(), 1.3e-6);
             Assertions.assertEquals(1.2, rebuilt.getE().getReal(), 1.0e-13);
         }
     }

@@ -23,6 +23,7 @@ import org.hipparchus.util.FastMath;
 import org.hipparchus.util.FieldSinCos;
 import org.hipparchus.util.MathUtils;
 import org.hipparchus.util.Precision;
+import org.orekit.errors.OrekitException;
 import org.orekit.errors.OrekitInternalError;
 import org.orekit.errors.OrekitMessages;
 
@@ -31,6 +32,7 @@ import org.orekit.errors.OrekitMessages;
  * @author Luc Maisonobe
  * @author Andrea Antolino
  * @author Andrew Goetz
+ * @author Alberto Fossa'
  */
 public class FieldKeplerianAnomalyUtility {
 
@@ -447,5 +449,51 @@ public class FieldKeplerianAnomalyUtility {
             }
             throw new OrekitInternalError(null);
         }
+    }
+
+    /**
+     * Computes the difference in hyperbolic eccentric anomaly given that in hyperbolic mean anomaly.
+     * <p>This function solves Eq. 4.64 in Battin (1999).</p>
+     * @param s0 intermediate quantity {@code s0}
+     * @param c0 intermediate quantity {@code c0}
+     * @param deltaN difference in hyperbolic mean anomaly
+     * @return difference in hyperbolic eccentric anomaly
+     * @param <T> field type
+     * @since 14.0
+     */
+    public static <T extends CalculusFieldElement<T>> T hyperbolicMeanToEccentricDifference(final T s0,
+                                                                                            final T c0,
+                                                                                            final T deltaN) {
+
+        T shH = deltaN.sinh();
+        if (FastMath.abs(shH.getReal()) > KeplerianAnomalyUtility.MAXIMUM_INITIAL_HYPERBOLIC_SINE) {
+            shH = deltaN.getField().getZero()
+                    .add(KeplerianAnomalyUtility.MAXIMUM_INITIAL_HYPERBOLIC_SINE * FastMath.signum(deltaN.getReal()));
+        }
+
+        T delta;
+        boolean hasConverged;
+        int iter = 0;
+
+        do {
+            final T deltaH = shH.asinh();
+            final T chH = shH.multiply(shH).add(1.0).sqrt();
+
+            final T f = deltaH
+                    .add(s0.multiply(chH.negate().add(1.0)))
+                    .subtract(c0.multiply(shH))
+                    .add(deltaN);
+            final T df = chH.reciprocal().subtract(s0.multiply(shH).divide(chH)).subtract(c0);
+
+            delta = f.divide(df);
+            shH = shH.subtract(delta);
+            hasConverged = delta.norm() <= KeplerianAnomalyUtility.CONVERGENCE_THRESHOLD;
+        } while (++iter < KeplerianAnomalyUtility.MAXIMUM_ITERATIONS && !hasConverged);
+
+        if (!hasConverged) {
+            throw new OrekitException(OrekitMessages.UNABLE_TO_COMPUTE_HYPERBOLIC_ECCENTRIC_ANOMALY, iter);
+        }
+
+        return shH.asinh();
     }
 }
