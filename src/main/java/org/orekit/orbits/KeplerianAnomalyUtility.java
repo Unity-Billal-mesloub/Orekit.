@@ -20,6 +20,7 @@ import org.hipparchus.exception.MathIllegalStateException;
 import org.hipparchus.util.FastMath;
 import org.hipparchus.util.MathUtils;
 import org.hipparchus.util.SinCos;
+import org.orekit.errors.OrekitException;
 import org.orekit.errors.OrekitInternalError;
 import org.orekit.errors.OrekitMessages;
 
@@ -27,8 +28,21 @@ import org.orekit.errors.OrekitMessages;
  * Utility methods for converting between different Keplerian anomalies.
  * @author Luc Maisonobe
  * @author Andrew Goetz
+ * @author Alberto Fossa'
  */
 public final class KeplerianAnomalyUtility {
+
+    /**
+     * Maximum value of the hyperbolic sine in the initialization of the
+     * iterative computation of the hyperbolic eccentric anomaly difference.
+     */
+    static final double MAXIMUM_INITIAL_HYPERBOLIC_SINE = 1e3;
+
+    /** Convergence threshold in the iterative computation of the hyperbolic eccentric anomaly difference. */
+    static final double CONVERGENCE_THRESHOLD = 1e-10;
+
+    /** Maximum number of iterations in the iterative computation of the hyperbolic eccentric anomaly difference. */
+    static final int MAXIMUM_ITERATIONS = 50;
 
     /** First coefficient to compute elliptic Kepler equation solver starter. */
     private static final double A;
@@ -404,5 +418,40 @@ public final class KeplerianAnomalyUtility {
             }
             throw new OrekitInternalError(null);
         }
+    }
+
+    /**
+     * Computes the difference in hyperbolic eccentric anomaly given that in hyperbolic mean anomaly.
+     * <p>This function solves Eq. 4.64 in Battin (1999).</p>
+     * @param s0 intermediate quantity {@code s0}
+     * @param c0 intermediate quantity {@code c0}
+     * @param deltaN difference in hyperbolic mean anomaly
+     * @return difference in hyperbolic eccentric anomaly
+     * @since 14.0
+     */
+    public static double hyperbolicMeanToEccentricDifference(final double s0, final double c0, final double deltaN) {
+
+        double shH = FastMath.signum(deltaN) * FastMath.min(FastMath.abs(FastMath.sinh(deltaN)), MAXIMUM_INITIAL_HYPERBOLIC_SINE);
+        double delta;
+        boolean hasConverged;
+        int iter = 0;
+
+        do {
+            final double deltaH = FastMath.asinh(shH);
+            final double chH = FastMath.sqrt(1.0 + shH * shH);
+
+            final double f = deltaH + s0 * (1.0 - chH) - c0 * shH + deltaN;
+            final double df = 1.0 / chH - (s0 * shH) / chH - c0;
+
+            delta = f / df;
+            shH -= delta;
+            hasConverged = FastMath.abs(delta) <= CONVERGENCE_THRESHOLD;
+        } while (++iter < MAXIMUM_ITERATIONS && !hasConverged);
+
+        if (!hasConverged) {
+            throw new OrekitException(OrekitMessages.UNABLE_TO_COMPUTE_HYPERBOLIC_ECCENTRIC_ANOMALY, iter);
+        }
+
+        return FastMath.asinh(shH);
     }
 }

@@ -268,7 +268,7 @@ public class CartesianOrbitTest {
             Assertions.assertEquals(-2 * orbit.getA(), FastMath.abs(d1 - d2), 1.0e-6);
             CartesianOrbit rebuilt =
                 new CartesianOrbit(pv, orbit.getFrame(), orbit.getDate().shiftedBy(dt), mu);
-            Assertions.assertEquals(-10000000.0, rebuilt.getA(), 1.0e-6);
+            Assertions.assertEquals(-10000000.0, rebuilt.getA(), 1.3e-6);
             Assertions.assertEquals(1.2, rebuilt.getE(), 1.0e-13);
         }
     }
@@ -608,7 +608,7 @@ public class CartesianOrbitTest {
         Assertions.assertEquals(dt, p2.durationFrom(p.getDate()));
         Assertions.assertEquals(dt, p2.getDate().durationFrom(p.getDate()));
         Assertions.assertEquals(-dt, p.durationFrom(p2));
-        
+
     }
 
     @BeforeEach

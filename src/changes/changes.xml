@@ -80,6 +80,9 @@
         <action dev="serrof" type="fix" issue="1784">
             Compute derivatives properly in mean-to-eccentric conversions.
         </action>
+        <action dev="afossa" type="fix" issue="1642">
+            Change algorithm in KeplerianMotionCartesianUtility.predictPVHyperbolic().
+        </action>
         <action dev="serrof" type="add" issue="1517">
             Add analytical ephemerides for the Moon.
         </action>

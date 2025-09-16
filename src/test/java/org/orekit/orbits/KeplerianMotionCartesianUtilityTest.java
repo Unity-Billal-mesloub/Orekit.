@@ -109,15 +109,14 @@ class KeplerianMotionCartesianUtilityTest {
             comparePV(expectedPV, actualPV.toPVCoordinates());
             final FieldOrbit<Gradient> fieldEquinoctialOrbit = OrbitType.EQUINOCTIAL.convertType(fieldOrbit);
             final FieldOrbit<Gradient> shiftedOrbit = fieldEquinoctialOrbit.shiftedBy(fieldDt);
-            compareDerivatives(shiftedOrbit.getPVCoordinates(), actualPV);
+            compareDerivatives(shiftedOrbit.getPVCoordinates(), actualPV, 1e-6, 1e-7);
         }
     }
 
     private static void compareDerivatives(final FieldPVCoordinates<Gradient> expectedPV,
-                                           final FieldPVCoordinates<Gradient> actualPV) {
-
-        final double toleranceGradientPosition = 1e-6;
-        final double toleranceGradientVelocity = 1e-7;
+                                           final FieldPVCoordinates<Gradient> actualPV,
+                                           final double toleranceGradientPosition,
+                                           final double toleranceGradientVelocity) {
         for (int i = 0; i < 6; i++) {
             Assertions.assertEquals(expectedPV.getPosition().getX().getPartialDerivative(i),
                     actualPV.getPosition().getX().getPartialDerivative(i), toleranceGradientPosition);
@@ -174,4 +173,45 @@ class KeplerianMotionCartesianUtilityTest {
         }
     }
 
+    @Test
+    void testIssue1642() {
+        // GIVEN
+        final double mu = 3.986004415E14;
+        final double dt = 0.0;
+        final Vector3D position = new Vector3D(988245.4346791464, 2167404.3909280975, 6523018.747615153);
+        final Vector3D velocity = new Vector3D(-19764906.936712902, -43348083.96540047, -130460363.35590248);
+
+        // WHEN
+        final PVCoordinates predictedPV = KeplerianMotionCartesianUtility
+                .predictPositionVelocity(dt, position, velocity, mu);
+
+        // THEN
+        comparePV(new PVCoordinates(position, velocity), predictedPV, 1e-15, 1e-15);
+    }
+
+    @Test
+    void testIssue1642Field() {
+        // GIVEN
+        final Gradient mu = new Gradient(3.986004415E14, new double[7]);
+        final Gradient dt = new Gradient(0.0, new double[7]);
+        final FieldVector3D<Gradient> position = new FieldVector3D<>(
+                new Gradient(988245.4346791464, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+                new Gradient(2167404.3909280975, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+                new Gradient(6523018.747615153, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0)
+        );
+        final FieldVector3D<Gradient> velocity = new FieldVector3D<>(
+                new Gradient(-19764906.936712902, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0),
+                new Gradient(-43348083.96540047, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0),
+                new Gradient(-130460363.35590248, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
+        );
+
+        // WHEN
+        final FieldPVCoordinates<Gradient> predictedPV = KeplerianMotionCartesianUtility
+                .predictPositionVelocity(dt, position, velocity, mu);
+
+        // THEN
+        final FieldPVCoordinates<Gradient> expectedPV = new FieldPVCoordinates<>(position, velocity);
+        comparePV(expectedPV.toPVCoordinates(), predictedPV.toPVCoordinates(), 1e-15, 1e-15);
+        compareDerivatives(expectedPV, predictedPV, 1e-15, 1e-15);
+    }
 }
