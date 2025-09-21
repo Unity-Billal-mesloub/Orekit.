@@ -61,11 +61,22 @@ class ForcesArchUnitTest {
     }
 
     @Test
-    void testNoClassesManeuversPackageAccess() {
+    void testNoClassesDragPackageAccess() {
         // WHEN
         final ArchRule myRule = noClasses()
                 .that().resideInAPackage(DRAG_NAME)
                 .should().dependOnClassesThat().resideInAnyPackage(MANEUVERS_NAME, EMPIRICAL_NAME, GRAVITY_NAME,
+                        RADIATION_NAME, INERTIA_NAME);
+        // THEN
+        myRule.check(IMPORTED_CLASSES);
+    }
+
+    @Test
+    void testNoClassesManeuversPackageAccess() {
+        // WHEN
+        final ArchRule myRule = noClasses()
+                .that().resideInAPackage(MANEUVERS_NAME)
+                .should().dependOnClassesThat().resideInAnyPackage(DRAG_NAME, EMPIRICAL_NAME, GRAVITY_NAME,
                         RADIATION_NAME, INERTIA_NAME);
         // THEN
         myRule.check(IMPORTED_CLASSES);
