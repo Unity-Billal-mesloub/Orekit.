@@ -47,6 +47,7 @@ class LibraryArchUnitTest {
 
     // sub-packages
     private static final String CR3BP_NAME = "..cr3bp..";
+    private static final String INDIRECT_NAME = "..indirect..";
 
     // GIVEN
     private static final JavaClasses IMPORTED_CLASSES = new ClassFileImporter()
@@ -64,11 +65,21 @@ class LibraryArchUnitTest {
     }
 
     @Test
-    void testClassesControlPackageAccess() {
+    void testClassesControlExceptIndirectPackageAccess() {
         // WHEN
         final ArchRule myRule = classes()
-                .that().resideInAPackage(CONTROL_NAME)
+                .that().resideInAPackage(CONTROL_NAME).and().resideOutsideOfPackage(INDIRECT_NAME)
                 .should().onlyBeAccessed().byAnyPackage(CONTROL_NAME, ESTIMATION_NAME);
+        // THEN
+        myRule.check(IMPORTED_CLASSES);
+    }
+
+    @Test
+    void testNoClassesControlIndirectPackageAccess() {
+        // WHEN
+        final ArchRule myRule = classes()
+                .that().resideInAPackage(CONTROL_NAME).and().resideInAPackage(INDIRECT_NAME)
+                .should().onlyBeAccessed().byAnyPackage(CONTROL_NAME);
         // THEN
         myRule.check(IMPORTED_CLASSES);
     }
@@ -84,12 +95,22 @@ class LibraryArchUnitTest {
     }
 
     @Test
+    void testNoClassesPropagationPackageAccess() {
+        // WHEN
+        final ArchRule myRule = noClasses()
+                .that().resideInAPackage(PROPAGATION_NAME)
+                .should().dependOnClassesThat().resideInAnyPackage(SSA_NAME, FILES_NAME);
+        // THEN
+        myRule.check(IMPORTED_CLASSES);
+    }
+
+    @Test
     void testNoClassesFramesPackageAccess() {
         // WHEN
         final ArchRule myRule = noClasses()
                 .that().resideInAPackage(FRAMES_NAME)
                 .should().dependOnClassesThat().resideInAnyPackage(SSA_NAME, ESTIMATION_NAME, CONTROL_NAME,
-                        FORCES_NAME, ORBITS_NAME);
+                        FORCES_NAME, ORBITS_NAME, GNSS_NAME);
         // THEN
         myRule.check(IMPORTED_CLASSES);
     }
@@ -100,7 +121,7 @@ class LibraryArchUnitTest {
         final ArchRule myRule = noClasses()
                 .that().resideInAPackage(BODIES_NAME)
                 .should().dependOnClassesThat().resideInAnyPackage(SSA_NAME, ESTIMATION_NAME, CONTROL_NAME,
-                        FORCES_NAME, ORBITS_NAME);
+                        FORCES_NAME, ORBITS_NAME, GNSS_NAME, FILES_NAME);
         // THEN
         myRule.check(IMPORTED_CLASSES);
     }
@@ -111,7 +132,7 @@ class LibraryArchUnitTest {
         final ArchRule myRule = noClasses()
                 .that().resideInAPackage(ATTITUDES_NAME)
                 .should().dependOnClassesThat().resideInAnyPackage(SSA_NAME, ESTIMATION_NAME, CONTROL_NAME,
-                        FORCES_NAME, FILES_NAME, ORBITS_NAME);
+                        FORCES_NAME, FILES_NAME, ORBITS_NAME, GNSS_NAME);
         // THEN
         myRule.check(IMPORTED_CLASSES);
     }
@@ -123,7 +144,7 @@ class LibraryArchUnitTest {
                 .that().resideInAPackage(ERRORS_NAME)
                 .should().dependOnClassesThat().resideInAnyPackage(SSA_NAME, ESTIMATION_NAME, CONTROL_NAME,
                         FORCES_NAME, BODIES_NAME, PROPAGATION_NAME, ATTITUDES_NAME, DATA_NAME, TIME_NAME,
-                        FRAMES_NAME, ORBITS_NAME, MODELS_NAME);
+                        FRAMES_NAME, ORBITS_NAME, MODELS_NAME, GNSS_NAME, FILES_NAME);
         // THEN
         myRule.check(IMPORTED_CLASSES);
     }
@@ -134,7 +155,7 @@ class LibraryArchUnitTest {
         final ArchRule myRule = noClasses()
                 .that().resideInAPackage(TIME_NAME)
                 .should().dependOnClassesThat().resideInAnyPackage(SSA_NAME, ESTIMATION_NAME, CONTROL_NAME,
-                        FORCES_NAME, BODIES_NAME, PROPAGATION_NAME, ATTITUDES_NAME, ORBITS_NAME);
+                        FORCES_NAME, BODIES_NAME, PROPAGATION_NAME, ATTITUDES_NAME, ORBITS_NAME, FILES_NAME);
         // THEN
         myRule.check(IMPORTED_CLASSES);
     }
@@ -145,7 +166,7 @@ class LibraryArchUnitTest {
         final ArchRule myRule = noClasses()
                 .that().resideInAPackage(ORBITS_NAME).and().resideOutsideOfPackage(CR3BP_NAME)
                 .should().dependOnClassesThat().resideInAnyPackage(SSA_NAME, ESTIMATION_NAME, CONTROL_NAME,
-                        FORCES_NAME, PROPAGATION_NAME, CR3BP_NAME);
+                        FORCES_NAME, PROPAGATION_NAME, CR3BP_NAME, GNSS_NAME, FILES_NAME);
         // THEN
         myRule.check(IMPORTED_CLASSES);
     }
@@ -156,7 +177,7 @@ class LibraryArchUnitTest {
         final ArchRule myRule = noClasses()
                 .that().resideInAPackage(ORBITS_NAME).and().resideInAPackage(CR3BP_NAME)
                 .should().dependOnClassesThat().resideInAnyPackage(SSA_NAME, ESTIMATION_NAME, CONTROL_NAME,
-                        FORCES_NAME);
+                        FORCES_NAME, GNSS_NAME, FILES_NAME);
         // THEN
         myRule.check(IMPORTED_CLASSES);
     }
@@ -188,7 +209,7 @@ class LibraryArchUnitTest {
         final ArchRule myRule = noClasses()
                 .that().resideInAPackage(MODELS_NAME)
                 .should().dependOnClassesThat().resideInAnyPackage(SSA_NAME, CONTROL_NAME, ESTIMATION_NAME,
-                        ATTITUDES_NAME);
+                        ATTITUDES_NAME, FILES_NAME);
         // THEN
         myRule.check(IMPORTED_CLASSES);
     }
