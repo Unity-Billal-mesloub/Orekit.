@@ -64,6 +64,12 @@ public class KeplerianExtendedPositionProvider implements ExtendedPositionProvid
 
     /** {@inheritDoc} */
     @Override
+    public Vector3D getVelocity(final AbsoluteDate date, final Frame frame) {
+        return referenceOrbit.getVelocity(date, frame);
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public TimeStampedPVCoordinates getPVCoordinates(final AbsoluteDate date, final Frame frame) {
         return referenceOrbit.getPVCoordinates(date, frame);
     }
@@ -73,6 +79,12 @@ public class KeplerianExtendedPositionProvider implements ExtendedPositionProvid
     public <T extends CalculusFieldElement<T>> FieldVector3D<T> getPosition(final FieldAbsoluteDate<T> date,
                                                                             final Frame frame) {
         return buildFieldOrbit(date.getField()).getPosition(date, frame);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public <T extends CalculusFieldElement<T>> FieldVector3D<T> getVelocity(final FieldAbsoluteDate<T> date, final Frame frame) {
+        return buildFieldOrbit(date.getField()).getVelocity(date, frame);
     }
 
     /** {@inheritDoc} */

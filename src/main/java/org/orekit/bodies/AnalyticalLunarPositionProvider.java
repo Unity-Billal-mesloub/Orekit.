@@ -21,16 +21,10 @@ import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.hipparchus.util.FastMath;
-import org.hipparchus.util.SinCos;
 import org.orekit.annotation.DefaultDataContext;
 import org.orekit.data.DataContext;
-import org.orekit.frames.FieldStaticTransform;
-import org.orekit.frames.Frame;
-import org.orekit.frames.StaticTransform;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
-import org.orekit.time.TimeScale;
-import org.orekit.utils.ExtendedPositionProvider;
 
 /**
  * Class computing low-fidelity positions for the Moon. They should only be used in the decades around the year 2000.
@@ -40,24 +34,14 @@ import org.orekit.utils.ExtendedPositionProvider;
  * @author Romain Serra
  * @since 14.0
  */
-public class AnalyticalLunarPositionProvider implements ExtendedPositionProvider {
-
-    /** Sine anc cosine of approximate ecliptic angle used when converting from ecliptic to EME2000. */
-    private static final SinCos SIN_COS_ECLIPTIC_ANGLE_EME2000 = FastMath.sinCos(FastMath.toRadians(23.43929111));
-
-    /** EME2000 frame. */
-    private final Frame eme2000;
-
-    /** Time scale for Julian date. */
-    private final TimeScale timeScale;
+public class AnalyticalLunarPositionProvider extends AbstractAnalyticalPositionProvider {
 
     /**
      * Constructor.
      * @param dataContext data context
      */
     public AnalyticalLunarPositionProvider(final DataContext dataContext) {
-        this.eme2000 = dataContext.getFrames().getEME2000();
-        this.timeScale = dataContext.getTimeScales().getUTC();
+        super(dataContext);
     }
 
     /**
@@ -68,26 +52,14 @@ public class AnalyticalLunarPositionProvider implements ExtendedPositionProvider
         this(DataContext.getDefault());
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public Vector3D getPosition(final AbsoluteDate date, final Frame frame) {
-        final Vector3D eme2000Position = getEME2000Position(date);
-        if (frame.equals(eme2000)) {
-            return eme2000Position;
-        } else {
-            final StaticTransform transform = eme2000.getStaticTransformTo(frame, date);
-            return transform.transformPosition(eme2000Position);
-        }
-    }
-
     /**
      * Computes the Moon's position vector in EME2000.
      * @param date date
      * @return lunar position
      */
-    private Vector3D getEME2000Position(final AbsoluteDate date) {
+    protected Vector3D getEME2000Position(final AbsoluteDate date) {
         // in ecliptic plane
-        final double tt = (date.getJD(timeScale) - 2451545.0) / 36525.0;
+        final double tt = (date.getJD(getTimeScale()) - 2451545.0) / 36525.0;
         final double L0 = FastMath.toRadians(218.31617 + 481267.88088 * tt - 1.3972 * tt);
         final double l = FastMath.toRadians(134.96292 + 477198.86753 * tt);
         final double lp = FastMath.toRadians(357.52543 + 35999.04944 * tt);
@@ -104,28 +76,15 @@ public class AnalyticalLunarPositionProvider implements ExtendedPositionProvider
         return new Vector3D(xKm, yKm, zKm).scalarMultiply(1e3);
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public <T extends CalculusFieldElement<T>> FieldVector3D<T> getPosition(final FieldAbsoluteDate<T> date,
-                                                                            final Frame frame) {
-        final FieldVector3D<T> eme2000Position = getFieldEME2000Position(date);
-        if (frame.equals(eme2000)) {
-            return eme2000Position;
-        } else {
-            final FieldStaticTransform<T> transform = eme2000.getStaticTransformTo(frame, date);
-            return transform.transformPosition(eme2000Position);
-        }
-    }
-
     /**
      * Computes the Moon's position vector in EME2000.
      * @param date date
      * @param <T> field type
      * @return lunar position
      */
-    private <T extends CalculusFieldElement<T>> FieldVector3D<T> getFieldEME2000Position(final FieldAbsoluteDate<T> date) {
+    protected <T extends CalculusFieldElement<T>> FieldVector3D<T> getFieldEME2000Position(final FieldAbsoluteDate<T> date) {
         // ecliptic plane
-        final T tt = date.getJD(timeScale).subtract(2451545.0).divide(36525.0);
+        final T tt = date.getJD(getTimeScale()).subtract(2451545.0).divide(36525.0);
         final T L0 = FastMath.toRadians(tt.multiply(481267.88088).subtract(tt.multiply(1.3972)).add(218.31617));
         final T l = FastMath.toRadians(tt.multiply(477198.86753).add(134.96292));
         final T lp = FastMath.toRadians(tt.multiply(35999.04944).add(357.52543));

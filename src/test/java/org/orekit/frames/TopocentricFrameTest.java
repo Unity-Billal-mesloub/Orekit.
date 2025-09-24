@@ -409,6 +409,20 @@ class TopocentricFrameTest {
     }
 
     @Test
+    void testFieldGetVelocity() {
+        // GIVEN
+        final GeodeticPoint point = new GeodeticPoint(FastMath.toRadians(45.), FastMath.toRadians(5.), 0.);
+        final TopocentricFrame topoFrame = new TopocentricFrame(earthSpheric, point, "lon 5 lat 45");
+        final Frame frame = FramesFactory.getGCRF();
+        final FieldAbsoluteDate<Binary64> fieldDate = new FieldAbsoluteDate<>(Binary64Field.getInstance(), date);
+        // WHEN
+        final FieldVector3D<Binary64> velocity = topoFrame.getVelocity(fieldDate, frame);
+        // THEN
+        final FieldVector3D<Binary64> expected = topoFrame.getPVCoordinates(fieldDate, frame).getVelocity();
+        Assertions.assertEquals(velocity, expected);
+    }
+
+    @Test
     void testFieldGetPVCoordinates() {
         // GIVEN
         final GeodeticPoint point = new GeodeticPoint(FastMath.toRadians(45.), FastMath.toRadians(5.), 0.);
@@ -766,7 +780,7 @@ class TopocentricFrameTest {
     }
 
     @Test
-    void testVisibilityCircle() throws IOException {
+    void testVisibilityCircle() {
 
         // a few random from International Laser Ranging Service
         final BodyShape earth = new OneAxisEllipsoid(Constants.WGS84_EARTH_EQUATORIAL_RADIUS,
@@ -910,7 +924,7 @@ class TopocentricFrameTest {
     }
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
 
         Utils.setDataRoot("regular-data");
 
@@ -931,7 +945,7 @@ class TopocentricFrameTest {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         date = null;
         itrf = null;
         earthSpheric = null;

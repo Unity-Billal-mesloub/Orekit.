@@ -58,6 +58,20 @@ class TleExtendedPositionProviderTest {
     }
 
     @Test
+    void testGetVelocity() {
+        // GIVEN
+        final TLE tle = new TLE(LINE1, LINE2);
+        final TleExtendedPositionProvider positionProvider = new TleExtendedPositionProvider(tle, FramesFactory.getFrames());
+        final AbsoluteDate date = tle.getDate().shiftedBy(1e4);
+        final Frame frame = FramesFactory.getGTOD(false);
+        // WHEN
+        final Vector3D velocity = positionProvider.getVelocity(date, frame);
+        // THEN
+        final TLEPropagator propagator = TLEPropagator.selectExtrapolator(tle);
+        assertArrayEquals(propagator.getVelocity(date, frame).toArray(), velocity.toArray(), 1e-6);
+    }
+
+    @Test
     void testGetPVCoordinates() {
         // GIVEN
         final TLE tle = new TLE(LINE1, LINE2);
@@ -92,6 +106,26 @@ class TleExtendedPositionProviderTest {
         assertEquals(expectedPosition.getX().getReal(), position.getX().getReal(), 1e-6);
         assertEquals(expectedPosition.getY().getReal(), position.getY().getReal(), 1e-6);
         assertEquals(expectedPosition.getZ().getReal(), position.getZ().getReal(), 1e-6);
+    }
+
+    @Test
+    void testFieldGetVelocity() {
+        // GIVEN
+        final TLE tle = new TLE(LINE1, LINE2);
+        final Binary64Field field = Binary64Field.getInstance();
+        final TleExtendedPositionProvider positionProvider = new TleExtendedPositionProvider(tle);
+        final AbsoluteDate date = tle.getDate().shiftedBy(1e4);
+        final FieldAbsoluteDate<Binary64> fieldDate = new FieldAbsoluteDate<>(Binary64Field.getInstance(), date);
+        final Frame frame = FramesFactory.getEME2000();
+        // WHEN
+        final FieldVector3D<Binary64> velocity = positionProvider.getVelocity(fieldDate, frame);
+        // THEN
+        final FieldTLE<Binary64> fieldTLE = new FieldTLE<>(field, tle);
+        final FieldTLEPropagator<Binary64> propagator = FieldTLEPropagator.selectExtrapolator(fieldTLE, tle.getParameters(field));
+        final FieldVector3D<Binary64> expectedVelocity = propagator.getVelocity(fieldDate, frame);
+        assertEquals(expectedVelocity.getX().getReal(), velocity.getX().getReal(), 1e-6);
+        assertEquals(expectedVelocity.getY().getReal(), velocity.getY().getReal(), 1e-6);
+        assertEquals(expectedVelocity.getZ().getReal(), velocity.getZ().getReal(), 1e-6);
     }
 
     @Test
