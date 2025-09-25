@@ -19,7 +19,7 @@
     <title>Orekit Changes</title>
   </properties>
   <body>
-    <release version="13.1.2" date="TBD" description="TBD">
+    <release version="13.1.2" date="2025-09-25" description="Orekit 13.1.2 is a patch release. It fixes various bugs including a couple of urgent ones">
         <action dev="luc" type="fix" issue="1831">
             Fixed epoch flag in Rinex observation writer.
         </action>
@@ -42,7 +42,7 @@
             Added constructor in FieldNodeDetector to avoid failure in hyperbolic case.
         </action>
     </release>
-    <release version="13.1.1" date="2025-09-14" description="Orekit 13.1 is a patch release. It fixes documentation issues and various bugs, including some related to performance.">
+    <release version="13.1.1" date="2025-09-14" description="Orekit 13.1.1 is a patch release. It fixes documentation issues and various bugs, including some related to performance.">
         <action dev="luc" type="fix" issue="1817">
           Fixed Ionosphere Piercing Point computation in Global Ionosphere Model.
         </action>
