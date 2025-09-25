@@ -28,6 +28,7 @@ import org.hipparchus.util.Precision;
 import org.orekit.frames.FieldStaticTransform;
 import org.orekit.frames.FieldTransform;
 import org.orekit.frames.Frame;
+import org.orekit.frames.KinematicTransform;
 import org.orekit.frames.StaticTransform;
 import org.orekit.frames.Transform;
 import org.orekit.frames.TransformProvider;
@@ -135,6 +136,22 @@ class JPLCelestialBody implements CelestialBody {
 
         // convert to requested frame
         return transform.transformPVCoordinates(scaledPV);
+
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Vector3D getVelocity(final AbsoluteDate date, final Frame frame) {
+
+        // apply the scale factor to raw position-velocity
+        final PVCoordinates rawPV    = rawPVProvider.getRawPV(date);
+        final TimeStampedPVCoordinates scaledPV = new TimeStampedPVCoordinates(date, scale, rawPV);
+
+        // the raw PV are relative to the parent of the body centered inertially oriented frame
+        final KinematicTransform transform = getInertiallyOrientedFrame().getParent().getKinematicTransformTo(frame, date);
+
+        // convert to requested frame
+        return transform.transformOnlyPV(scaledPV).getVelocity();
 
     }
 
