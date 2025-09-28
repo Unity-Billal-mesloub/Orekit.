@@ -31,15 +31,11 @@ import org.hipparchus.util.MathArrays;
 import org.orekit.errors.OrekitIllegalArgumentException;
 import org.orekit.errors.OrekitInternalError;
 import org.orekit.errors.OrekitMessages;
-import org.orekit.frames.FieldKinematicTransform;
-import org.orekit.frames.FieldStaticTransform;
 import org.orekit.frames.FieldTransform;
 import org.orekit.frames.Frame;
 import org.orekit.time.FieldAbsoluteDate;
-import org.orekit.time.FieldTimeShiftable;
-import org.orekit.time.FieldTimeStamped;
 import org.orekit.utils.FieldPVCoordinates;
-import org.orekit.utils.FieldPVCoordinatesProvider;
+import org.orekit.utils.ShiftableFieldPVCoordinatesHolder;
 import org.orekit.utils.TimeStampedFieldPVCoordinates;
 import org.orekit.utils.TimeStampedPVCoordinates;
 
@@ -70,7 +66,7 @@ import org.orekit.utils.TimeStampedPVCoordinates;
  * @param <T> type of the field elements
  */
 public abstract class FieldOrbit<T extends CalculusFieldElement<T>>
-    implements FieldPVCoordinatesProvider<T>, FieldTimeStamped<T>, FieldTimeShiftable<FieldOrbit<T>, T> {
+    implements ShiftableFieldPVCoordinatesHolder<FieldOrbit<T>, T> {
 
     /** Absolute tolerance when checking if the rate of the position angle is Keplerian or not. */
     protected static final double TOLERANCE_POSITION_ANGLE_RATE = 1e-15;
@@ -501,70 +497,17 @@ public abstract class FieldOrbit<T extends CalculusFieldElement<T>>
         return t.transformPVCoordinates(pvCoordinates);
     }
 
-    /** {@inheritDoc} */
-    public TimeStampedFieldPVCoordinates<T> getPVCoordinates(final FieldAbsoluteDate<T> otherDate, final Frame otherFrame) {
-        return shiftedBy(otherDate.durationFrom(getDate())).getPVCoordinates(otherFrame);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public FieldVector3D<T> getVelocity(final FieldAbsoluteDate<T> otherDate, final Frame otherFrame) {
-        final FieldPVCoordinates<T> pv = getPVCoordinates(otherDate, otherFrame);
-        if (otherFrame == getFrame()) {
-            return pv.getVelocity();
-        }
-        final FieldKinematicTransform<T> kinematicTransform = getFrame().getKinematicTransformTo(otherFrame, date);
-        return kinematicTransform.transformOnlyPV(pv).getVelocity();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public FieldVector3D<T> getPosition(final FieldAbsoluteDate<T> otherDate, final Frame otherFrame) {
-        return shiftedBy(otherDate.durationFrom(getDate())).getPosition(otherFrame);
-    }
-
-    /** Get the position in a specified frame.
-     * @param outputFrame frame in which the position coordinates shall be computed
-     * @return position in the specified output frame
-     * @see #getPosition()
-     * @since 12.0
-     */
-    public FieldVector3D<T> getPosition(final Frame outputFrame) {
-        if (position == null) {
-            position = initPosition();
-        }
-
-        // If output frame requested is the same as definition frame,
-        // Position vector is returned directly
-        if (outputFrame == frame) {
-            return position;
-        }
-
-        // Else, position vector is transformed to output frame
-        final FieldStaticTransform<T> t = frame.getStaticTransformTo(outputFrame, date);
-        return t.transformPosition(position);
-
-    }
-
     /** Get the position in definition frame.
      * @return position in the definition frame
      * @see #getPVCoordinates()
      * @since 12.0
      */
+    @Override
     public FieldVector3D<T> getPosition() {
         if (position == null) {
             position = initPosition();
         }
         return position;
-    }
-
-    /** Get the velocity in definition frame.
-     * @return velocity in the definition frame
-     * @see #getPVCoordinates()
-     * @since 13.1
-     */
-    public FieldVector3D<T> getVelocity() {
-        return getPVCoordinates().getVelocity();
     }
 
     /** Get the {@link TimeStampedPVCoordinates} in definition frame.
@@ -632,6 +575,18 @@ public abstract class FieldOrbit<T extends CalculusFieldElement<T>>
      * @return a new orbit, shifted with respect to the instance (which is immutable)
      */
     public abstract FieldOrbit<T> shiftedBy(T dt);
+
+    /** Get a time-shifted orbit.
+     * <p>
+     * The orbit can be slightly shifted to close dates. This shift is based on
+     * a simple Keplerian model. It is <em>not</em> intended as a replacement
+     * for proper orbit and attitude propagation but should be sufficient for
+     * small time shifts or coarse accuracy.
+     * </p>
+     * @param dt time shift in seconds
+     * @return a new orbit, shifted with respect to the instance (which is immutable)
+     */
+    public abstract FieldOrbit<T> shiftedBy(double dt);
 
     /** Compute the Jacobian of the orbital parameters with respect to the Cartesian parameters.
      * <p>

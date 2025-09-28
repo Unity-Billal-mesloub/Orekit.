@@ -28,8 +28,6 @@ import org.orekit.errors.OrekitIllegalArgumentException;
 import org.orekit.errors.OrekitInternalError;
 import org.orekit.errors.OrekitMessages;
 import org.orekit.frames.Frame;
-import org.orekit.frames.StaticTransform;
-import org.orekit.frames.Transform;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.TimeOffset;
 import org.orekit.utils.PVCoordinates;
@@ -448,55 +446,12 @@ public abstract class Orbit
         return date;
     }
 
-    /** Get the {@link TimeStampedPVCoordinates} in a specified frame.
-     * @param outputFrame frame in which the position/velocity coordinates shall be computed
-     * @return pvCoordinates in the specified output frame
-          * @see #getPVCoordinates()
-     */
-    public TimeStampedPVCoordinates getPVCoordinates(final Frame outputFrame) {
-        if (pvCoordinates == null) {
-            pvCoordinates = initPVCoordinates();
-        }
-
-        // If output frame requested is the same as definition frame,
-        // PV coordinates are returned directly
-        if (outputFrame == frame) {
-            return pvCoordinates;
-        }
-
-        // Else, PV coordinates are transformed to output frame
-        final Transform t = frame.getTransformTo(outputFrame, date);
-        return t.transformPVCoordinates(pvCoordinates);
-    }
-
-    /** Get the position in a specified frame.
-     * @param outputFrame frame in which the position coordinates shall be computed
-     * @return position in the specified output frame
-     * @see #getPosition()
-     * @since 12.0
-     */
-    public Vector3D getPosition(final Frame outputFrame) {
-        if (position == null) {
-            position = initPosition();
-        }
-
-        // If output frame requested is the same as definition frame,
-        // Position vector is returned directly
-        if (outputFrame == frame) {
-            return position;
-        }
-
-        // Else, position vector is transformed to output frame
-        final StaticTransform t = frame.getStaticTransformTo(outputFrame, date);
-        return t.transformPosition(position);
-
-    }
-
     /** Get the position in definition frame.
      * @return position in the definition frame
      * @see #getPVCoordinates()
      * @since 12.0
      */
+    @Override
     public Vector3D getPosition() {
         if (position == null) {
             position = initPosition();
