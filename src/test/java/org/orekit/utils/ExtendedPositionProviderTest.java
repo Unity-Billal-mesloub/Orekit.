@@ -62,6 +62,19 @@ class ExtendedPositionProviderTest {
     }
 
     @Test
+    void testGetVelocityField() {
+        // GIVEN
+        final TestExtendedPositionProvider positionProvider = new TestExtendedPositionProvider();
+        final Frame frame = Mockito.mock(Frame.class);
+        final FieldAbsoluteDate<Complex> date = FieldAbsoluteDate.getJ2000Epoch(ComplexField.getInstance());
+        // WHEN
+        final FieldVector3D<Complex> actualVelocity = positionProvider.getVelocity(date, frame);
+        // THEN
+        final FieldVector3D<Complex> expectedVelocity = positionProvider.getPVCoordinates(date, frame).getVelocity();
+        Assertions.assertEquals(expectedVelocity, actualVelocity);
+    }
+
+    @Test
     void testGetPVCoordinatesField() {
         // GIVEN
         final TestExtendedPositionProvider positionProvider = new TestExtendedPositionProvider();

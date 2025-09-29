@@ -46,6 +46,9 @@ public class TleExtendedPositionProvider implements ExtendedPositionProvider {
     /** TEME frame. */
     private final Frame teme;
 
+    /** Cached propagator. */
+    private TLEPropagator propagator;
+
     /**
      * Constructor.
      * @param tle reference TLE
@@ -68,13 +71,19 @@ public class TleExtendedPositionProvider implements ExtendedPositionProvider {
     /** {@inheritDoc} */
     @Override
     public Vector3D getPosition(final AbsoluteDate date, final Frame frame) {
-        return buildPropagator().getPosition(date, frame);
+        return getPropagator().getPosition(date, frame);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Vector3D getVelocity(final AbsoluteDate date, final Frame frame) {
+        return getPropagator().getVelocity(date, frame);
     }
 
     /** {@inheritDoc} */
     @Override
     public TimeStampedPVCoordinates getPVCoordinates(final AbsoluteDate date, final Frame frame) {
-        return buildPropagator().getPVCoordinates(date, frame);
+        return getPropagator().getPVCoordinates(date, frame);
     }
 
     /** {@inheritDoc} */
@@ -86,9 +95,25 @@ public class TleExtendedPositionProvider implements ExtendedPositionProvider {
 
     /** {@inheritDoc} */
     @Override
+    public <T extends CalculusFieldElement<T>> FieldVector3D<T> getVelocity(final FieldAbsoluteDate<T> date, final Frame frame) {
+        return buildFieldPropagator(date.getField()).getVelocity(date, frame);
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public <T extends CalculusFieldElement<T>> TimeStampedFieldPVCoordinates<T> getPVCoordinates(final FieldAbsoluteDate<T> date,
                                                                                                  final Frame frame) {
         return buildFieldPropagator(date.getField()).getPVCoordinates(date, frame);
+    }
+
+    /** Private getter for the cached propagator.
+     * @return propagator
+     */
+    private TLEPropagator getPropagator() {
+        if (propagator == null) {
+            propagator = buildPropagator();
+        }
+        return propagator;
     }
 
     /**

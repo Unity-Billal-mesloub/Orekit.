@@ -19,6 +19,8 @@ package org.orekit.utils;
 
 import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.Field;
+import org.hipparchus.analysis.differentiation.FieldUnivariateDerivative1;
+import org.hipparchus.analysis.differentiation.FieldUnivariateDerivative1Field;
 import org.hipparchus.analysis.differentiation.FieldUnivariateDerivative2;
 import org.hipparchus.analysis.differentiation.UnivariateDerivative1;
 import org.hipparchus.analysis.differentiation.UnivariateDerivative1Field;
@@ -70,6 +72,25 @@ public interface ExtendedPositionProvider extends PVCoordinatesProvider {
         final Vector3D acceleration = new Vector3D(ud2Position.getX().getSecondDerivative(), ud2Position.getY().getSecondDerivative(),
                 ud2Position.getZ().getSecondDerivative());
         return new TimeStampedPVCoordinates(date, new PVCoordinates(position, velocity, acceleration));
+    }
+
+    /** Get the velocity vector in the selected frame.
+     * @param date current date
+     * @param frame the frame where to define the velocity
+     * @param <T> field type
+     * @return velocity
+     */
+    default <T extends CalculusFieldElement<T>> FieldVector3D<T> getVelocity(final FieldAbsoluteDate<T> date,
+                                                                             final Frame frame) {
+        final Field<T> field = date.getField();
+        final AbsoluteDate absoluteDate = date.toAbsoluteDate();
+        final FieldAbsoluteDate<FieldUnivariateDerivative1<T>> fud1Date = new FieldAbsoluteDate<>(FieldUnivariateDerivative1Field.getUnivariateDerivative1Field(field),
+                absoluteDate);
+        final FieldUnivariateDerivative1<T> shift = new FieldUnivariateDerivative1<>(field.getZero(), field.getOne())
+                .add(date.durationFrom(absoluteDate));
+        final FieldVector3D<FieldUnivariateDerivative1<T>> fud1Position = getPosition(fud1Date.shiftedBy(shift), frame);
+        return new FieldVector3D<>(fud1Position.getX().getFirstDerivative(), fud1Position.getY().getFirstDerivative(),
+                fud1Position.getZ().getFirstDerivative());
     }
 
     /** Get the position-velocity-acceleration in the selected frame.

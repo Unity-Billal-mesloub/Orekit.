@@ -16,15 +16,20 @@
  */
 package org.orekit.bodies;
 
+import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Rotation;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.util.Binary64;
+import org.hipparchus.util.Binary64Field;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.orekit.Utils;
 import org.orekit.errors.OrekitException;
 import org.orekit.frames.Frame;
 import org.orekit.frames.FramesFactory;
 import org.orekit.time.AbsoluteDate;
+import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.time.TimeScalesFactory;
 import org.orekit.utils.Constants;
 import org.orekit.utils.IERSConventions;
@@ -40,19 +45,22 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class CelestialBodyFactoryTest {
+class CelestialBodyFactoryTest {
+
+    @BeforeEach
+    void setUp() {
+        Utils.setDataRoot("regular-data");
+    }
 
     @Test
-    public void getSun() {
-        Utils.setDataRoot("regular-data");
-
-        CelestialBody sun = CelestialBodyFactory.getSun();
+    void getSun() {
+        final CelestialBody sun = CelestialBodyFactory.getSun();
         Assertions.assertNotNull(sun);
     }
 
     @Test
-    public void clearCache() {
-        Utils.setDataRoot("regular-data");
+    void clearCache() {
+
 
         CelestialBody sun = CelestialBodyFactory.getSun();
         Assertions.assertNotNull(sun);
@@ -63,8 +71,8 @@ public class CelestialBodyFactoryTest {
     }
 
     @Test
-    public void clearLoaders() {
-        Utils.setDataRoot("regular-data");
+    void clearLoaders() {
+
 
         CelestialBody sun = CelestialBodyFactory.getSun();
         Assertions.assertNotNull(sun);
@@ -152,7 +160,7 @@ public class CelestialBodyFactoryTest {
                      -7.975654653933506E+00, 1.012004438626713E+01, 4.532113465082445E+00)
         };
 
-        Utils.setDataRoot("regular-data");
+
         final CelestialBody jupiter = CelestialBodyFactory.getJupiter();
         final Frame icrf = FramesFactory.getICRF();
         for (final TimeStampedPVCoordinates ref : refPV) {
@@ -191,8 +199,8 @@ public class CelestialBodyFactoryTest {
     }
 
     @Test
-    public void multithreadTest() {
-        Utils.setDataRoot("regular-data");
+    void multithreadTest() {
+
         checkMultiThread(10, 100);
     }
 
@@ -259,7 +267,7 @@ public class CelestialBodyFactoryTest {
 
     @Test
     void testICRFAndGCRFAlignment() {
-        Utils.setDataRoot("regular-data");
+
         final CelestialBody earthMoonBarycenter   = CelestialBodyFactory.getEarthMoonBarycenter();
         final CelestialBody solarSystemBarycenter = CelestialBodyFactory.getSolarSystemBarycenter();
         final List<Frame> frames = Arrays.asList(earthMoonBarycenter.getInertiallyOrientedFrame(),
@@ -281,7 +289,7 @@ public class CelestialBodyFactoryTest {
 
     @Test
     void testEarthInertialFrameAroundJ2000() {
-        Utils.setDataRoot("regular-data");
+
         final Frame earthFrame = CelestialBodyFactory.getEarth().getInertiallyOrientedFrame();
         final Frame base       = FramesFactory.getGCRF();
         final Rotation reference = new Rotation(Vector3D.PLUS_K, Vector3D.PLUS_J,
@@ -295,7 +303,7 @@ public class CelestialBodyFactoryTest {
 
     @Test
     void testEarthBodyOrientedFrameAroundJ2000() {
-        Utils.setDataRoot("regular-data");
+
         final Frame earthFrame = CelestialBodyFactory.getEarth().getBodyOrientedFrame();
         final Frame base       = FramesFactory.getITRF(IERSConventions.IERS_2010, true);
          for (double dt = -60; dt <= 60; dt += 1.0) {
@@ -316,7 +324,7 @@ public class CelestialBodyFactoryTest {
     @Test
     void testGetVelocity() {
         // GIVEN
-        Utils.setDataRoot("regular-data");
+
         final CelestialBody moon = CelestialBodyFactory.getSun();
         final AbsoluteDate date = AbsoluteDate.ARBITRARY_EPOCH;
         final Frame frame = FramesFactory.getGCRF();
@@ -325,5 +333,20 @@ public class CelestialBodyFactoryTest {
         // THEN
         final PVCoordinates expectedPV = moon.getPVCoordinates(date, frame);
         Assertions.assertArrayEquals(expectedPV.getVelocity().toArray(), velocity.toArray(), 1.0e-10);
+    }
+
+    @Test
+    void testGetVelocityField() {
+        // GIVEN
+
+        final CelestialBody moon = CelestialBodyFactory.getSun();
+        final Binary64Field field = Binary64Field.getInstance();
+        final FieldAbsoluteDate<Binary64> date = FieldAbsoluteDate.getArbitraryEpoch(field);
+        final Frame frame = FramesFactory.getGCRF();
+        // WHEN
+        final FieldVector3D<Binary64> fieldVelocity = moon.getVelocity(date, frame);
+        // THEN
+        final Vector3D expectedVelocity = moon.getVelocity(date.toAbsoluteDate(), frame);
+        Assertions.assertEquals(expectedVelocity, fieldVelocity.toVector3D());
     }
 }

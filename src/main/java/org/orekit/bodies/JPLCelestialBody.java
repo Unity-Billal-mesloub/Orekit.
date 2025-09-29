@@ -25,6 +25,7 @@ import org.hipparchus.geometry.euclidean.threed.Rotation;
 import org.hipparchus.geometry.euclidean.threed.RotationConvention;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.hipparchus.util.Precision;
+import org.orekit.frames.FieldKinematicTransform;
 import org.orekit.frames.FieldStaticTransform;
 import org.orekit.frames.FieldTransform;
 import org.orekit.frames.Frame;
@@ -183,6 +184,20 @@ class JPLCelestialBody implements CelestialBody {
 
         // convert to requested frame
         return transform.transformPosition(scaledPosition);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public <T extends CalculusFieldElement<T>> FieldVector3D<T> getVelocity(final FieldAbsoluteDate<T> date, final Frame frame) {
+        // apply the scale factor to raw position-velocity
+        final FieldPVCoordinates<T> rawPV    = rawPVProvider.getRawPV(date);
+        final TimeStampedFieldPVCoordinates<T> scaledPV = new TimeStampedFieldPVCoordinates<>(date, scale, rawPV);
+
+        // the raw PV are relative to the parent of the body centered inertially oriented frame
+        final FieldKinematicTransform<T> transform = getInertiallyOrientedFrame().getParent().getKinematicTransformTo(frame, date);
+
+        // convert to requested frame
+        return transform.transformOnlyPV(scaledPV).getVelocity();
     }
 
     /** {@inheritDoc} */

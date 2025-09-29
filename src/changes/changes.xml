@@ -23,8 +23,11 @@
         <action dev="serrof" type="update" issue="1830">
             Refactored (Field)AbsolutePVCoordinates and deleted (Field)ShiftingPVCoordinatesProvider.
         </action>
-        <action dev="serrof" type="update" issue="1830">
+        <action dev="serrof" type="update" issue="1828">
             Update 6x6 numerical STM with state-dependent events.
+        </action>
+        <action dev="serrof" type="add" issue="1825">
+            Add getVelocity in ExtendedPositionProvider.
         </action>
         <action dev="serrof" type="update" issue="1815">
             Make protected constructors in abstract classes.
