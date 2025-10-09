@@ -19,6 +19,7 @@ package org.orekit.utils;
 import org.hipparchus.analysis.differentiation.Derivative;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.orekit.annotation.DefaultDataContext;
 import org.orekit.errors.OrekitIllegalArgumentException;
 import org.orekit.errors.OrekitMessages;
 import org.orekit.frames.Frame;
@@ -287,6 +288,7 @@ public class AbsolutePVCoordinates implements ShiftablePVCoordinatesHolder<Absol
 
     /** {@inheritDoc} */
     @Override
+    @DefaultDataContext
     public String toString() {
         return timeStampedPVCoordinates.toString();
     }

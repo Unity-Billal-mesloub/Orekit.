@@ -290,17 +290,26 @@ public class FieldEventSlopeFilter<D extends FieldEventDetector<T>, T extends Ca
 
         /** {@inheritDoc} */
         public Action eventOccurred(final FieldSpacecraftState<T> s, final FieldEventDetector<T> detector, final boolean increasing) {
-            final FieldEventSlopeFilter<D, T> esf = (FieldEventSlopeFilter<D, T>) detector;
+            final FieldEventSlopeFilter<D, T> esf = castDetector(detector);
             return esf.rawDetector.getHandler().eventOccurred(s, esf.rawDetector, esf.filterType.getTriggeredIncreasing());
         }
 
         /** {@inheritDoc} */
         @Override
         public FieldSpacecraftState<T> resetState(final FieldEventDetector<T> detector, final FieldSpacecraftState<T> oldState) {
-            final FieldEventSlopeFilter<D, T> esf = (FieldEventSlopeFilter<D, T>) detector;
+            final FieldEventSlopeFilter<D, T> esf = castDetector(detector);
             return esf.rawDetector.getHandler().resetState(esf.rawDetector, oldState);
         }
 
+        /**
+         * Cast underlying detector.
+         * @param detector sloped filter detector
+         * @return cast detector
+         */
+        @SuppressWarnings("unchecked")
+        private FieldEventSlopeFilter<D, T> castDetector(final FieldEventDetector<T> detector) {
+            return (FieldEventSlopeFilter<D, T>) detector;
+        }
     }
 
 }
