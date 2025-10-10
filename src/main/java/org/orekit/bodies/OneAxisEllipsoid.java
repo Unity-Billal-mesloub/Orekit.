@@ -958,7 +958,7 @@ public class OneAxisEllipsoid extends Ellipsoid implements BodyShape {
 
         // compute desired point position along the line using a rough guess (spherical body)
         final double r     = altitude + getEquatorialRadius();
-        final double delta = r * r - line.getOrigin().getNormSq();
+        final double delta = r * r - line.getOrigin().getNorm2Sq();
         if (delta < 0) {
             throw new OrekitException(OrekitMessages.LINE_NEVER_CROSSES_ALTITUDE, altitude);
         }
@@ -1024,7 +1024,7 @@ public class OneAxisEllipsoid extends Ellipsoid implements BodyShape {
 
         // compute desired point position along the line using a rough guess (spherical body)
         final T r     = altitude.add(getEquatorialRadius());
-        final T delta = r.multiply(r).subtract(line.getOrigin().getNormSq());
+        final T delta = r.multiply(r).subtract(line.getOrigin().getNorm2Sq());
         if (delta.getReal() < 0) {
             throw new OrekitException(OrekitMessages.LINE_NEVER_CROSSES_ALTITUDE, altitude.getReal());
         }

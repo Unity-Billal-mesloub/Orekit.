@@ -1020,6 +1020,7 @@ public class FieldDSSTPropagator<T extends CalculusFieldElement<T>> extends Fiel
 
         /** {@inheritDoc} */
         @Override
+        @SuppressWarnings("unchecked")
         public void handleStep(final FieldODEStateInterpolator<T> interpolator) {
 
             // Get the grid points to compute

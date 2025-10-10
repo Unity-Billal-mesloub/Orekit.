@@ -22,6 +22,7 @@ import org.hipparchus.Field;
 import org.hipparchus.analysis.differentiation.DerivativeStructure;
 import org.hipparchus.analysis.differentiation.FieldDerivative;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
+import org.orekit.annotation.DefaultDataContext;
 import org.orekit.errors.OrekitIllegalArgumentException;
 import org.orekit.errors.OrekitMessages;
 import org.orekit.frames.Frame;
@@ -317,6 +318,7 @@ public class FieldAbsolutePVCoordinates<T extends CalculusFieldElement<T>>
 
     /** {@inheritDoc} */
     @Override
+    @DefaultDataContext
     public String toString() {
         return timeStampedFieldPVCoordinates.toString();
     }
