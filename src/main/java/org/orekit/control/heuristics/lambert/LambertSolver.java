@@ -550,13 +550,13 @@ public class LambertSolver {
     /**
     * Calculate the value of Gaussian hypergeometric function 2F1.
     * Currently we use the raw series expansion. This means we have the following
-    * constraints: |z| < 1, c > 0, c != 0.
+    * constraints: |z| smaller than 1, c larger than 0, c != 0.
     * Implementation based on Taylor series expansion method (a) in John Pearson's thesis
     * https://people.maths.ox.ac.uk/porterm/research/pearson_final.pdf , page 31.
     * @param a value of a
     * @param b value of b
     * @param c value of c
-    * @param z value of z (|z| < 1)
+    * @param z value of z (|z| smaller than 1)
     * @param eps convergence threshold
     * @param maxIter maximum number of iterations
     * @return value of the 2F1 hypergeometric function
