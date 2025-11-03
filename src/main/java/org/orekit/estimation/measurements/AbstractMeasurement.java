@@ -138,6 +138,16 @@ public abstract class AbstractMeasurement<T extends ObservedMeasurement<T>> impl
         supportedParameters.add(driver);
     }
 
+    /** Add a list of parameter drivers all at once.
+     * @param drivers list of parameter drivers to add
+     * @since 14.0
+     */
+    protected void addParametersDrivers(final List<ParameterDriver> drivers) {
+        for (final ParameterDriver driver : drivers) {
+            addParameterDriver(driver);
+        }
+    }
+
     /** {@inheritDoc} */
     @Override
     public List<ParameterDriver> getParametersDrivers() {
@@ -146,7 +156,7 @@ public abstract class AbstractMeasurement<T extends ObservedMeasurement<T>> impl
 
     /** {@inheritDoc} */
     @Override
-    public void setEnabled(final boolean enabled) {
+    public final void setEnabled(final boolean enabled) {
         this.enabled = enabled;
     }
 

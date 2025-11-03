@@ -35,7 +35,6 @@ import org.orekit.estimation.EstimationTestUtils;
 import org.orekit.estimation.measurements.EstimatedMeasurementBase;
 import org.orekit.estimation.measurements.ObservableSatellite;
 import org.orekit.estimation.measurements.ObservedMeasurement;
-import org.orekit.time.clocks.QuadraticClockModel;
 import org.orekit.gnss.PredefinedGnssSignal;
 import org.orekit.gnss.RadioWave;
 import org.orekit.orbits.CartesianOrbit;
@@ -48,6 +47,7 @@ import org.orekit.propagation.Propagator;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.conversion.NumericalPropagatorBuilder;
 import org.orekit.time.AbsoluteDate;
+import org.orekit.time.clocks.QuadraticClockModel;
 import org.orekit.utils.Constants;
 import org.orekit.utils.Differentiation;
 import org.orekit.utils.ParameterDriver;
@@ -524,9 +524,9 @@ public class OneWayGNSSPhaseTest {
         Assertions.assertEquals(4, paramDrivers.size());
 
         // Check the parameter names
-        Assertions.assertEquals("clock-offset-sat-0", paramDrivers.get(0).getName());
-        Assertions.assertEquals("clock-drift-sat-0", paramDrivers.get(1).getName());
-        Assertions.assertEquals("clock-acceleration-sat-0", paramDrivers.get(2).getName());
+        Assertions.assertEquals("sat-0-clock-offset", paramDrivers.get(0).getName());
+        Assertions.assertEquals("sat-0-clock-drift", paramDrivers.get(1).getName());
+        Assertions.assertEquals("sat-0-clock-acceleration", paramDrivers.get(2).getName());
         Assertions.assertEquals("ambiguity-remote-sat-0-154.00", paramDrivers.get(3).getName());
 
         // Print results ? Header
