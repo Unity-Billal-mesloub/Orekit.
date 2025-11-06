@@ -102,9 +102,6 @@ class LambertSolverTest {
         // WHEN
         final LambertBoundaryConditions boundaryConditions = new LambertBoundaryConditions(orbit1.getDate(),
                 orbit1.getPosition(), orbit2.getDate(), orbit2.getPosition(), orbit2.getFrame());
-        final int maxIterations = 2000;
-        final double atol = 1e-10;
-        final double rtol = 1e-12;
         final List<LambertSolution> solution = solver.solve(posigrade, nRev, boundaryConditions);
         // THEN
         final Orbit lambertOrbit = new CartesianOrbit(new TimeStampedPVCoordinates(orbit1.getDate(), orbit1.getPosition(), solution.get(0).getBoundaryVelocities().getInitialVelocity()),
@@ -143,7 +140,8 @@ class LambertSolverTest {
         final LambertBoundaryConditions boundaryConditions = new LambertBoundaryConditions(orbit1.getDate(),
                 orbit1.getPosition(), orbit2.getDate(), orbit2.getPosition(), orbit2.getFrame());
         final LambertSolution solution = solver.solve(posigrade, nRev, boundaryConditions).get(0);
-        final RealMatrix jacobian = solver.computeJacobian(boundaryConditions, solution);
+        final LambertBoundaryVelocities velocities = solution.getBoundaryVelocities();
+        final RealMatrix jacobian = solver.computeJacobian(boundaryConditions, velocities);
         // THEN
         assertFalse(Double.isNaN(jacobian.getEntry(0, 0)));
         checkJacobianWithFiniteDifferences(solver, posigrade, nRev, boundaryConditions, jacobian);
@@ -182,6 +180,7 @@ class LambertSolverTest {
                 solution.getNRev(),
                 solution.getPathType(),
                 solution.getOrbitType(),
+                solution.getPosigrade(),
                 solution.getBoundaryConditions(),
                 solution.getBoundaryVelocities());
         checkLambertSolution(solutionCopy, expectedVelocity1, expectedVelocity2, 0.1, 1e-3);

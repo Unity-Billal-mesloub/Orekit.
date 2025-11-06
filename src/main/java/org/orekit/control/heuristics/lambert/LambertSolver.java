@@ -57,6 +57,9 @@ public class LambertSolver {
     /** gravitational constant. */
     private final double mu;
 
+    /** parameters for the Householder solver. */
+    private final HouseholderParameters householderParameters;
+
     /** auxiliary variable x. */
     private double x;
 
@@ -102,28 +105,14 @@ public class LambertSolver {
     /** maximum possible number of revolutions for the given time of transfer. */
     private int nMax;
 
-    /** maximum number of iterations for the Householder solver. */
-    private int householderMaxIterations;
-
-    /** absolute tolerance for the Householder solver. */
-    private final double householderAtol;
-
-    /** relative tolerance for the Householder solver. */
-    private final double householderRtol;
-
-    /** Creator.
+    /** Constructor from Householder parameters object.
      *
      * @param mu gravitational constant
-     * @param householderMaxIterations maximum number of iterations for the Householder solver
-     * @param householderAtol absolute tolerance for the Householder solver
-     * @param householderRtol relative tolerance for the Householder solver
+     * @param householderParameters parameters for the Householder solver
      */
-    public LambertSolver(final double mu, final int householderMaxIterations,
-                         final double householderAtol, final double householderRtol) {
+    public LambertSolver(final double mu, final HouseholderParameters householderParameters) {
         this.mu = mu;
-        this.householderMaxIterations = householderMaxIterations;
-        this.householderAtol = householderAtol;
-        this.householderRtol = householderRtol;
+        this.householderParameters = householderParameters;
         this.x = 0.0;
         this.y = 0.0;
         this.sigma = 0.0;
@@ -140,6 +129,18 @@ public class LambertSolver {
         this.shortestPathType = LambertPathType.LOW_PATH;
     }
 
+    /** Constructor from direct Householder parameter values.
+     *
+     * @param mu gravitational constant
+     * @param householderMaxIterations maximum number of iterations for the Householder solver
+     * @param householderAtol absolute tolerance for the Householder solver
+     * @param householderRtol relative tolerance for the Householder solver
+     */
+    public LambertSolver(final double mu, final int householderMaxIterations,
+                         final double householderAtol, final double householderRtol) {
+        this(mu, new HouseholderParameters(householderMaxIterations, householderAtol, householderRtol));
+    }
+
     /** Constructor with default Householder solver parameters.
      *
      * @param mu gravitational constant
@@ -151,13 +152,13 @@ public class LambertSolver {
     /** Lambert's solver.
      * @param posigrade flag indicating the direction of motion
      * @param boundaryConditions LambertBoundaryConditions holding the boundary conditions
-     * @return  a list of solutions
+     * @return a list of solutions
      */
     public List<LambertSolution> solve(final boolean posigrade,
                            final LambertBoundaryConditions boundaryConditions) {
-        final int maxIterations = this.householderMaxIterations;
-        final double atol = this.householderAtol;
-        final double rtol = this.householderRtol;
+        final int maxIterations = this.householderParameters.getMaxIterations();
+        final double atol = this.householderParameters.getAbsoluteTolerance();
+        final double rtol = this.householderParameters.getRelativeTolerance();
         initialSetup(posigrade, boundaryConditions);
         // deal with backward case recursively
         if (tau < 0.0) {
@@ -169,6 +170,7 @@ public class LambertSolver {
             for (final LambertSolution solutionForward : solutionsForward) {
                 final LambertSolution reversed = new LambertSolution(solutionForward.getNRev(),
                         solutionForward.getPathType(), solutionForward.getOrbitType(),
+                        posigrade,
                         boundaryConditions,
                         solutionForward.getBoundaryVelocities().getTerminalVelocity(),
                         solutionForward.getBoundaryVelocities().getInitialVelocity());
@@ -189,7 +191,7 @@ public class LambertSolver {
         Vector3D v1 = ir1.scalarMultiply(vrvt[0]).add(it1.scalarMultiply(vrvt[1]));
         Vector3D v2 = ir2.scalarMultiply(vrvt[2]).add(it2.scalarMultiply(vrvt[3]));
         // we create the solution and add it to the list
-        LambertSolution solution = new LambertSolution(0, shortestPathType, orbitType, boundaryConditions, v1, v2);
+        LambertSolution solution = new LambertSolution(0, shortestPathType, orbitType, posigrade, boundaryConditions, v1, v2);
         solutions.add(solution);
         if (nMax >= 1) {
             // then we need to iterate over every value from 1 to nMax, both included:
@@ -203,7 +205,7 @@ public class LambertSolver {
                 v1 = ir1.scalarMultiply(vrvt[0]).add(it1.scalarMultiply(vrvt[1]));
                 v2 = ir2.scalarMultiply(vrvt[2]).add(it2.scalarMultiply(vrvt[3]));
                 // we create the solution and add it to the list
-                solution = new LambertSolution(nRevs, LambertPathType.LOW_PATH, orbitType, boundaryConditions, v1, v2);
+                solution = new LambertSolution(nRevs, LambertPathType.LOW_PATH, orbitType, posigrade, boundaryConditions, v1, v2);
                 solutions.add(solution);
                 // and now for the high path
                 lowPath = false;
@@ -214,7 +216,7 @@ public class LambertSolver {
                 v1 = ir1.scalarMultiply(vrvt[0]).add(it1.scalarMultiply(vrvt[1]));
                 v2 = ir2.scalarMultiply(vrvt[2]).add(it2.scalarMultiply(vrvt[3]));
                 // we create the solution and add it to the list
-                solution = new LambertSolution(nRevs, LambertPathType.HIGH_PATH, orbitType, boundaryConditions, v1, v2);
+                solution = new LambertSolution(nRevs, LambertPathType.HIGH_PATH, orbitType, posigrade, boundaryConditions, v1, v2);
                 solutions.add(solution);
             }
         }
@@ -229,9 +231,9 @@ public class LambertSolver {
      */
     public List<LambertSolution> solve(final boolean posigrade, final int nRevs,
                            final LambertBoundaryConditions boundaryConditions) {
-        final int maxIterations = this.householderMaxIterations;
-        final double atol = this.householderAtol;
-        final double rtol = this.householderRtol;
+        final int maxIterations = this.householderParameters.getMaxIterations();
+        final double atol = this.householderParameters.getAbsoluteTolerance();
+        final double rtol = this.householderParameters.getRelativeTolerance();
         initialSetup(posigrade, boundaryConditions);
         // deal with backward case recursively
         if (tau < 0.0) {
@@ -243,6 +245,7 @@ public class LambertSolver {
             for (final LambertSolution solutionForward : solutionsForward) {
                 final LambertSolution reversed = new LambertSolution(solutionForward.getNRev(),
                         solutionForward.getPathType(), solutionForward.getOrbitType(),
+                        posigrade,
                         boundaryConditions,
                         solutionForward.getBoundaryVelocities().getTerminalVelocity(),
                         solutionForward.getBoundaryVelocities().getInitialVelocity());
@@ -273,7 +276,7 @@ public class LambertSolver {
             v1 = ir1.scalarMultiply(vrvt[0]).add(it1.scalarMultiply(vrvt[1]));
             v2 = ir2.scalarMultiply(vrvt[2]).add(it2.scalarMultiply(vrvt[3]));
             // we create the single solution and add it to the list
-            solution = new LambertSolution(0, shortestPathType, orbitType, boundaryConditions, v1, v2);
+            solution = new LambertSolution(0, shortestPathType, orbitType, posigrade, boundaryConditions, v1, v2);
             solutions.add(solution);
         } else {
             // then we have two solutions, one for the high path and one for the low path
@@ -284,7 +287,7 @@ public class LambertSolver {
             vrvt = reconstructVrVt(x, y, r1, r2, sigma, gamma, rho, zeta);
             v1 = ir1.scalarMultiply(vrvt[0]).add(it1.scalarMultiply(vrvt[1]));
             v2 = ir2.scalarMultiply(vrvt[2]).add(it2.scalarMultiply(vrvt[3]));
-            solution = new LambertSolution(nRevs, LambertPathType.LOW_PATH, orbitType, boundaryConditions, v1, v2);
+            solution = new LambertSolution(nRevs, LambertPathType.LOW_PATH, orbitType, posigrade, boundaryConditions, v1, v2);
             solutions.add(solution);
             // and now for the high path
             x0 = initialGuessX(tau, sigma, nRevs, false);
@@ -293,7 +296,7 @@ public class LambertSolver {
             vrvt = reconstructVrVt(x, y, r1, r2, sigma, gamma, rho, zeta);
             v1 = ir1.scalarMultiply(vrvt[0]).add(it1.scalarMultiply(vrvt[1]));
             v2 = ir2.scalarMultiply(vrvt[2]).add(it2.scalarMultiply(vrvt[3]));
-            solution = new LambertSolution(nRevs, LambertPathType.HIGH_PATH, orbitType, boundaryConditions, v1, v2);
+            solution = new LambertSolution(nRevs, LambertPathType.HIGH_PATH, orbitType, posigrade, boundaryConditions, v1, v2);
             solutions.add(solution);
         }
         return solutions;
@@ -617,12 +620,11 @@ public class LambertSolver {
      * Applications to Spacecraft Dynamics.
      * </p>
      * @param boundaryConditions Lambert boundary conditions
-     * @param lambertSolution Lambert solution to compute the Jacobian for
+     * @param velocities velocities of a Lambert solution to compute the Jacobian for
      * @return Jacobian matrix
      */
     public RealMatrix computeJacobian(final LambertBoundaryConditions boundaryConditions,
-                                      final LambertSolution lambertSolution) {
-        final LambertBoundaryVelocities velocities = lambertSolution.getBoundaryVelocities();
+                                      final LambertBoundaryVelocities velocities) {
         if (velocities != null) {
             return computeNonTrivialCase(boundaryConditions, velocities);
         } else {
@@ -639,7 +641,7 @@ public class LambertSolver {
     /**
      * Compute Jacobian matrix assuming there is a solution.
      * @param boundaryConditions Lambert boundary conditions
-     * @param velocities Lambert solution
+     * @param velocities velocities of a Lambert solution
      * @return Jacobian matrix
      */
     private RealMatrix computeNonTrivialCase(final LambertBoundaryConditions boundaryConditions,

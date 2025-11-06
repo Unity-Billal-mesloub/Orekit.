@@ -1,4 +1,4 @@
-/* Copyright 2002-2025 Rafael Ayala
+/* Copyright 2024-2025 Rafael Ayala
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -35,6 +35,9 @@ public class LambertSolution {
     /** orbit type (elliptic, parabolic, etc). */
     private final LambertOrbitType orbitType;
 
+    /** posigrade flag (true for prograde orbits, false for retrograde orbits). */
+    private final boolean posigrade;
+
     /** LambertBoundaryConditions with the boundary conditions for the Lambert problem. */
     private final LambertBoundaryConditions boundaryConditions;
 
@@ -46,15 +49,17 @@ public class LambertSolution {
      * @param nRev number of complete revolutions
      * @param pathType path (high or low)
      * @param orbitType orbit type (elliptic, parabolic, etc)
+     * @param posigrade posigrade flag (true for prograde orbits, false for retrograde orbits)
      * @param boundaryConditions LambertBoundaryConditions with the boundary conditions for the Lambert problem
      * @param v1 velocity at t1 (initial velocity)
      * @param v2 velocity at t2 (terminal velocity)
      */
-    public LambertSolution(final int nRev, final LambertPathType pathType, final LambertOrbitType orbitType,
+    public LambertSolution(final int nRev, final LambertPathType pathType, final LambertOrbitType orbitType, final boolean posigrade,
                         final LambertBoundaryConditions boundaryConditions, final Vector3D v1, final Vector3D v2) {
         this.nRev = nRev;
         this.pathType = pathType;
         this.orbitType = orbitType;
+        this.posigrade = posigrade;
         this.boundaryConditions = boundaryConditions;
         this.boundaryVelocities = new LambertBoundaryVelocities(v1, v2);
     }
@@ -64,14 +69,16 @@ public class LambertSolution {
      * @param nRev number of complete revolutions
      * @param pathType path (high or low)
      * @param orbitType orbit type (elliptic, parabolic, etc)
+     * @param posigrade posigrade flag (true for prograde orbits, false for retrograde orbits)
      * @param boundaryConditions LambertBoundaryConditions with the boundary conditions for the Lambert problem
      * @param boundaryVelocities LambertBoundaryVelocities with initial and terminal velocities
      */
-    public LambertSolution(final int nRev, final LambertPathType pathType, final LambertOrbitType orbitType,
+    public LambertSolution(final int nRev, final LambertPathType pathType, final LambertOrbitType orbitType, final boolean posigrade,
                         final LambertBoundaryConditions boundaryConditions, final LambertBoundaryVelocities boundaryVelocities) {
         this.nRev = nRev;
         this.pathType = pathType;
         this.orbitType = orbitType;
+        this.posigrade = posigrade;
         this.boundaryConditions = boundaryConditions;
         this.boundaryVelocities = boundaryVelocities;
     }
@@ -98,6 +105,14 @@ public class LambertSolution {
      */
     public LambertOrbitType getOrbitType() {
         return orbitType;
+    }
+
+    /**
+     * Get the posigrade flag.
+     * @return posigrade flag
+     */
+    public boolean getPosigrade() {
+        return posigrade;
     }
 
     /**
