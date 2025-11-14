@@ -117,7 +117,9 @@ class GPSPropagatorTest {
     @Test
     void testFieldClockCorrections() {
         final FieldGPSAlmanac<Binary64> gpsAlmanac = almanacs.get(0).toField(Binary64Field.getInstance());
-        final FieldGnssPropagator<Binary64> propagator = gpsAlmanac.getPropagator();
+        final FieldGnssPropagator<Binary64> propagator =
+            gpsAlmanac.getPropagator(context.getFrames().getEME2000(),
+                                     context.getFrames().getITRF(IERSConventions.IERS_2010, false));
         propagator.addAdditionalDataProvider(new FieldClockCorrectionsProvider<>(gpsAlmanac,
                                                                                   gpsAlmanac.getCycleDuration()));
         // Propagate at the GPS date and one GPS cycle later
@@ -558,7 +560,11 @@ class GPSPropagatorTest {
     void testFieldIssue544() {
         // Builds the GPSPropagator from the almanac
         final FieldGnssPropagator<Binary64> propagator =
-            new FieldGnssPropagatorBuilder<>(almanacs.get(0).toField(Binary64Field.getInstance())).build();
+            new FieldGnssPropagator<>(almanacs.get(0).toField(Binary64Field.getInstance()),
+                                      context.getFrames().getEME2000(),
+                                      context.getFrames().getITRF(IERSConventions.IERS_2010, false),
+                                      new FrameAlignedProvider(context.getFrames().getEME2000()),
+                                      new Binary64(Propagator.DEFAULT_MASS));
         // In order to test the issue, we voluntarily set a Double.NaN value in the date.
         final FieldAbsoluteDate<Binary64> date0 =
             new FieldAbsoluteDate<>(Binary64Field.getInstance(),

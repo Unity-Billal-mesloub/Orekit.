@@ -38,10 +38,10 @@ public class GNSSPropagatorBuilder extends AbstractAnalyticalPropagatorBuilder<G
     private final Frame bodyFixed;
 
     /** Initializes the builder.
-     * <p>The GNSS orbital elements and frames are the only requested parameter to build a GNSSPropagator.</p>
-     * <p>The attitude provider is set by default to be aligned with the provided eci frame.<br>
+     * <p>The GNSS orbital elements and frames are the only requested parameters to build a GNSSPropagator.</p>
+     * <p>The attitude provider is set by default to be aligned with the provided inertial frame.<br>
      * The mass is set by default to the
-     *  {@link org.orekit.propagation.Propagator#DEFAULT_MASS DEFAULT_MASS}.<br>
+     *  {@link org.orekit.propagation.Propagator#DEFAULT_MASS DEFAULT_MASS}.
      * </p>
      *
      * @param orbitalElements orbital elements

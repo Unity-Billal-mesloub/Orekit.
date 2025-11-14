@@ -168,7 +168,9 @@ public class GalileoPropagatorTest {
         Assertions.assertEquals(-7.275957614183E-12, almanac.getAf1().getReal(), 1.0e-15);
 
         // Builds the GalileoPropagator from the almanac
-        final FieldGnssPropagator<Binary64> propagator = almanac.getPropagator();
+        final FieldGnssPropagator<Binary64> propagator =
+            almanac.getPropagator(context.getFrames().getEME2000(),
+                                  context.getFrames().getITRF(IERSConventions.IERS_2010, false));
         // Propagate at the Galileo date and one Galileo cycle later
         final FieldAbsoluteDate<Binary64> date0 = almanac.getDate();
         final FieldVector3D<Binary64> p0 =

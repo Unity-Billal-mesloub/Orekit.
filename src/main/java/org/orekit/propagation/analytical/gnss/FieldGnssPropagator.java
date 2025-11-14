@@ -91,9 +91,9 @@ public class FieldGnssPropagator<T extends CalculusFieldElement<T>> extends Fiel
      * @param provider Attitude provider
      * @param mass Satellite mass (kg)
      */
-    FieldGnssPropagator(final FieldGnssOrbitalElements<T, ?> orbitalElements,
-                        final Frame eci, final Frame ecef,
-                        final AttitudeProvider provider, final T mass) {
+    public FieldGnssPropagator(final FieldGnssOrbitalElements<T, ?> orbitalElements,
+                               final Frame eci, final Frame ecef,
+                               final AttitudeProvider provider, final T mass) {
         super(orbitalElements.getDate().getField(), provider);
         // Stores the GNSS orbital elements
         this.orbitalElements = orbitalElements;
@@ -123,9 +123,9 @@ public class FieldGnssPropagator<T extends CalculusFieldElement<T>> extends Fiel
      * @param provider             attitude provider
      * @param mass                 spacecraft mass
      */
-    FieldGnssPropagator(final FieldSpacecraftState<T> initialState,
-                        final FieldGnssOrbitalElements<T, ?> nonKeplerianElements,
-                        final Frame ecef, final AttitudeProvider provider, final T mass) {
+    public FieldGnssPropagator(final FieldSpacecraftState<T> initialState,
+                               final FieldGnssOrbitalElements<T, ?> nonKeplerianElements,
+                               final Frame ecef, final AttitudeProvider provider, final T mass) {
         this(buildOrbitalElements(initialState, nonKeplerianElements, ecef, provider, mass),
              initialState.getFrame(), ecef, provider, initialState.getMass());
     }

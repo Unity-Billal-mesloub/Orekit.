@@ -64,7 +64,7 @@ public abstract class AbstractAlmanac<O extends AbstractAlmanac<O>> extends Comm
      * <p>
      * The attitude provider is set by default to be aligned with the inertialframe.<br>
      * The mass is set by default to the
-     *  {@link org.orekit.propagation.Propagator#DEFAULT_MASS DEFAULT_MASS}.<br>
+     *  {@link org.orekit.propagation.Propagator#DEFAULT_MASS DEFAULT_MASS}.
      * </p>
      * @param inertial inertial frame, use to provide the propagated orbit
      * @param bodyFixed body fixed frame, corresponding to the navigation message
