@@ -42,8 +42,6 @@ import java.util.ArrayList;
 
 public class Rtcm1019Test {
 
-    private final double eps = 1.0e-15;
-
     @BeforeEach
     public void setUp() {
         Utils.setDataRoot("gnss");
@@ -104,8 +102,10 @@ public class Rtcm1019Test {
                                       context.getFrames().getITRF(IERSConventions.IERS_2010, false)).
                 buildPropagator();
         Assertions.assertNotNull(propagator);
+        final double eps = 1.0e-15;
         Assertions.assertEquals(0.0, gpsMessage.getDate().
-                            durationFrom(new GNSSDate(gpsMessage.getWeek(), gpsMessage.getTime(), SatelliteSystem.GPS).getDate()), eps);
+                            durationFrom(new GNSSDate(gpsMessage.getWeek(), gpsMessage.getTime(), SatelliteSystem.GPS).getDate()),
+                                eps);
 
         // Verify message number
         Assertions.assertEquals(1019,                   rtcm1019.getTypeCode());
@@ -114,34 +114,34 @@ public class Rtcm1019Test {
         // Verify navigation message
         Assertions.assertEquals(12,                     gpsMessage.getPRN());
         Assertions.assertEquals(1019,                   gpsMessage.getWeek());
-        Assertions.assertEquals(2.1475894557210572E-9,  gpsMessage.getIDot(),               eps);
-        Assertions.assertEquals(132,                    gpsMessage.getIODE(),               eps);
-        Assertions.assertEquals(3.524958E-15,           gpsMessage.getAf2(),                eps);
-        Assertions.assertEquals(3.1980107E-10,          gpsMessage.getAf1(),                eps);
-        Assertions.assertEquals(5.721445195376873E-4,   gpsMessage.getAf0(),                eps);
+        Assertions.assertEquals(2.1475894557210572E-9, gpsMessage.getIDot(), eps);
+        Assertions.assertEquals(132, gpsMessage.getIODE(), eps);
+        Assertions.assertEquals(3.524958E-15, gpsMessage.getAf2(), eps);
+        Assertions.assertEquals(3.1980107E-10, gpsMessage.getAf1(), eps);
+        Assertions.assertEquals(5.721445195376873E-4, gpsMessage.getAf0(), eps);
         Assertions.assertEquals(695,                    gpsMessage.getIODC());
-        Assertions.assertEquals(0.0,                    gpsMessage.getCrs(),                eps);
-        Assertions.assertEquals(1.4586338170358127E-4,  gpsMessage.getMeanMotion0(),        eps);
-        Assertions.assertEquals(1.458749761151065E-4,   gpsMessage.getMeanMotion0() + gpsMessage.getDeltaN0(),        eps);
-        Assertions.assertEquals(0.1671775426328288,     gpsMessage.getM0(),                 eps);
-        Assertions.assertEquals(0.0,                    gpsMessage.getCuc(),                eps);
-        Assertions.assertEquals(0.03899807028938085,    gpsMessage.getE(),                  eps);
-        Assertions.assertEquals(0.0,                    gpsMessage.getCus(),                eps);
-        Assertions.assertEquals(5153.562498092651,      FastMath.sqrt(gpsMessage.getSma()), eps);
-        Assertions.assertEquals(560688.0,               gpsMessage.getTime(),               eps);
-        Assertions.assertEquals(0.0,                    gpsMessage.getCic(),                eps);
-        Assertions.assertEquals(0.0,                    gpsMessage.getCis(),                eps);
-        Assertions.assertEquals(0.987714701321906,      gpsMessage.getI0(),                 eps);
-        Assertions.assertEquals(0.0,                    gpsMessage.getCrc(),                eps);
-        Assertions.assertEquals(0.30049130834913723,    gpsMessage.getPa(),                 eps);
-        Assertions.assertEquals(-5.855958209879004E-9,  gpsMessage.getOmegaDot(),           eps);
-        Assertions.assertEquals(0.6980085385373721,     gpsMessage.getOmega0(),             eps);
-        Assertions.assertEquals(1.3969839E-9,           gpsMessage.getTGD(),                eps);
-        Assertions.assertEquals(0.0,                    gpsMessage.getSvHealth(),           eps);
+        Assertions.assertEquals(0.0, gpsMessage.getCrs(), eps);
+        Assertions.assertEquals(1.4586338170358127E-4, gpsMessage.getMeanMotion0(), eps);
+        Assertions.assertEquals(1.458749761151065E-4, gpsMessage.getMeanMotion0() + gpsMessage.getDeltaN0(), eps);
+        Assertions.assertEquals(0.1671775426328288, gpsMessage.getM0(), eps);
+        Assertions.assertEquals(0.0, gpsMessage.getCuc(), eps);
+        Assertions.assertEquals(0.03899807028938085, gpsMessage.getE(), eps);
+        Assertions.assertEquals(0.0, gpsMessage.getCus(), eps);
+        Assertions.assertEquals(5153.562498092651, FastMath.sqrt(gpsMessage.getSma()), eps);
+        Assertions.assertEquals(560688.0, gpsMessage.getTime(), eps);
+        Assertions.assertEquals(0.0, gpsMessage.getCic(), eps);
+        Assertions.assertEquals(0.0, gpsMessage.getCis(), eps);
+        Assertions.assertEquals(0.987714701321906, gpsMessage.getI0(), eps);
+        Assertions.assertEquals(0.0, gpsMessage.getCrc(), eps);
+        Assertions.assertEquals(0.30049130834913723, gpsMessage.getPa(), eps);
+        Assertions.assertEquals(-5.855958209879004E-9, gpsMessage.getOmegaDot(), eps);
+        Assertions.assertEquals(0.6980085385373721, gpsMessage.getOmega0(), eps);
+        Assertions.assertEquals(1.3969839E-9, gpsMessage.getTGD(), eps);
+        Assertions.assertEquals(0.0, gpsMessage.getSvHealth(), eps);
 
         // Verify other data
         Assertions.assertEquals(12,                     ephemerisData.getSatelliteID());
-        Assertions.assertEquals(63216,                  ephemerisData.getGpsToc(),          eps);
+        Assertions.assertEquals(63216, ephemerisData.getGpsToc(), eps);
         Assertions.assertEquals(3,                      ephemerisData.getGpsCodeOnL2());
         Assertions.assertEquals(0,                      ephemerisData.getGpsFitInterval());
         Assertions.assertTrue(ephemerisData.getGpsL2PDataFlag());
