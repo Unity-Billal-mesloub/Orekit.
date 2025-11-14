@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.orekit.Utils;
+import org.orekit.annotation.DefaultDataContext;
 import org.orekit.data.DataContext;
 import org.orekit.gnss.SatelliteSystem;
 import org.orekit.gnss.metric.messages.rtcm.ephemeris.Rtcm1044;
@@ -32,6 +33,7 @@ import org.orekit.propagation.analytical.gnss.GNSSPropagator;
 import org.orekit.propagation.analytical.gnss.GNSSPropagatorBuilder;
 import org.orekit.propagation.analytical.gnss.data.QZSSLegacyNavigationMessage;
 import org.orekit.time.GNSSDate;
+import org.orekit.utils.IERSConventions;
 
 import java.util.ArrayList;
 
@@ -44,6 +46,7 @@ public class Rtcm1044Test {
         Utils.setDataRoot("gnss");
     }
 
+    @DefaultDataContext
     @Test
     public void testParseMessage() {
 
@@ -86,13 +89,18 @@ public class Rtcm1044Test {
         ArrayList<Integer> messages = new ArrayList<>();
         messages.add(1044);
 
-        final Rtcm1044              rtcm1044      = (Rtcm1044) new RtcmMessagesParser(messages, DataContext.getDefault().getTimeScales()).
+        final DataContext           context       = DataContext.getDefault();
+        final Rtcm1044              rtcm1044      = (Rtcm1044) new RtcmMessagesParser(messages, context.getTimeScales()).
                                                     parse(message, false);
         final Rtcm1044Data          ephemerisData = rtcm1044.getEphemerisData();
         final QZSSLegacyNavigationMessage qzssMessage   = ephemerisData.getQzssNavigationMessage();
 
         // Verify propagator initialization
-        final GNSSPropagator propagator = new GNSSPropagatorBuilder(qzssMessage).build();
+        final GNSSPropagator propagator =
+            new GNSSPropagatorBuilder(qzssMessage,
+                                      context.getFrames().getEME2000(),
+                                      context.getFrames().getITRF(IERSConventions.IERS_2010, false)).
+                build();
         Assertions.assertNotNull(propagator);
         Assertions.assertEquals(0.0, qzssMessage.getDate().
                             durationFrom(new GNSSDate(qzssMessage.getWeek(), qzssMessage.getTime(), SatelliteSystem.QZSS).getDate()), eps);
@@ -137,6 +145,7 @@ public class Rtcm1044Test {
 
     }
 
+    @DefaultDataContext
     @Test
     public void testNullMessage() {
 

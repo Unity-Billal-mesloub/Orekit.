@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.orekit.Utils;
+import org.orekit.annotation.DefaultDataContext;
 import org.orekit.data.DataContext;
 import org.orekit.errors.OrekitException;
 import org.orekit.errors.OrekitMessages;
@@ -35,6 +36,7 @@ import org.orekit.propagation.analytical.gnss.GNSSPropagator;
 import org.orekit.propagation.analytical.gnss.GNSSPropagatorBuilder;
 import org.orekit.propagation.analytical.gnss.data.GPSLegacyNavigationMessage;
 import org.orekit.time.GNSSDate;
+import org.orekit.utils.IERSConventions;
 
 import java.util.ArrayList;
 
@@ -47,6 +49,7 @@ public class Rtcm1019Test {
         Utils.setDataRoot("gnss");
     }
 
+    @DefaultDataContext
     @Test
     public void testParseMessage() {
 
@@ -88,13 +91,18 @@ public class Rtcm1019Test {
         ArrayList<Integer> messages = new ArrayList<>();
         messages.add(1019);
 
-        final Rtcm1019             rtcm1019      = (Rtcm1019) new RtcmMessagesParser(messages, DataContext.getDefault().getTimeScales()).
+        final DataContext          context       = DataContext.getDefault();
+        final Rtcm1019             rtcm1019      = (Rtcm1019) new RtcmMessagesParser(messages, context.getTimeScales()).
                                                    parse(message, false);
         final Rtcm1019Data         ephemerisData = rtcm1019.getEphemerisData();
         final GPSLegacyNavigationMessage gpsMessage    = ephemerisData.getGpsNavigationMessage();
 
         // Verify propagator initialization
-        final GNSSPropagator propagator = new GNSSPropagatorBuilder(gpsMessage).build();
+        final GNSSPropagator propagator =
+            new GNSSPropagatorBuilder(gpsMessage,
+                                      context.getFrames().getEME2000(),
+                                      context.getFrames().getITRF(IERSConventions.IERS_2010, false)).
+                build();
         Assertions.assertNotNull(propagator);
         Assertions.assertEquals(0.0, gpsMessage.getDate().
                             durationFrom(new GNSSDate(gpsMessage.getWeek(), gpsMessage.getTime(), SatelliteSystem.GPS).getDate()), eps);
@@ -141,6 +149,7 @@ public class Rtcm1019Test {
 
     }
 
+    @DefaultDataContext
     @Test
     public void testNullMessage() {
 
@@ -182,7 +191,8 @@ public class Rtcm1019Test {
        ArrayList<Integer> messages = new ArrayList<>();
        messages.add(9999999);
 
-       final Rtcm1019 rtcm1019 = (Rtcm1019) new RtcmMessagesParser(messages, DataContext.getDefault().getTimeScales()).
+       final DataContext context = DataContext.getDefault();
+       final Rtcm1019 rtcm1019 = (Rtcm1019) new RtcmMessagesParser(messages, context.getTimeScales()).
                                  parse(message, false);
 
        Assertions.assertNull(rtcm1019);
@@ -195,6 +205,7 @@ public class Rtcm1019Test {
         Assertions.assertFalse(RtcmDataField.DF103.booleanValue(message));
     }
 
+    @DefaultDataContext
     @Test
     public void testEmptyMessage() {
         try {

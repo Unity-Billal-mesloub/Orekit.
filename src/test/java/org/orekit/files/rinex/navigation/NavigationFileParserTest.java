@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.orekit.Utils;
+import org.orekit.annotation.DefaultDataContext;
 import org.orekit.data.DataContext;
 import org.orekit.data.DataSource;
 import org.orekit.data.TruncatingFilter;
@@ -68,9 +69,13 @@ import org.orekit.utils.units.Unit;
 
 public class NavigationFileParserTest {
 
+    private DataContext context;
+
+    @DefaultDataContext
     @BeforeEach
     public void setUp() {
         Utils.setDataRoot("regular-data");
+        context = DataContext.getDefault();
     }
 
     @Test
@@ -190,7 +195,9 @@ public class NavigationFileParserTest {
         Assertions.assertEquals(0.0, obsRebuiltDate.durationFrom(gps.getDate()), 1.0e-15);
         
         // check the propagator
-        final GNSSPropagator propagator = gps.getPropagator();
+        final GNSSPropagator propagator =
+            gps.getPropagator(context.getFrames().getEME2000(),
+                              context.getFrames().getITRF(IERSConventions.IERS_2010, false));
         final AbsoluteDate date0 = gps.getDate();
         final Vector3D p0 = propagator.propagateInEcef(date0).getPosition();
         final double gpsCycleDuration = gps.getCycleDuration();
@@ -391,7 +398,9 @@ public class NavigationFileParserTest {
         Assertions.assertEquals(0.0, obsRebuiltDate.durationFrom(bdt.getDate()), 1.0e-15);
 
         // check the propagator
-        final GNSSPropagator propagator = bdt.getPropagator(DataContext.getDefault().getFrames());
+        final GNSSPropagator propagator =
+            bdt.getPropagator(context.getFrames().getEME2000(),
+                              context.getFrames().getITRF(IERSConventions.IERS_2010, false));
         final AbsoluteDate date0 = bdt.getDate();
         final Vector3D p0 = propagator.propagateInEcef(date0).getPosition();
         final double gpsCycleDuration = bdt.getCycleDuration();
@@ -572,7 +581,9 @@ public class NavigationFileParserTest {
         Assertions.assertEquals(0.0, obsRebuiltDate.durationFrom(gal.getDate()), 1.0e-15);
 
         // check the propagator
-        final GNSSPropagator propagator = gal.getPropagator(DataContext.getDefault().getFrames());
+        final GNSSPropagator propagator =
+            gal.getPropagator(context.getFrames().getEME2000(),
+                              context.getFrames().getITRF(IERSConventions.IERS_2010, false));
         final AbsoluteDate date0 = gal.getDate();
         final Vector3D p0 = propagator.propagateInEcef(date0).getPosition();
         final double gpsCycleDuration = gal.getCycleDuration();
@@ -706,9 +717,11 @@ public class NavigationFileParserTest {
         Assertions.assertEquals(0.0, obsRebuiltDate.durationFrom(qzs.getDate()), 1.0e-15);
 
         // check the propagator
-        final Frames frames = DataContext.getDefault().getFrames();
-        final GNSSPropagator propagator = qzs.getPropagator(DataContext.getDefault().getFrames(), Propagator.getDefaultLaw(frames),
-                FramesFactory.getEME2000(), FramesFactory.getITRF(IERSConventions.IERS_2010, true), Propagator.DEFAULT_MASS);
+        final GNSSPropagator propagator =
+            qzs.getPropagator(Propagator.getDefaultLaw(context.getFrames()),
+                              FramesFactory.getEME2000(),
+                              FramesFactory.getITRF(IERSConventions.IERS_2010, true),
+                              Propagator.DEFAULT_MASS);
         final AbsoluteDate date0 = qzs.getDate();
         final Vector3D p0 = propagator.propagateInEcef(date0).getPosition();
         final double gpsCycleDuration = qzs.getCycleDuration();
@@ -828,9 +841,9 @@ public class NavigationFileParserTest {
 
         // check the propagator
         final GLONASSNumericalPropagator propagator1 = glo.getPropagator(60.0);
-        final GLONASSNumericalPropagator propagator2 = glo.getPropagator(60, DataContext.getDefault());
-        final GLONASSNumericalPropagator propagator3 = glo.getPropagator(60, DataContext.getDefault(),
-                Propagator.getDefaultLaw(DataContext.getDefault().getFrames()),
+        final GLONASSNumericalPropagator propagator2 = glo.getPropagator(60, context);
+        final GLONASSNumericalPropagator propagator3 = glo.getPropagator(60, context,
+                Propagator.getDefaultLaw(context.getFrames()),
                 FramesFactory.getEME2000(), Propagator.DEFAULT_MASS);
         Assertions.assertNotNull(propagator1);
         Assertions.assertNotNull(propagator2);
@@ -902,7 +915,9 @@ public class NavigationFileParserTest {
         Assertions.assertEquals(0.0, obsRebuiltDate.durationFrom(navic.getDate()), 1.0e-15);
 
         // check the propagator
-        final GNSSPropagator propagator = navic.getPropagator();
+        final GNSSPropagator propagator =
+            navic.getPropagator(context.getFrames().getEME2000(),
+                                context.getFrames().getITRF(IERSConventions.IERS_2010, false));
         final AbsoluteDate date0 = navic.getDate();
         final Vector3D p0 = propagator.propagateInEcef(date0).getPosition();
         final double gpsCycleDuration = navic.getCycleDuration();
@@ -1241,7 +1256,9 @@ public class NavigationFileParserTest {
         Assertions.assertEquals(0.0, obsRebuiltDate.durationFrom(qzs.getDate()), 1.0e-15);
 
         // check the propagator
-        final GNSSPropagator propagator = qzs.getPropagator(DataContext.getDefault().getFrames());
+        final GNSSPropagator propagator =
+            qzs.getPropagator(context.getFrames().getEME2000(),
+                              context.getFrames().getITRF(IERSConventions.IERS_2010, false));
         final AbsoluteDate date0 = qzs.getDate();
         final Vector3D p0 = propagator.propagateInEcef(date0).getPosition();
         final double gpsCycleDuration = qzs.getCycleDuration();
@@ -1337,9 +1354,11 @@ public class NavigationFileParserTest {
         Assertions.assertEquals(0.0, obsRebuiltDate.durationFrom(gps.getDate()), 1.0e-15);
 
         // check the propagator
-        final Frames frames = DataContext.getDefault().getFrames();
-        final GNSSPropagator propagator = gps.getPropagator(DataContext.getDefault().getFrames(), Propagator.getDefaultLaw(frames),
-                FramesFactory.getEME2000(), FramesFactory.getITRF(IERSConventions.IERS_2010, true), Propagator.DEFAULT_MASS);
+        final GNSSPropagator propagator =
+            gps.getPropagator(Propagator.getDefaultLaw(context.getFrames()),
+                              FramesFactory.getEME2000(),
+                              FramesFactory.getITRF(IERSConventions.IERS_2010, true),
+                              Propagator.DEFAULT_MASS);
         final AbsoluteDate date0 = gps.getDate();
         final Vector3D p0 = propagator.propagateInEcef(date0).getPosition();
         final double gpsCycleDuration = gps.getCycleDuration();
@@ -1421,9 +1440,11 @@ public class NavigationFileParserTest {
         Assertions.assertEquals(0.0, obsRebuiltDate.durationFrom(gal.getDate()), 1.0e-15);
 
         // check the propagator
-        final Frames frames = DataContext.getDefault().getFrames();
-        final GNSSPropagator propagator = gal.getPropagator(DataContext.getDefault().getFrames(), Propagator.getDefaultLaw(frames),
-                FramesFactory.getEME2000(), FramesFactory.getITRF(IERSConventions.IERS_2010, true), Propagator.DEFAULT_MASS);
+        final GNSSPropagator propagator =
+            gal.getPropagator(Propagator.getDefaultLaw(context.getFrames()),
+                              FramesFactory.getEME2000(),
+                              FramesFactory.getITRF(IERSConventions.IERS_2010, true),
+                              Propagator.DEFAULT_MASS);
         final AbsoluteDate date0 = gal.getDate();
         final Vector3D p0 = propagator.propagateInEcef(date0).getPosition();
         final double gpsCycleDuration = gal.getCycleDuration();
@@ -1483,7 +1504,7 @@ public class NavigationFileParserTest {
         Assertions.assertEquals(155,                sbas.getIODN(), 1.0e-10);
 
         // check the propagator
-        final Frames frames = DataContext.getDefault().getFrames();
+        final Frames frames = context.getFrames();
         final SBASPropagator propagator = sbas.getPropagator(frames, Propagator.getDefaultLaw(frames),
                 FramesFactory.getEME2000(), FramesFactory.getITRF(IERSConventions.IERS_2010, true),
                 Propagator.DEFAULT_MASS, GNSSConstants.SBAS_MU);
@@ -1606,7 +1627,9 @@ public class NavigationFileParserTest {
         Assertions.assertEquals(0.0, obsRebuiltDate.durationFrom(navic.getDate()), 1.0e-15);
 
         // check the propagator
-        final GNSSPropagator propagator = navic.getPropagator();
+        final GNSSPropagator propagator =
+            navic.getPropagator(context.getFrames().getEME2000(),
+                                context.getFrames().getITRF(IERSConventions.IERS_2010, false));
         final AbsoluteDate date0 = navic.getDate();
         final Vector3D p0 = propagator.propagateInEcef(date0).getPosition();
         final double gpsCycleDuration = navic.getCycleDuration();
@@ -1680,7 +1703,9 @@ public class NavigationFileParserTest {
         Assertions.assertEquals(0.0, relativeTime / Constants.JULIAN_DAY, 7.0);
 
         // check the propagator
-        final GNSSPropagator propagator = bdt.getPropagator();
+        final GNSSPropagator propagator =
+            bdt.getPropagator(context.getFrames().getEME2000(),
+                              context.getFrames().getITRF(IERSConventions.IERS_2010, false));
         final AbsoluteDate date0 = bdt.getDate();
         final Vector3D p0 = propagator.propagateInEcef(date0).getPosition();
         final double gpsCycleDuration = bdt.getCycleDuration();

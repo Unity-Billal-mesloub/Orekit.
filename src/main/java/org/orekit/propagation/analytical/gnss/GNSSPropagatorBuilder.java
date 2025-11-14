@@ -16,34 +16,22 @@
  */
 package org.orekit.propagation.analytical.gnss;
 
-import org.orekit.annotation.DefaultDataContext;
 import org.orekit.attitudes.AttitudeProvider;
 import org.orekit.attitudes.FrameAlignedProvider;
-import org.orekit.data.DataContext;
 import org.orekit.frames.Frame;
-import org.orekit.frames.Frames;
 import org.orekit.propagation.Propagator;
 import org.orekit.propagation.analytical.gnss.data.GNSSOrbitalElements;
-import org.orekit.utils.IERSConventions;
 
 /**
- * This nested class aims at building a GNSSPropagator.
- * <p>It implements the classical builder pattern.</p>
+ * Builder for {@link GNSSPropagator}.
  * @author Pascal Parraud
+ * @author Luc Maisonobe
  * @since 11.0
  */
 public class GNSSPropagatorBuilder {
 
-    //////////
-    // Required parameter
-    //////////
-
     /** The GNSS propagation model orbital elements. */
     private final GNSSOrbitalElements<?> orbitalElements;
-
-    ///////////
-    // Optional parameters
-    //////////
 
     /** The attitude provider. */
     private AttitudeProvider attitudeProvider;
@@ -51,66 +39,30 @@ public class GNSSPropagatorBuilder {
     /** The mass. */
     private double mass;
 
-    /** The ECI frame. */
-    private Frame eci;
+    /** The inertial frame. */
+    private final Frame inertial;
 
-    /** The ECEF frame. */
-    private Frame ecef;
-
-    /**
-     * Initializes the builder.
-     * <p>The GNSS orbital elements is the only requested parameter to build a GNSSPropagator.</p>
-     * <p>The attitude provider is set by default to be aligned with the EME2000 frame.<br>
-     * The mass is set by default to the
-     *  {@link org.orekit.propagation.Propagator#DEFAULT_MASS DEFAULT_MASS}.<br>
-     * The ECI frame is set by default to the
-     *  {@link org.orekit.frames.Predefined#EME2000 EME2000 frame} in the default data
-     *  context.<br>
-     * The ECEF frame is set by default to the
-     *  {@link org.orekit.frames.Predefined#ITRF_CIO_CONV_2010_SIMPLE_EOP
-     *  CIO/2010-based ITRF simple EOP} in the default data context.
-     * </p>
-     *
-     * <p>This constructor uses the {@link DataContext#getDefault() default data context}.
-     * Another data context can be set using
-     * {@code Builder(final GNSSOrbitalElements gpsOrbElt, final Frames frames)}</p>
-     *
-     * @param orbitalElements the GNSS orbital elements to be used by the propagator.
-     * @see #attitudeProvider(AttitudeProvider provider)
-     * @see #mass(double mass)
-     * @see #eci(Frame inertial)
-     * @see #ecef(Frame bodyFixed)
-     */
-    @DefaultDataContext
-    public GNSSPropagatorBuilder(final GNSSOrbitalElements<?> orbitalElements) {
-        this(orbitalElements, DataContext.getDefault().getFrames());
-    }
+    /** The body-fixed frame. */
+    private final Frame bodyFixed;
 
     /** Initializes the builder.
-     * <p>The GNSS orbital elements is the only requested parameter to build a GNSSPropagator.</p>
-     * <p>The attitude provider is set by default to be aligned with the EME2000 frame.<br>
+     * <p>The GNSS orbital elements and frames are the only requested parameter to build a GNSSPropagator.</p>
+     * <p>The attitude provider is set by default to be aligned with the provided eci frame.<br>
      * The mass is set by default to the
      *  {@link org.orekit.propagation.Propagator#DEFAULT_MASS DEFAULT_MASS}.<br>
-     * The ECI frame is set by default to the
-     *  {@link Frames#getEME2000() EME2000 frame}.<br>
-     * The ECEF frame is set by default to the
-     *  {@link Frames#getITRF(IERSConventions, boolean)} CIO/2010-based ITRF simple EOP}.
      * </p>
      *
-     * @see #attitudeProvider(AttitudeProvider provider)
      * @param orbitalElements orbital elements
-     * @param frames set of frames to use.
-     * @see #attitudeProvider(AttitudeProvider provider)
-     * @see #mass(double mass)
-     * @see #eci(Frame inertial)
-     * @see #ecef(Frame bodyFixed)
+     * @param inertial inertial frame, use to provide the propagated orbit
+     * @param bodyFixed body fixed frame, corresponding to the navigation message
      */
-    public GNSSPropagatorBuilder(final GNSSOrbitalElements<?> orbitalElements, final Frames frames) {
+    public GNSSPropagatorBuilder(final GNSSOrbitalElements<?> orbitalElements,
+                                 final Frame inertial, final Frame bodyFixed) {
         this.orbitalElements  = orbitalElements;
         this.mass             = Propagator.DEFAULT_MASS;
-        this.eci              = frames.getEME2000();
-        this.ecef             = frames.getITRF(IERSConventions.IERS_2010, true);
-        this.attitudeProvider = FrameAlignedProvider.of(this.eci);
+        this.inertial         = inertial;
+        this.bodyFixed        = bodyFixed;
+        this.attitudeProvider = FrameAlignedProvider.of(inertial);
     }
 
     /** Sets the attitude provider.
@@ -133,32 +85,12 @@ public class GNSSPropagatorBuilder {
         return this;
     }
 
-    /** Sets the Earth Centered Inertial frame used for propagation.
-     *
-     * @param inertial the ECI frame
-     * @return the updated builder
-     */
-    public GNSSPropagatorBuilder eci(final Frame inertial) {
-        this.eci = inertial;
-        return this;
-    }
-
-    /** Sets the Earth Centered Earth Fixed frame assimilated to the WGS84 ECEF.
-     *
-     * @param bodyFixed the ECEF frame
-     * @return the updated builder
-     */
-    public GNSSPropagatorBuilder ecef(final Frame bodyFixed) {
-        this.ecef = bodyFixed;
-        return this;
-    }
-
     /** Finalizes the build.
      *
      * @return the built GNSSPropagator
      */
     public GNSSPropagator build() {
-        return new GNSSPropagator(orbitalElements, eci, ecef, attitudeProvider, mass);
+        return new GNSSPropagator(orbitalElements, inertial, bodyFixed, attitudeProvider, mass);
     }
 
 }

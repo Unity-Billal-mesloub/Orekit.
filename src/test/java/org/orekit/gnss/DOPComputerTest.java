@@ -22,10 +22,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.orekit.Utils;
+import org.orekit.annotation.DefaultDataContext;
 import org.orekit.bodies.GeodeticPoint;
 import org.orekit.bodies.OneAxisEllipsoid;
+import org.orekit.data.DataContext;
 import org.orekit.errors.OrekitException;
-import org.orekit.frames.FramesFactory;
 import org.orekit.propagation.Propagator;
 import org.orekit.propagation.analytical.gnss.GNSSPropagatorBuilder;
 import org.orekit.propagation.analytical.gnss.data.GPSAlmanac;
@@ -33,7 +34,6 @@ import org.orekit.propagation.analytical.tle.TLE;
 import org.orekit.propagation.analytical.tle.TLEPropagator;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.TimeScale;
-import org.orekit.time.TimeScalesFactory;
 import org.orekit.utils.Constants;
 import org.orekit.utils.ElevationMask;
 import org.orekit.utils.IERSConventions;
@@ -44,21 +44,24 @@ import java.util.List;
 
 public class DOPComputerTest {
 
+    private DataContext      context;
     private OneAxisEllipsoid earth;
-    private GeodeticPoint location;
-    private TimeScale     utc;
+    private GeodeticPoint    location;
+    private TimeScale        utc;
 
+    @DefaultDataContext
     @BeforeEach
     public void setUp() {
         // Sets the root of data to read
         Utils.setDataRoot("gnss");
+        context = DataContext.getDefault();
         // Defines the Earth shape
         earth = new OneAxisEllipsoid(Constants.WGS84_EARTH_EQUATORIAL_RADIUS,
                                      Constants.WGS84_EARTH_FLATTENING,
-                                     FramesFactory.getITRF(IERSConventions.IERS_2010, true));
+                                     context.getFrames().getITRF(IERSConventions.IERS_2010, true));
         // Defines the location where to compute the DOP
         location = new GeodeticPoint(FastMath.toRadians(43.6), FastMath.toRadians(1.45), 0.);
-        utc = TimeScalesFactory.getUTC();
+        utc = context.getTimeScales().getUTC();
     }
 
     @AfterEach
@@ -226,7 +229,10 @@ public class DOPComputerTest {
         // Creates the GPS propagators from the almanacs
         final List<Propagator> propagators = new ArrayList<>();
         for (GPSAlmanac almanac: almanacs) {
-            propagators.add(new GNSSPropagatorBuilder(almanac).build());
+            propagators.add(new GNSSPropagatorBuilder(almanac,
+                                                      context.getFrames().getEME2000(),
+                                                      context.getFrames().getITRF(IERSConventions.IERS_2010, false)).
+                            build());
         }
         return propagators;
     }

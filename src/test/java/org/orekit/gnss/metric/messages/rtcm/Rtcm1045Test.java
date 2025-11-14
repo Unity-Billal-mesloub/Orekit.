@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.orekit.Utils;
+import org.orekit.annotation.DefaultDataContext;
 import org.orekit.data.DataContext;
 import org.orekit.gnss.SatelliteSystem;
 import org.orekit.gnss.metric.messages.rtcm.ephemeris.Rtcm1045;
@@ -32,6 +33,7 @@ import org.orekit.propagation.analytical.gnss.GNSSPropagator;
 import org.orekit.propagation.analytical.gnss.GNSSPropagatorBuilder;
 import org.orekit.propagation.analytical.gnss.data.GalileoNavigationMessage;
 import org.orekit.time.GNSSDate;
+import org.orekit.utils.IERSConventions;
 
 import java.util.ArrayList;
 
@@ -44,6 +46,7 @@ public class Rtcm1045Test {
         Utils.setDataRoot("gnss");
     }
 
+    @DefaultDataContext
     @Test
     public void testParseMessage() {
 
@@ -84,13 +87,18 @@ public class Rtcm1045Test {
         ArrayList<Integer> messages = new ArrayList<>();
         messages.add(1045);
 
-        final Rtcm1045                 rtcm1045      = (Rtcm1045) new RtcmMessagesParser(messages, DataContext.getDefault().getTimeScales()).
+        final DataContext              context       = DataContext.getDefault();
+        final Rtcm1045                 rtcm1045      = (Rtcm1045) new RtcmMessagesParser(messages, context.getTimeScales()).
                                                        parse(message, false);
         final Rtcm1045Data             ephemerisData = rtcm1045.getEphemerisData();
         final GalileoNavigationMessage galileoMessage   = ephemerisData.getGalileoNavigationMessage();
 
         // Verify propagator initialization
-        final GNSSPropagator propagator = new GNSSPropagatorBuilder(galileoMessage).build();
+        final GNSSPropagator propagator =
+            new GNSSPropagatorBuilder(galileoMessage,
+                                      context.getFrames().getEME2000(),
+                                      context.getFrames().getITRF(IERSConventions.IERS_2010, false)).
+                build();
         Assertions.assertNotNull(propagator);
         Assertions.assertEquals(0.0, galileoMessage.getDate().
                             durationFrom(new GNSSDate(galileoMessage.getWeek(), galileoMessage.getTime(), SatelliteSystem.GALILEO).getDate()), eps);
@@ -133,6 +141,7 @@ public class Rtcm1045Test {
 
     }
 
+    @DefaultDataContext
     @Test
     public void testNullMessage() {
 

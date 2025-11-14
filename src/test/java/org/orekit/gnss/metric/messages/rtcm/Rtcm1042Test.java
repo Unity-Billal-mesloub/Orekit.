@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.orekit.Utils;
+import org.orekit.annotation.DefaultDataContext;
 import org.orekit.data.DataContext;
 import org.orekit.gnss.SatelliteSystem;
 import org.orekit.gnss.metric.messages.rtcm.ephemeris.Rtcm1042;
@@ -32,6 +33,7 @@ import org.orekit.propagation.analytical.gnss.GNSSPropagator;
 import org.orekit.propagation.analytical.gnss.GNSSPropagatorBuilder;
 import org.orekit.propagation.analytical.gnss.data.BeidouLegacyNavigationMessage;
 import org.orekit.time.GNSSDate;
+import org.orekit.utils.IERSConventions;
 
 import java.util.ArrayList;
 
@@ -44,6 +46,7 @@ public class Rtcm1042Test {
         Utils.setDataRoot("gnss");
     }
 
+    @DefaultDataContext
     @Test
     public void testParseMessage() {
 
@@ -84,13 +87,18 @@ public class Rtcm1042Test {
         ArrayList<Integer> messages = new ArrayList<>();
         messages.add(1042);
 
-        final Rtcm1042                rtcm1042      = (Rtcm1042) new RtcmMessagesParser(messages, DataContext.getDefault().getTimeScales()).
+        final DataContext             context       = DataContext.getDefault();
+        final Rtcm1042                rtcm1042      = (Rtcm1042) new RtcmMessagesParser(messages, context.getTimeScales()).
                                                       parse(message, false);
         final Rtcm1042Data            ephemerisData = rtcm1042.getEphemerisData();
         final BeidouLegacyNavigationMessage beidouMessage = ephemerisData.getBeidouNavigationMessage();
 
         // Verify propagator initialization
-        final GNSSPropagator propagator = new GNSSPropagatorBuilder(beidouMessage).build();
+        final GNSSPropagator propagator =
+            new GNSSPropagatorBuilder(beidouMessage,
+                                      context.getFrames().getEME2000(),
+                                      context.getFrames().getITRF(IERSConventions.IERS_2010, false)).
+                build();
         Assertions.assertNotNull(propagator);
         Assertions.assertEquals(0.0, beidouMessage.getDate().
                             durationFrom(new GNSSDate(beidouMessage.getWeek(), beidouMessage.getTime(), SatelliteSystem.BEIDOU).getDate()), eps);
@@ -135,6 +143,7 @@ public class Rtcm1042Test {
 
     }
 
+    @DefaultDataContext
     @Test
     public void testNullMessage() {
 
