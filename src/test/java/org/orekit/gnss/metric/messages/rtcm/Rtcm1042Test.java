@@ -98,7 +98,7 @@ public class Rtcm1042Test {
             new GNSSPropagatorBuilder(beidouMessage,
                                       context.getFrames().getEME2000(),
                                       context.getFrames().getITRF(IERSConventions.IERS_2010, false)).
-                build();
+                buildPropagator();
         Assertions.assertNotNull(propagator);
         Assertions.assertEquals(0.0, beidouMessage.getDate().
                             durationFrom(new GNSSDate(beidouMessage.getWeek(), beidouMessage.getTime(), SatelliteSystem.BEIDOU).getDate()), eps);

@@ -16,11 +16,12 @@
  */
 package org.orekit.propagation.analytical.gnss;
 
-import org.orekit.attitudes.AttitudeProvider;
 import org.orekit.attitudes.FrameAlignedProvider;
 import org.orekit.frames.Frame;
+import org.orekit.orbits.PositionAngleType;
 import org.orekit.propagation.Propagator;
 import org.orekit.propagation.analytical.gnss.data.GNSSOrbitalElements;
+import org.orekit.propagation.conversion.AbstractAnalyticalPropagatorBuilder;
 
 /**
  * Builder for {@link GNSSPropagator}.
@@ -28,19 +29,10 @@ import org.orekit.propagation.analytical.gnss.data.GNSSOrbitalElements;
  * @author Luc Maisonobe
  * @since 11.0
  */
-public class GNSSPropagatorBuilder {
+public class GNSSPropagatorBuilder extends AbstractAnalyticalPropagatorBuilder<GNSSPropagator> {
 
     /** The GNSS propagation model orbital elements. */
     private final GNSSOrbitalElements<?> orbitalElements;
-
-    /** The attitude provider. */
-    private AttitudeProvider attitudeProvider;
-
-    /** The mass. */
-    private double mass;
-
-    /** The inertial frame. */
-    private final Frame inertial;
 
     /** The body-fixed frame. */
     private final Frame bodyFixed;
@@ -58,39 +50,25 @@ public class GNSSPropagatorBuilder {
      */
     public GNSSPropagatorBuilder(final GNSSOrbitalElements<?> orbitalElements,
                                  final Frame inertial, final Frame bodyFixed) {
-        this.orbitalElements  = orbitalElements;
-        this.mass             = Propagator.DEFAULT_MASS;
-        this.inertial         = inertial;
-        this.bodyFixed        = bodyFixed;
-        this.attitudeProvider = FrameAlignedProvider.of(inertial);
+        super(new GNSSPropagator(orbitalElements, inertial, bodyFixed,
+                                 FrameAlignedProvider.of(inertial),
+                                 Propagator.DEFAULT_MASS).
+              getInitialState().
+              getOrbit(),
+              PositionAngleType.TRUE,
+              1.0,
+              false,
+              FrameAlignedProvider.of(inertial),
+              Propagator.DEFAULT_MASS);
+        this.orbitalElements = orbitalElements;
+        this.bodyFixed       = bodyFixed;
     }
 
-    /** Sets the attitude provider.
-     *
-     * @param userProvider the attitude provider
-     * @return the updated builder
-     */
-    public GNSSPropagatorBuilder attitudeProvider(final AttitudeProvider userProvider) {
-        this.attitudeProvider = userProvider;
-        return this;
-    }
-
-    /** Sets the mass.
-     *
-     * @param userMass the mass (in kg)
-     * @return the updated builder
-     */
-    public GNSSPropagatorBuilder mass(final double userMass) {
-        this.mass = userMass;
-        return this;
-    }
-
-    /** Finalizes the build.
-     *
-     * @return the built GNSSPropagator
-     */
-    public GNSSPropagator build() {
-        return new GNSSPropagator(orbitalElements, inertial, bodyFixed, attitudeProvider, mass);
+    /**  {@inheritDoc} */
+    @Override
+    public GNSSPropagator buildPropagator(final double[] normalizedParameters) {
+        setParameters(normalizedParameters);
+        return new GNSSPropagator(orbitalElements, getFrame(), bodyFixed, getAttitudeProvider(), getMass());
     }
 
 }

@@ -100,7 +100,7 @@ public class Rtcm1044Test {
             new GNSSPropagatorBuilder(qzssMessage,
                                       context.getFrames().getEME2000(),
                                       context.getFrames().getITRF(IERSConventions.IERS_2010, false)).
-                build();
+                buildPropagator();
         Assertions.assertNotNull(propagator);
         Assertions.assertEquals(0.0, qzssMessage.getDate().
                             durationFrom(new GNSSDate(qzssMessage.getWeek(), qzssMessage.getTime(), SatelliteSystem.QZSS).getDate()), eps);

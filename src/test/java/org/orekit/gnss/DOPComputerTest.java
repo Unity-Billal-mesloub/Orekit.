@@ -232,7 +232,7 @@ public class DOPComputerTest {
             propagators.add(new GNSSPropagatorBuilder(almanac,
                                                       context.getFrames().getEME2000(),
                                                       context.getFrames().getITRF(IERSConventions.IERS_2010, false)).
-                            build());
+                            buildPropagator());
         }
         return propagators;
     }

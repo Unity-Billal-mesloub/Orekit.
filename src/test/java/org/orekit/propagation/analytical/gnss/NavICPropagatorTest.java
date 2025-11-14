@@ -126,7 +126,7 @@ public class NavICPropagatorTest {
             new GNSSPropagatorBuilder(almanac,
                                       frames.getEME2000(),
                                       frames.getITRF(IERSConventions.IERS_2010, false)).
-                build();
+                buildPropagator();
         final SpacecraftState old = propagator.getInitialState();
         propagator.resetIntermediateState(new SpacecraftState(old.getOrbit(), old.getAttitude()).withMass(old.getMass() + 1000),
                                           true);

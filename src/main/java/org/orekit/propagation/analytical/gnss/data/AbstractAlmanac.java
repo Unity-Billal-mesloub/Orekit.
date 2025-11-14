@@ -88,10 +88,10 @@ public abstract class AbstractAlmanac<O extends AbstractAlmanac<O>> extends Comm
      */
     public GNSSPropagator getPropagator(final AttitudeProvider provider,
                                         final Frame inertial, final Frame bodyFixed, final double mass) {
-        return new GNSSPropagatorBuilder(this, inertial, bodyFixed).
-               attitudeProvider(provider).
-               mass(mass).
-               build();
+        final GNSSPropagatorBuilder builder = new GNSSPropagatorBuilder(this, inertial, bodyFixed);
+        builder.setAttitudeProvider(provider);
+        builder.setMass(mass);
+        return builder.buildPropagator();
     }
 
 }

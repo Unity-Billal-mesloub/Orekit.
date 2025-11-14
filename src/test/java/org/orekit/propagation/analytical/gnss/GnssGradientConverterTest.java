@@ -82,7 +82,7 @@ class GnssGradientConverterTest {
         propagator = new GNSSPropagatorBuilder(goe,
                                                context.getFrames().getEME2000(),
                                                context.getFrames().getITRF(IERSConventions.IERS_2010, false)).
-                     build();
+                     buildPropagator();
     }
 
     @Test

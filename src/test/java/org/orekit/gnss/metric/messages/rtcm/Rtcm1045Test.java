@@ -98,7 +98,7 @@ public class Rtcm1045Test {
             new GNSSPropagatorBuilder(galileoMessage,
                                       context.getFrames().getEME2000(),
                                       context.getFrames().getITRF(IERSConventions.IERS_2010, false)).
-                build();
+                buildPropagator();
         Assertions.assertNotNull(propagator);
         Assertions.assertEquals(0.0, galileoMessage.getDate().
                             durationFrom(new GNSSDate(galileoMessage.getWeek(), galileoMessage.getTime(), SatelliteSystem.GALILEO).getDate()), eps);

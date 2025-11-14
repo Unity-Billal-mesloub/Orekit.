@@ -193,7 +193,7 @@ class GPSPropagatorTest {
             new GNSSPropagatorBuilder(almanacs.get(0),
                                       context.getFrames().getEME2000(),
                                       context.getFrames().getITRF(IERSConventions.IERS_2010, false)).
-                build();
+                buildPropagator();
         final SpacecraftState old = propagator.getInitialState();
         propagator.resetIntermediateState(new SpacecraftState(old.getOrbit(), old.getAttitude()).withMass( old.getMass() + 1000),
                                           true);
@@ -544,7 +544,7 @@ class GPSPropagatorTest {
             new GNSSPropagatorBuilder(almanacs.get(0),
                                       context.getFrames().getEME2000(),
                                       context.getFrames().getITRF(IERSConventions.IERS_2010, false)).
-                build();
+                buildPropagator();
         // In order to test the issue, we voluntarily set a Double.NaN value in the date.
         final AbsoluteDate date0 = new AbsoluteDate(2010, 5, 7, 7, 50, Double.NaN, TimeScalesFactory.getUTC());
         final PVCoordinates pv0 = propagator.propagateInEcef(date0);
@@ -580,7 +580,7 @@ class GPSPropagatorTest {
             new GNSSPropagatorBuilder(almanacs.get(0),
                                       context.getFrames().getEME2000(),
                                       context.getFrames().getITRF(IERSConventions.IERS_2010, false)).
-                build();
+                buildPropagator();
 
         // Setup additional data provider which use the initial state in its init method
         final AdditionalDataProvider<double[]> additionalDataProvider = TestUtils.getAdditionalProviderWithInit();
