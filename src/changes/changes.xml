@@ -29,6 +29,9 @@
         <action dev="serrof" type="add" issue="1848">
             Add CartesianToleranceProvider with given relative tolerance.
         </action>
+        <action dev="serrof" type="add" issue="1846">
+            Add (Field)EventHandlerModifier.
+        </action>
         <action dev="luc" type="update" issue="issue-1845">
           Added toRawElements to AttitudeElementsType and RateElementsType.
         </action>

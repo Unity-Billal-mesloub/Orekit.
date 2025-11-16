@@ -24,6 +24,7 @@ import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.ode.events.Action;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
+import org.orekit.propagation.events.handlers.FieldEventHandlerModifier;
 import org.orekit.time.FieldAbsoluteDate;
 
 /** This class logs events detectors events during propagation.
@@ -204,15 +205,20 @@ public class FieldEventsLogger<T extends CalculusFieldElement<T>> {
 
             final FieldEventHandler<T> handler = getDetector().getHandler();
 
-            return new FieldEventHandler<T>() {
+            return new FieldEventHandlerModifier<T>() {
 
                 private FieldSpacecraftState<T> lastTriggeringState = null;
                 private FieldSpacecraftState<T> lastResetState = null;
 
                 @Override
+                public FieldEventHandler<T> getOriginalHandler() {
+                    return handler;
+                }
+
+                @Override
                 public void init(final FieldSpacecraftState<T> initialState, final FieldAbsoluteDate<T> target,
                                  final FieldEventDetector<T> detector) {
-                    FieldEventHandler.super.init(initialState, target, detector);
+                    FieldEventHandlerModifier.super.init(initialState, target, detector);
                     lastResetState = null;
                     lastTriggeringState = null;
                 }

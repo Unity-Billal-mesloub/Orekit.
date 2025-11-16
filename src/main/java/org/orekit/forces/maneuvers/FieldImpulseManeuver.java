@@ -29,6 +29,7 @@ import org.orekit.propagation.events.FieldDetectorModifier;
 import org.orekit.propagation.events.FieldEventDetectionSettings;
 import org.orekit.propagation.events.FieldEventDetector;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
+import org.orekit.propagation.events.handlers.FieldEventHandlerModifier;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.utils.Constants;
 import org.orekit.utils.FieldAbsolutePVCoordinates;
@@ -89,7 +90,7 @@ public class FieldImpulseManeuver<T extends CalculusFieldElement<T>> extends Abs
     private final FieldEventDetectionSettings<T> detectionSettings;
 
     /** Specific event handler. */
-    private final Handler<T> handler;
+    private final Handler handler;
 
     /** Field impulse provider. */
     private final FieldImpulseProvider<T> fieldImpulseProvider;
@@ -148,7 +149,7 @@ public class FieldImpulseManeuver<T extends CalculusFieldElement<T>> extends Abs
         this.fieldImpulseProvider = fieldImpulseProvider;
         this.isp = isp;
         this.vExhaust = this.isp.multiply(Constants.G0_STANDARD_GRAVITY);
-        this.handler = new Handler<>();
+        this.handler = new Handler();
     }
 
     /**
@@ -217,7 +218,12 @@ public class FieldImpulseManeuver<T extends CalculusFieldElement<T>> extends Abs
     }
 
     /** Local handler. */
-    private static class Handler<T extends CalculusFieldElement<T>> implements FieldEventHandler<T> {
+    private class Handler implements FieldEventHandlerModifier<T> {
+
+        @Override
+        public FieldEventHandler<T> getOriginalHandler() {
+            return getDetector().getHandler();
+        }
 
         /** {@inheritDoc} */
         @Override
