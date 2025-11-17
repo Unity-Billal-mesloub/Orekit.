@@ -24,7 +24,6 @@ import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.ode.events.Action;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
-import org.orekit.propagation.events.handlers.FieldEventHandlerModifier;
 import org.orekit.time.FieldAbsoluteDate;
 
 /** This class logs events detectors events during propagation.
@@ -52,13 +51,40 @@ public class FieldEventsLogger<T extends CalculusFieldElement<T>> {
     /** List of occurred events. */
     private final List<FieldLoggedEvent<T>> log;
 
+    /** Flag to save reset states. */
+    private final boolean logResetStates;
+
+    /** Constructor from existing log with flag to keep reset states.
+     * @param logResetStates flag to turn on the storage of reset states (if false, getter in event is set to null)
+     * @param inputLog log to be kept at start
+     * <p>
+     * Build an non-empty logger for events detectors.
+     * </p>
+     * @since 14.0
+     */
+    public FieldEventsLogger(final boolean logResetStates, final List<FieldLoggedEvent<T>> inputLog) {
+        this.logResetStates = logResetStates;
+        this.log = new ArrayList<>(inputLog);
+    }
+
+    /** Constructor from existing log.
+     * @param inputLog log to be kept at start
+     * <p>
+     * Build an non-empty logger for events detectors.
+     * </p>
+     * @since 14.0
+     */
+    public FieldEventsLogger(final List<FieldLoggedEvent<T>> inputLog) {
+        this(inputLog.stream().anyMatch(loggedEvent -> loggedEvent.getResetState() != null), inputLog);
+    }
+
     /** Simple constructor.
      * <p>
      * Build an empty logger for events detectors.
      * </p>
      */
     public FieldEventsLogger() {
-        log = new ArrayList<>();
+        this(true, new ArrayList<>());
     }
 
     /** Monitor an event detector.
@@ -153,7 +179,7 @@ public class FieldEventsLogger<T extends CalculusFieldElement<T>> {
         }
 
         /**
-         * Get the reset state.
+         * Get the reset state. Can be null if not stored.
          * @return reset state
          * @since 13.1
          */
@@ -191,36 +217,25 @@ public class FieldEventsLogger<T extends CalculusFieldElement<T>> {
 
         /** Log an event.
          * @param state state at event trigger date
-         * @param resetState reset state if any, otherwise same as event state
+         * @param resetState reset state if any, otherwise same as event state and null if not logged
          * @param increasing indicator if the event switching function was increasing
          */
         void logEvent(final FieldSpacecraftState<T> state, final FieldSpacecraftState<T> resetState,
                       final boolean increasing) {
-            log.add(new FieldLoggedEvent<>(getDetector(), state, resetState, increasing));
+            log.add(new FieldLoggedEvent<>(wrappedDetector, state, resetState, increasing));
         }
 
         /** {@inheritDoc} */
         @Override
         public FieldEventHandler<T> getHandler() {
+            final FieldEventHandler<T> handler = wrappedDetector.getHandler();
 
-            final FieldEventHandler<T> handler = getDetector().getHandler();
-
-            return new FieldEventHandlerModifier<T>() {
-
-                private FieldSpacecraftState<T> lastTriggeringState = null;
-                private FieldSpacecraftState<T> lastResetState = null;
-
-                @Override
-                public FieldEventHandler<T> getOriginalHandler() {
-                    return handler;
-                }
+            return new FieldEventHandler<T>() {
 
                 @Override
                 public void init(final FieldSpacecraftState<T> initialState, final FieldAbsoluteDate<T> target,
                                  final FieldEventDetector<T> detector) {
-                    FieldEventHandlerModifier.super.init(initialState, target, detector);
-                    lastResetState = null;
-                    lastTriggeringState = null;
+                    handler.init(initialState, target, getDetector());
                 }
 
                 /** {@inheritDoc} */
@@ -229,27 +244,19 @@ public class FieldEventsLogger<T extends CalculusFieldElement<T>> {
                                             final FieldEventDetector<T> d,
                                             final boolean increasing) {
                     final Action action = handler.eventOccurred(s, getDetector(), increasing);
-                    if (action == Action.RESET_STATE) {
-                        lastResetState = resetState(getDetector(), s);
-                    } else {
-                        lastResetState = s;
-                    }
-                    lastTriggeringState = s;
-                    logEvent(s, lastResetState, increasing);
+                    logEvent(s, logResetStates ? resetState(getDetector(), s) : null, increasing);
                     return action;
                 }
 
-                /** {@inheritDoc} */
                 @Override
-                public FieldSpacecraftState<T> resetState(final FieldEventDetector<T> d,
-                                                          final FieldSpacecraftState<T> oldState) {
-                    if (lastTriggeringState != oldState) {
-                        lastTriggeringState = oldState;
-                        lastResetState = handler.resetState(getDetector(), oldState);
-                    }
-                    return lastResetState;
+                public FieldSpacecraftState<T> resetState(final FieldEventDetector<T> detector, final FieldSpacecraftState<T> oldState) {
+                    return handler.resetState(getDetector(), oldState);
                 }
 
+                @Override
+                public void finish(final FieldSpacecraftState<T> finalState, final FieldEventDetector<T> detector) {
+                    handler.finish(finalState, getDetector());
+                }
             };
         }
 

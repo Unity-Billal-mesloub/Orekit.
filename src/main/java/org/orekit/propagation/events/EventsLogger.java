@@ -22,7 +22,6 @@ import java.util.List;
 import org.hipparchus.ode.events.Action;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.handlers.EventHandler;
-import org.orekit.propagation.events.handlers.EventHandlerModifier;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.TimeStamped;
 
@@ -50,13 +49,40 @@ public class EventsLogger {
     /** List of occurred events. */
     private final List<LoggedEvent> log;
 
+    /** Flag to save reset states. */
+    private final boolean logResetStates;
+
+    /** Constructor from existing log with flag to keep reset states.
+     * @param logResetStates flag to turn on the storage of reset states (if false, getter in event is set to null)
+     * @param inputLog log to be kept at start
+     * <p>
+     * Build an non-empty logger for events detectors.
+     * </p>
+     * @since 14.0
+     */
+    public EventsLogger(final boolean logResetStates, final List<LoggedEvent> inputLog) {
+        this.logResetStates = logResetStates;
+        this.log = new ArrayList<>(inputLog);
+    }
+
+    /** Constructor from existing log.
+     * @param inputLog log to be kept at start
+     * <p>
+     * Build an non-empty logger for events detectors.
+     * </p>
+     * @since 14.0
+     */
+    public EventsLogger(final List<LoggedEvent> inputLog) {
+        this(inputLog.stream().anyMatch(loggedEvent -> loggedEvent.getResetState() != null), inputLog);
+    }
+
     /** Simple constructor.
      * <p>
      * Build an empty logger for events detectors.
      * </p>
      */
     public EventsLogger() {
-        log = new ArrayList<>();
+        this(true, new ArrayList<>());
     }
 
     /** Monitor an event detector.
@@ -155,7 +181,7 @@ public class EventsLogger {
             return state;
         }
 
-        /** Get the reset state.
+        /** Get the reset state. Can be null if not stored.
          * @return reset state
          * @see EventHandler#resetState(EventDetector, SpacecraftState)
          * @since 13.1
@@ -189,7 +215,7 @@ public class EventsLogger {
 
         /** Log an event.
          * @param state state at event trigger date
-         * @param resetState state after reset if any, otherwise event state
+         * @param resetState state after reset if any, otherwise event state and null if not logged
          * @param increasing indicator if the event switching function was increasing
          */
         void logEvent(final SpacecraftState state, final SpacecraftState resetState, final boolean increasing) {
@@ -207,49 +233,30 @@ public class EventsLogger {
         public EventHandler getHandler() {
             final EventHandler handler = getDetector().getHandler();
 
-            return new EventHandlerModifier() {
-
-                private SpacecraftState lastTriggeringState = null;
-                private SpacecraftState lastResetState = null;
+            return new EventHandler() {
 
                 @Override
-                public EventHandler getOriginalHandler() {
-                    return handler;
-                }
-
-                /** {@inheritDoc} */
-                @Override
-                public void init(final SpacecraftState initialState, final AbsoluteDate target,
-                                 final EventDetector detector) {
-                    EventHandlerModifier.super.init(initialState, target, detector);
-                    lastTriggeringState = null;
-                    lastResetState = null;
+                public void init(final SpacecraftState initialState, final AbsoluteDate target, final EventDetector detector) {
+                    handler.init(initialState, target, getDetector());
                 }
 
                 /** {@inheritDoc} */
                 @Override
                 public Action eventOccurred(final SpacecraftState s, final EventDetector d, final boolean increasing) {
                     final Action action = handler.eventOccurred(s, getDetector(), increasing);
-                    if (action == Action.RESET_STATE) {
-                        lastResetState = resetState(getDetector(), s);
-                    } else {
-                        lastResetState = s;
-                    }
-                    lastTriggeringState = s;
-                    logEvent(s, lastResetState, increasing);
+                    logEvent(s, logResetStates ? resetState(getDetector(), s) : null, increasing);
                     return action;
                 }
 
-                /** {@inheritDoc} */
                 @Override
-                public SpacecraftState resetState(final EventDetector d, final SpacecraftState oldState) {
-                    if (lastTriggeringState != oldState) {
-                        lastTriggeringState = oldState;
-                        lastResetState = handler.resetState(getDetector(), oldState);
-                    }
-                    return lastResetState;
+                public SpacecraftState resetState(final EventDetector detector, final SpacecraftState oldState) {
+                    return handler.resetState(getDetector(), oldState);
                 }
 
+                @Override
+                public void finish(final SpacecraftState finalState, final EventDetector detector) {
+                    handler.finish(finalState, getDetector());
+                }
             };
         }
 

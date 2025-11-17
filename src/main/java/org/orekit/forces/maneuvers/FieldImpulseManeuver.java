@@ -29,7 +29,6 @@ import org.orekit.propagation.events.FieldDetectorModifier;
 import org.orekit.propagation.events.FieldEventDetectionSettings;
 import org.orekit.propagation.events.FieldEventDetector;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
-import org.orekit.propagation.events.handlers.FieldEventHandlerModifier;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.utils.Constants;
 import org.orekit.utils.FieldAbsolutePVCoordinates;
@@ -218,11 +217,17 @@ public class FieldImpulseManeuver<T extends CalculusFieldElement<T>> extends Abs
     }
 
     /** Local handler. */
-    private class Handler implements FieldEventHandlerModifier<T> {
+    private class Handler implements FieldEventHandler<T> {
 
         @Override
-        public FieldEventHandler<T> getOriginalHandler() {
-            return getDetector().getHandler();
+        public void init(final FieldSpacecraftState<T> initialState, final FieldAbsoluteDate<T> target,
+                         final FieldEventDetector<T> detector) {
+            getDetector().getHandler().init(initialState, target, getDetector());
+        }
+
+        @Override
+        public void finish(final FieldSpacecraftState<T> finalState, final FieldEventDetector<T> detector) {
+            getDetector().getHandler().finish(finalState, getDetector());
         }
 
         /** {@inheritDoc} */
@@ -230,8 +235,7 @@ public class FieldImpulseManeuver<T extends CalculusFieldElement<T>> extends Abs
         public Action eventOccurred(final FieldSpacecraftState<T> s,
                                     final FieldEventDetector<T> detector,
                                     final boolean increasing) {
-            final FieldImpulseManeuver<T> im = (FieldImpulseManeuver<T>) detector;
-            im.trigger.getHandler().eventOccurred(s, im.trigger, increasing); // Action ignored but method still called
+            getDetector().getHandler().eventOccurred(s, getDetector(), increasing); // Action ignored but method still called
             return Action.RESET_STATE;
         }
 

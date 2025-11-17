@@ -234,7 +234,7 @@ class FieldEventEnablingPredicateFilterTest {
                         new FieldEventEnablingPredicateFilter<>(raw,
                                                                 (state, eventDetector, g) -> state.getDate().durationFrom(orbit.getDate()).getReal() > 20000.0);
         FieldPropagator<Binary64> propagator = new FieldKeplerianPropagator<>(orbit);
-        FieldEventsLogger<Binary64> logger = new FieldEventsLogger<>();
+        FieldEventsLogger<Binary64> logger = new FieldEventsLogger<>(false, new ArrayList<>());
         propagator.addEventDetector(logger.monitorDetector(filtered));
         propagator.propagate(orbit.getDate().shiftedBy(Constants.JULIAN_DAY));
         List<FieldLoggedEvent<Binary64>> events = logger.getLoggedEvents();
@@ -362,7 +362,7 @@ class FieldEventEnablingPredicateFilterTest {
     }
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
 
         Utils.setDataRoot("regular-data");
         earth = new OneAxisEllipsoid(Constants.WGS84_EARTH_EQUATORIAL_RADIUS,
@@ -386,7 +386,7 @@ class FieldEventEnablingPredicateFilterTest {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         earth = null;
         gp    = null;
         orbit = null;

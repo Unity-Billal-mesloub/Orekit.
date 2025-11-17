@@ -28,6 +28,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.orekit.TestUtils;
 import org.orekit.Utils;
 import org.orekit.bodies.CelestialBodyFactory;
@@ -45,6 +47,7 @@ import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.time.TimeScalesFactory;
 import org.orekit.utils.FieldPVCoordinates;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.mock;
@@ -67,22 +70,24 @@ class FieldEventsLoggerTest {
         // GIVEN
         final FieldAbsoluteDate<Binary64> fieldDate = FieldAbsoluteDate.getArbitraryEpoch(Binary64Field.getInstance());
         final FieldDateDetector<Binary64> dateDetector = new FieldDateDetector<>(fieldDate);
-        final FieldEventsLogger<Binary64> eventsLogger = new FieldEventsLogger<>();
+        final FieldEventsLogger<Binary64> eventsLogger = new FieldEventsLogger<>(new ArrayList<>());
         // WHEN
         final FieldEventDetector<Binary64> detector = eventsLogger.monitorDetector(dateDetector);
         // THEN
         Assertions.assertInstanceOf(FieldDetectorModifier.class, detector);
+        Assertions.assertTrue(eventsLogger.getLoggedEvents().isEmpty());
         final FieldDetectorModifier<Binary64> modifier = (FieldDetectorModifier<Binary64>) detector;
         Assertions.assertEquals(dateDetector, modifier.getDetector());
     }
 
-    @Test
-    void testMonitorDetectorHandlerEventOccurred() {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void testMonitorDetectorHandlerEventOccurred(final boolean logReset) {
         // GIVEN
         final FieldAbsoluteDate<Binary64> fieldDate = FieldAbsoluteDate.getArbitraryEpoch(Binary64Field.getInstance());
         final FieldCountAndContinue<Binary64> counterHandler = new FieldCountAndContinue<>(0);
         final FieldDateDetector<Binary64> dateDetector = new FieldDateDetector<>(fieldDate).withHandler(counterHandler);
-        final FieldEventsLogger<Binary64> eventsLogger = new FieldEventsLogger<>();
+        final FieldEventsLogger<Binary64> eventsLogger = new FieldEventsLogger<>(logReset, new ArrayList<>());
         final FieldEventDetector<Binary64> detector = eventsLogger.monitorDetector(dateDetector);
         final FieldEventHandler<Binary64> handler = detector.getHandler();
         @SuppressWarnings("unchecked")
@@ -96,7 +101,7 @@ class FieldEventsLoggerTest {
         Assertions.assertEquals(loggedEvents.size(), counterHandler.getCount());
         final FieldEventsLogger.FieldLoggedEvent<Binary64> event = loggedEvents.get(0);
         Assertions.assertEquals(mockedState, event.getState());
-        Assertions.assertEquals(mockedState, event.getResetState());
+        Assertions.assertEquals(logReset ? mockedState : null, event.getResetState());
     }
 
     @Test

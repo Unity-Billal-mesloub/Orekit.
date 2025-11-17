@@ -211,13 +211,22 @@ public class ImpulseManeuver extends AbstractImpulseManeuver implements Detector
     }
 
     /** Local handler. */
-    private static class Handler implements EventHandler {
+    private class Handler implements EventHandler {
+
+        @Override
+        public void init(final SpacecraftState initialState, final AbsoluteDate target, final EventDetector detector) {
+            getDetector().getHandler().init(initialState, target, getDetector());
+        }
+
+        @Override
+        public void finish(final SpacecraftState finalState, final EventDetector detector) {
+            getDetector().getHandler().finish(finalState, getDetector());
+        }
 
         /** {@inheritDoc} */
         public Action eventOccurred(final SpacecraftState s, final EventDetector detector,
                                     final boolean increasing) {
-            final ImpulseManeuver im = (ImpulseManeuver) detector;
-            im.trigger.getHandler().eventOccurred(s, im.trigger, increasing); // Action is ignored but method still called
+            getDetector().getHandler().eventOccurred(s, getDetector(), increasing); // Action is ignored but method still called
             return Action.RESET_STATE;
         }
 
