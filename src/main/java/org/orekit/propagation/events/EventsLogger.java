@@ -22,6 +22,7 @@ import java.util.List;
 import org.hipparchus.ode.events.Action;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.handlers.EventHandler;
+import org.orekit.propagation.events.handlers.EventHandlerModifier;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.TimeStamped;
 
@@ -206,16 +207,21 @@ public class EventsLogger {
         public EventHandler getHandler() {
             final EventHandler handler = getDetector().getHandler();
 
-            return new EventHandler() {
+            return new EventHandlerModifier() {
 
                 private SpacecraftState lastTriggeringState = null;
                 private SpacecraftState lastResetState = null;
+
+                @Override
+                public EventHandler getOriginalHandler() {
+                    return handler;
+                }
 
                 /** {@inheritDoc} */
                 @Override
                 public void init(final SpacecraftState initialState, final AbsoluteDate target,
                                  final EventDetector detector) {
-                    EventHandler.super.init(initialState, target, detector);
+                    EventHandlerModifier.super.init(initialState, target, detector);
                     lastTriggeringState = null;
                     lastResetState = null;
                 }
