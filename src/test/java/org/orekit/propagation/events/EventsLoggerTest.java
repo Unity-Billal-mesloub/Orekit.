@@ -26,6 +26,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.orekit.Utils;
 import org.orekit.bodies.CelestialBodyFactory;
 import org.orekit.bodies.OneAxisEllipsoid;
@@ -43,6 +44,7 @@ import org.orekit.time.TimeScalesFactory;
 import org.orekit.utils.IERSConventions;
 import org.orekit.utils.PVCoordinates;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.mock;
@@ -72,11 +74,26 @@ class EventsLoggerTest {
     }
 
     @Test
-    void testMonitorDetectorHandlerEventOccurred() {
+    void testConstructorFromNonEmpty() {
+        // GIVEN
+        final EventsLogger.LoggedEvent event = mock();
+        final List<EventsLogger.LoggedEvent> events = new ArrayList<>();
+        events.add(event);
+        final EventsLogger eventsLogger = new EventsLogger(events);
+        // WHEN
+        final List<EventsLogger.LoggedEvent> logged = eventsLogger.getLoggedEvents();
+        // THEN
+        Assertions.assertEquals(events.size(), logged.size());
+        Assertions.assertEquals(event, logged.get(0));
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void testMonitorDetectorHandlerEventOccurred(final boolean logReset) {
         // GIVEN
         final CountAndContinue counterHandler = new CountAndContinue();
         final DateDetector dateDetector = new DateDetector().withHandler(counterHandler);
-        final EventsLogger eventsLogger = new EventsLogger();
+        final EventsLogger eventsLogger = new EventsLogger(logReset, new ArrayList<>());
         final EventDetector detector = eventsLogger.monitorDetector(dateDetector);
         final EventHandler handler = detector.getHandler();
         final SpacecraftState mockedState = mock();
@@ -89,7 +106,7 @@ class EventsLoggerTest {
         Assertions.assertEquals(loggedEvents.size(), counterHandler.getCount());
         final EventsLogger.LoggedEvent event = loggedEvents.get(0);
         Assertions.assertEquals(mockedState, event.getState());
-        Assertions.assertEquals(mockedState, event.getResetState());
+        Assertions.assertEquals(logReset ? mockedState : null, event.getResetState());
     }
 
     @ParameterizedTest

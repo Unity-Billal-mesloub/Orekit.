@@ -231,7 +231,7 @@ class EventEnablingPredicateFilterTest {
         EventEnablingPredicateFilter filtered =
                         new EventEnablingPredicateFilter(raw, (state, eventDetector, g) -> state.getDate().durationFrom(orbit.getDate()) > 20000.0);
         Propagator propagator = new KeplerianPropagator(orbit);
-        EventsLogger logger = new EventsLogger();
+        EventsLogger logger = new EventsLogger(false, new ArrayList<>());
         propagator.addEventDetector(logger.monitorDetector(filtered));
         propagator.propagate(orbit.getDate().shiftedBy(Constants.JULIAN_DAY));
         List<LoggedEvent> events = logger.getLoggedEvents();
