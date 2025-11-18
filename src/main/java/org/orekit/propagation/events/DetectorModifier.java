@@ -58,6 +58,11 @@ public interface DetectorModifier extends EventDetector {
         return getDetector().dependsOnTimeOnly();
     }
 
+    @Override
+    default boolean dependsOnMainVariablesOnly() {
+        return getDetector().dependsOnMainVariablesOnly();
+    }
+
     /** {@inheritDoc} */
     @Override
     default double g(final SpacecraftState s) {

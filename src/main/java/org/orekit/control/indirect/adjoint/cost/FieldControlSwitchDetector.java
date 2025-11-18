@@ -45,6 +45,11 @@ public abstract class FieldControlSwitchDetector<T extends CalculusFieldElement<
     }
 
     @Override
+    public boolean dependsOnMainVariablesOnly() {
+        return false;
+    }
+
+    @Override
     public FieldEventDetectionSettings<T> getDetectionSettings() {
         return detectionSettings;
     }

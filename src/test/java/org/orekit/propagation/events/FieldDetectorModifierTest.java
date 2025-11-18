@@ -58,6 +58,19 @@ class FieldDetectorModifierTest {
         Assertions.assertEquals(value, actual);
     }
 
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void testDependsOnMainVariablesOnly(final boolean value) {
+        // GIVEN
+        final FieldEventDetector<?> detector = Mockito.mock(FieldEventDetector.class);
+        Mockito.when(detector.dependsOnMainVariablesOnly()).thenReturn(value);
+        final TestFieldDetector<?> modifierDetector = new TestFieldDetector<>(detector);
+        // WHEN
+        final boolean actual = modifierDetector.dependsOnMainVariablesOnly();
+        // THEN
+        Assertions.assertEquals(value, actual);
+    }
+
     @Test
     @SuppressWarnings("unchecked")
     void testGetHandler() {

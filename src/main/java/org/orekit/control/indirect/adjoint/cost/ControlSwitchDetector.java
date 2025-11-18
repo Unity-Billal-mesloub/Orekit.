@@ -44,6 +44,11 @@ public abstract class ControlSwitchDetector implements EventDetector {
     }
 
     @Override
+    public boolean dependsOnMainVariablesOnly() {
+        return false;
+    }
+
+    @Override
     public EventDetectionSettings getDetectionSettings() {
         return detectionSettings;
     }

@@ -1009,10 +1009,10 @@ public abstract class FieldAbstractIntegratedPropagator<T extends CalculusFieldE
          * @return Orekit state
          */
         private FieldSpacecraftState<T> convertToOrekitForEventFunction(final FieldODEStateAndDerivative<T> s) {
-            if (!this.detector.dependsOnTimeOnly()) {
+            if (!this.detector.dependsOnMainVariablesOnly()) {
                 return convertToOrekit(s);
             } else {
-                // event function only needs time
+                // event function does not require secondary states or attitude rates
                 stateMapper.setAttitudeProvider(getFrozenAttitudeProvider());
                 final FieldSpacecraftState<T> converted = convertToOrekitWithoutAdditional(s);
                 stateMapper.setAttitudeProvider(getAttitudeProvider());

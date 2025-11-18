@@ -1075,6 +1075,11 @@ class FieldNumericalPropagatorTest {
             super(detectionSettings, handler);
         }
 
+        @Override
+        public boolean dependsOnMainVariablesOnly() {
+            return false;
+        }
+
         protected AdditionalStateLinearDetector<T> create(final FieldEventDetectionSettings<T> detectionSettings,
                                                           final FieldEventHandler<T> newHandler) {
             return new AdditionalStateLinearDetector<>(detectionSettings, newHandler);
