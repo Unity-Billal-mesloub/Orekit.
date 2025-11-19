@@ -23,6 +23,9 @@
         <action dev="rafa" type="update" issue="1781">
             Updated LambertSolver to one based on Izzo's solver.
         </action>
+        <action dev="serrof" type="update" issue="1853">
+            Do not pass secondary states to event detectors if not necessary.
+        </action>
         <action dev="serrof" type="update" issue="1852">
             Make (Field)EventsLogger more flexible.
         </action>

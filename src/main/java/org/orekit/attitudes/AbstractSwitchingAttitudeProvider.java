@@ -156,6 +156,11 @@ abstract class AbstractSwitchingAttitudeProvider implements AttitudeProvider {
                 attitudeSwitch.init(s0.toSpacecraftState(), t.toAbsoluteDate());
             }
 
+            @Override
+            public void finish(final FieldSpacecraftState<T> state) {
+                attitudeSwitch.finish(state.toSpacecraftState());
+            }
+
             /** {@inheritDoc} */
             @Override
             public T g(final FieldSpacecraftState<T> s) {

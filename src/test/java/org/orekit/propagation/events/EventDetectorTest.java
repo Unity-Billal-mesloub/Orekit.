@@ -60,9 +60,30 @@ import org.orekit.utils.Constants;
 import org.orekit.utils.PVCoordinates;
 import org.orekit.utils.PVCoordinatesProvider;
 
-public class EventDetectorTest {
+
+class EventDetectorTest {
 
     private double mu;
+
+    @Test
+    void testDependsOnTimeOnly() {
+        // GIVEN
+        final EventDetector detector = new TestDetector();
+        // WHEN
+        final boolean actual = detector.dependsOnTimeOnly();
+        // THEN
+        Assertions.assertFalse(actual);
+    }
+
+    @Test
+    void testDependsOnMainVariablesOnly() {
+        // GIVEN
+        final EventDetector detector = new TestDetector();
+        // WHEN
+        final boolean actual = detector.dependsOnMainVariablesOnly();
+        // THEN
+        Assertions.assertTrue(actual);
+    }
 
     @Test
     void testFinish() {
@@ -112,7 +133,7 @@ public class EventDetectorTest {
     }
 
     @Test
-    public void testEventHandlerInit() {
+    void testEventHandlerInit() {
         final TimeScale utc = TimeScalesFactory.getUTC();
         final Vector3D position = new Vector3D(-6142438.668, 3492467.56, -25767.257);
         final Vector3D velocity = new Vector3D(505.848, 942.781, 7435.922);
@@ -151,7 +172,7 @@ public class EventDetectorTest {
     }
 
     @Test
-    public void testBasicScheduling() {
+    void testBasicScheduling() {
 
         final TimeScale utc = TimeScalesFactory.getUTC();
         final Vector3D position = new Vector3D(-6142438.668, 3492467.56, -25767.257);
@@ -207,7 +228,7 @@ public class EventDetectorTest {
     }
 
     @Test
-    public void testIssue108Numerical() {
+    void testIssue108Numerical() {
         final TimeScale utc = TimeScalesFactory.getUTC();
         final Vector3D position = new Vector3D(-6142438.668, 3492467.56, -25767.257);
         final Vector3D velocity = new Vector3D(505.848, 942.781, 7435.922);
@@ -225,7 +246,7 @@ public class EventDetectorTest {
     }
 
     @Test
-    public void testIssue108Analytical() {
+    void testIssue108Analytical() {
         final TimeScale utc = TimeScalesFactory.getUTC();
         final Vector3D position = new Vector3D(-6142438.668, 3492467.56, -25767.257);
         final Vector3D velocity = new Vector3D(505.848, 942.781, 7435.922);
@@ -270,7 +291,7 @@ public class EventDetectorTest {
     }
 
     @Test
-    public void testNoisyGFunction() {
+    void testNoisyGFunction() {
 
         // initial conditions
         Frame eme2000 = FramesFactory.getEME2000();
@@ -322,7 +343,7 @@ public class EventDetectorTest {
     }
 
     @Test
-    public void testWrappedException() {
+    void testWrappedException() {
         final Throwable dummyCause = new RuntimeException();
         try {
             // initial conditions
@@ -358,7 +379,7 @@ public class EventDetectorTest {
     }
 
     @Test
-    public void testDefaultMethods() {
+    void testDefaultMethods() {
         EventDetector dummyDetector = new EventDetector() {
 
             @Override
@@ -389,7 +410,7 @@ public class EventDetectorTest {
     }
 
     @Test
-    public void testNumericalNoiseAtIntervalEnd() {
+    void testNumericalNoiseAtIntervalEnd() {
 
         Frame eme2000 = FramesFactory.getEME2000();
         TimeScale utc = TimeScalesFactory.getUTC();
@@ -410,22 +431,22 @@ public class EventDetectorTest {
     }
 
     @Test
-    public void testForwardAnalytical() {
+    void testForwardAnalytical() {
         doTestScheduling(0.0, 1.0, 21, this::buildAnalytical);
     }
 
     @Test
-    public void testBackwardAnalytical() {
+    void testBackwardAnalytical() {
         doTestScheduling(1.0, 0.0, 21, this::buildAnalytical);
     }
 
     @Test
-    public void testForwardNumerical() {
+    void testForwardNumerical() {
         doTestScheduling(0.0, 1.0, 23, this::buildNumerical);
     }
 
     @Test
-    public void testBackwardNumerical() {
+    void testBackwardNumerical() {
         doTestScheduling(1.0, 0.0, 23, this::buildNumerical);
     }
 

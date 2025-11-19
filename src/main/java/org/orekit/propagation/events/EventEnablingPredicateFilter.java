@@ -159,6 +159,11 @@ public class EventEnablingPredicateFilter implements DetectorModifier {
         return false;  // cannot know what predicate needs
     }
 
+    @Override
+    public boolean dependsOnMainVariablesOnly() {
+        return false;  // cannot know what predicate needs
+    }
+
     /**  {@inheritDoc} */
     @Override
     public void init(final SpacecraftState s0, final AbsoluteDate t) {

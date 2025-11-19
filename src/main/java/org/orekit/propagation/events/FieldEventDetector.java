@@ -97,12 +97,25 @@ public interface FieldEventDetector <T extends CalculusFieldElement<T>> {
 
     /**
      * Method returning true if and only if the detection function g does not depend on dependent variables,
-     * just the independent one i.e. time. This information is used for performance in propagation.
+     * just the independent one i.e. time. This information is used for performance in propagation
+     * and derivatives correction with switches in the dynamics.
      * @return flag
      * @since 13.1
      */
     default boolean dependsOnTimeOnly() {
         return false;
+    }
+
+    /**
+     * Method returning true if and only if the detection function g does not depend on dependent variables,
+     * other than the Cartesian coordinates (or equivalent), mass and attitude (excepts for its rates).
+     * It should thus return false if the STM is needed to evaluate the event.
+     * This information is used for performance in propagation.
+     * @return flag
+     * @since 14.0
+     */
+    default boolean dependsOnMainVariablesOnly() {
+        return true;
     }
 
     /** Compute the value of the switching function.

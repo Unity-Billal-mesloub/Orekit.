@@ -77,6 +77,19 @@ class DetectorModifierTest {
         Assertions.assertEquals(value, actual);
     }
 
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void testDependsOnMainVariablesOnly(final boolean value) {
+        // GIVEN
+        final EventDetector detector = Mockito.mock(EventDetector.class);
+        Mockito.when(detector.dependsOnMainVariablesOnly()).thenReturn(value);
+        final DetectorModifier detectorModifier = new TestDetectorModifier(detector);
+        // WHEN
+        final boolean actual = detectorModifier.dependsOnMainVariablesOnly();
+        // THEN
+        Assertions.assertEquals(value, actual);
+    }
+
     @Test
     void testInit() {
         // GIVEN

@@ -161,6 +161,11 @@ public class FieldEventEnablingPredicateFilter<T extends CalculusFieldElement<T>
         return false;  // cannot know what predicate needs
     }
 
+    @Override
+    public boolean dependsOnMainVariablesOnly() {
+        return false;  // cannot know what predicate needs
+    }
+
     /**  {@inheritDoc} */
     @Override
     public void init(final FieldSpacecraftState<T> s0, final FieldAbsoluteDate<T> t) {

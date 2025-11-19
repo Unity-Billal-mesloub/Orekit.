@@ -60,6 +60,11 @@ public interface FieldDetectorModifier<T extends CalculusFieldElement<T>> extend
         return getDetector().dependsOnTimeOnly();
     }
 
+    @Override
+    default boolean dependsOnMainVariablesOnly() {
+        return getDetector().dependsOnMainVariablesOnly();
+    }
+
     /** {@inheritDoc} */
     @Override
     default T g(final FieldSpacecraftState<T> s) {

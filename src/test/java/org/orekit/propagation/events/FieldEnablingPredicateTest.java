@@ -17,6 +17,8 @@
 package org.orekit.propagation.events;
 
 import org.hipparchus.util.Binary64;
+import org.hipparchus.util.Binary64Field;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.orekit.propagation.FieldSpacecraftState;
 
@@ -24,6 +26,30 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 class FieldEnablingPredicateTest {
+
+    @Test
+    void testDependsOnTimeOnly() {
+        // GIVEN
+        final FieldEventDetector<Binary64> detector = new FieldDateDetector<>(Binary64Field.getInstance());
+        final FieldEnablingPredicate<Binary64> enablingPredicate = (s, e, d) -> true;
+        final FieldEventEnablingPredicateFilter<Binary64> predicateFilter = new FieldEventEnablingPredicateFilter<>(detector, enablingPredicate);
+        // WHEN
+        final boolean value = predicateFilter.dependsOnTimeOnly();
+        // THEN
+        Assertions.assertFalse(value);
+    }
+
+    @Test
+    void testDependsOnMainVariablesOnly() {
+        // GIVEN
+        final FieldEventDetector<Binary64> detector = new FieldDateDetector<>(Binary64Field.getInstance());
+        final FieldEnablingPredicate<Binary64> enablingPredicate = (s, e, d) -> true;
+        final FieldEventEnablingPredicateFilter<Binary64> predicateFilter = new FieldEventEnablingPredicateFilter<>(detector, enablingPredicate);
+        // WHEN
+        final boolean value = predicateFilter.dependsOnMainVariablesOnly();
+        // THEN
+        Assertions.assertFalse(value);
+    }
 
     @Test
     @SuppressWarnings("unchecked")

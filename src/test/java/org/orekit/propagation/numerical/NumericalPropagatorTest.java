@@ -873,6 +873,11 @@ class NumericalPropagatorTest {
             this.eventHandler = eventHandler;
         }
 
+        @Override
+        public boolean dependsOnMainVariablesOnly() {
+            return false;
+        }
+
         public double g(SpacecraftState s) {
             return s.getAdditionalState("linear")[0] - 3.0;
         }

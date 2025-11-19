@@ -56,7 +56,6 @@ public class AttitudesSequence extends AbstractSwitchingAttitudeProvider {
     /** Constructor for an initially empty sequence.
      */
     public AttitudesSequence() {
-        super();
         switches = new ArrayList<>();
     }
 
@@ -226,6 +225,11 @@ public class AttitudesSequence extends AbstractSwitchingAttitudeProvider {
                 }
             }
 
+        }
+
+        @Override
+        public boolean dependsOnMainVariablesOnly() {
+            return false;
         }
 
         /** {@inheritDoc} */

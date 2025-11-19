@@ -70,6 +70,44 @@ class FieldEventDetectorTest {
     private double mu;
 
     @Test
+    void testDependsOnTimeOnly() {
+        // GIVEN
+        final FieldEventDetector<Binary64> detector = new TestFieldDetector();
+        // WHEN
+        final boolean actual = detector.dependsOnTimeOnly();
+        // THEN
+        Assertions.assertFalse(actual);
+    }
+
+    @Test
+    void testDependsOnMainVariablesOnly() {
+        // GIVEN
+        final FieldEventDetector<Binary64> detector = new TestFieldDetector();
+        // WHEN
+        final boolean actual = detector.dependsOnMainVariablesOnly();
+        // THEN
+        Assertions.assertTrue(actual);
+    }
+
+    private static class TestFieldDetector implements FieldEventDetector<Binary64> {
+
+        @Override
+        public Binary64 g(FieldSpacecraftState<Binary64> s) {
+            return Binary64.ONE;
+        }
+
+        @Override
+        public FieldEventHandler<Binary64> getHandler() {
+            return null;
+        }
+
+        @Override
+        public FieldEventDetectionSettings<Binary64> getDetectionSettings() {
+            return null;
+        }
+    }
+
+    @Test
     @SuppressWarnings("unchecked")
     void testFinish() {
         // GIVEN
@@ -603,7 +641,7 @@ class FieldEventDetectorTest {
     }
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         Utils.setDataRoot("regular-data");
         mu = Constants.EIGEN5C_EARTH_MU;
     }

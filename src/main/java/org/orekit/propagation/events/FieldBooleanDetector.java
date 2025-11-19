@@ -235,6 +235,12 @@ public class FieldBooleanDetector<T extends CalculusFieldElement<T>> extends Fie
         return getDetectors().stream().allMatch(FieldEventDetector::dependsOnTimeOnly);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean dependsOnMainVariablesOnly() {
+        return getDetectors().stream().allMatch(FieldEventDetector::dependsOnMainVariablesOnly);
+    }
+
     @Override
     public T g(final FieldSpacecraftState<T> s) {
         // can't use stream/lambda here because g(s) throws a checked exception
