@@ -16,6 +16,7 @@
  */
 package org.orekit.propagation.events.intervals;
 
+import org.hipparchus.util.FastMath;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -23,7 +24,6 @@ import org.orekit.orbits.Orbit;
 import org.orekit.propagation.SpacecraftState;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.longThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -59,8 +59,9 @@ class PeriodBasedAdaptableIntervalTest {
         assertEquals(expected, actual);
     }
 
-    @Test
-    void testCurrentIntervalElliptical() {
+    @ParameterizedTest
+    @ValueSource(doubles = {1., 10.})
+    void testCurrentIntervalElliptical(final double defaultMaxCheck) {
         // GIVEN
         final SpacecraftState mockedState = mock();
         when(mockedState.isOrbitDefined()).thenReturn(true);
@@ -70,8 +71,8 @@ class PeriodBasedAdaptableIntervalTest {
         when(mockedOrbit.getKeplerianPeriod()).thenReturn(period);
         when(mockedState.getOrbit()).thenReturn(mockedOrbit);
         final double factor = 2;
-        final double expected = period * factor;
-        final PeriodBasedAdaptableInterval interval = new PeriodBasedAdaptableInterval(factor, 1.);
+        final double expected = FastMath.min(defaultMaxCheck, period * factor);
+        final PeriodBasedAdaptableInterval interval = new PeriodBasedAdaptableInterval(factor, defaultMaxCheck);
         // WHEN
         final double actual = interval.currentInterval(mockedState, true);
         // THEN

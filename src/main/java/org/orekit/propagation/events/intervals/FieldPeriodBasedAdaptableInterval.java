@@ -18,6 +18,7 @@
 package org.orekit.propagation.events.intervals;
 
 import org.hipparchus.CalculusFieldElement;
+import org.hipparchus.util.FastMath;
 import org.orekit.orbits.FieldOrbit;
 import org.orekit.propagation.FieldSpacecraftState;
 
@@ -33,13 +34,13 @@ public class FieldPeriodBasedAdaptableInterval<T extends CalculusFieldElement<T>
     /** Multiplying factor on orbital period to define interval. */
     private final double factor;
 
-    /** Default value for interval size when not period is defined. */
+    /** Minimum value and default one for interval size when not period is defined. */
     private final double defaultMaxCheck;
 
     /**
      * Constructor.
      * @param factor multiplying factor on the orbital, Keplerian period
-     * @param defaultMaxCheck default value in case the period is not defined
+     * @param defaultMaxCheck default value in case the period is not defined, also used as minimum
      */
     public FieldPeriodBasedAdaptableInterval(final double factor, final double defaultMaxCheck) {
         this.factor = factor;
@@ -48,12 +49,13 @@ public class FieldPeriodBasedAdaptableInterval<T extends CalculusFieldElement<T>
 
     @Override
     public double currentInterval(final FieldSpacecraftState<T> state, final boolean isForward) {
+        double maxCheck = defaultMaxCheck;
         if (state.isOrbitDefined()) {
             final FieldOrbit<T> orbit = state.getOrbit();
             if (orbit.isElliptical()) {
-                return factor * orbit.getKeplerianPeriod().getReal();
+                maxCheck = FastMath.min(maxCheck, factor * orbit.getKeplerianPeriod().getReal());
             }
         }
-        return defaultMaxCheck;
+        return maxCheck;
     }
 }

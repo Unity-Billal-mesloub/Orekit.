@@ -36,8 +36,8 @@ import org.orekit.utils.PVCoordinates;
  * <p>This class implements an impulse maneuver as a discrete event
  * that can be provided to any {@link org.orekit.propagation.Propagator
  * Propagator}.</p>
- * <p>The maneuver is executed when an underlying event is triggered and the handler returns anything but {@linkAction#CONTINUE CONTINUE},
- * in which case this class will generate a {@linkAction#RESET_STATE RESET_STATE} event.
+ * <p>The maneuver is executed when an underlying event is triggered and the handler returns anything but {@link Action#CONTINUE CONTINUE},
+ * in which case this class will generate a {@link Action#RESET_STATE RESET_STATE} event.
  * By default, the detection settings are those of the trigger.
  * In the simple cases, the underlying event detector may be a basic
  * {@link org.orekit.propagation.events.DateDetector date event}, but it
