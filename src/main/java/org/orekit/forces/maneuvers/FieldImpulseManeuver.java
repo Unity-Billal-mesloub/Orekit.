@@ -39,8 +39,8 @@ import org.orekit.utils.FieldPVCoordinates;
  * that can be provided to any {@link org.orekit.propagation.FieldPropagator
  * Propagator} and mirrors the standard version
  * {@link org.orekit.forces.maneuvers.ImpulseManeuver}.</p>
- * <p>The maneuver is executed when an underlying event is triggered and the handler returns anything but {@linkAction#CONTINUE CONTINUE},
- * in which case this class will generate a {@linkAction#RESET_STATE RESET_STATE} event.
+ * <p>The maneuver is executed when an underlying event is triggered and the handler returns anything but {@link Action#CONTINUE CONTINUE},
+ * in which case this class will generate a {@link Action#RESET_STATE RESET_STATE} event.
  * In the simple cases, the underlying event detector may be a basic
  * {@link org.orekit.propagation.events.FieldDateDetector date event}, but it
  * can also be a more elaborate {@link

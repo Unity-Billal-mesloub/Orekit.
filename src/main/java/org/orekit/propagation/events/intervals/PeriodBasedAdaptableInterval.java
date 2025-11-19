@@ -17,6 +17,7 @@
 
 package org.orekit.propagation.events.intervals;
 
+import org.hipparchus.util.FastMath;
 import org.orekit.orbits.Orbit;
 import org.orekit.propagation.SpacecraftState;
 
@@ -31,13 +32,13 @@ public class PeriodBasedAdaptableInterval implements AdaptableInterval {
     /** Multiplying factor on orbital period to define interval. */
     private final double factor;
 
-    /** Default value for interval size when not period is defined. */
+    /** Minimum value and default one for interval size when not period is defined. */
     private final double defaultMaxCheck;
 
     /**
      * Constructor.
      * @param factor multiplying factor on the orbital, Keplerian period
-     * @param defaultMaxCheck default value in case the period is not defined
+     * @param defaultMaxCheck default value in case the period is not defined, also used as minimum
      */
     public PeriodBasedAdaptableInterval(final double factor, final double defaultMaxCheck) {
         this.factor = factor;
@@ -46,12 +47,13 @@ public class PeriodBasedAdaptableInterval implements AdaptableInterval {
 
     @Override
     public double currentInterval(final SpacecraftState state, final boolean isForward) {
+        double maxCheck = defaultMaxCheck;
         if (state.isOrbitDefined()) {
             final Orbit orbit = state.getOrbit();
             if (orbit.isElliptical()) {
-                return factor * orbit.getKeplerianPeriod();
+                maxCheck = FastMath.min(maxCheck, factor * orbit.getKeplerianPeriod());
             }
         }
-        return defaultMaxCheck;
+        return maxCheck;
     }
 }

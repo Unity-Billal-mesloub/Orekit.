@@ -17,13 +17,12 @@
 package org.orekit.propagation.events.intervals;
 
 import org.hipparchus.util.Binary64;
+import org.hipparchus.util.FastMath;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.orekit.orbits.FieldOrbit;
-import org.orekit.orbits.Orbit;
 import org.orekit.propagation.FieldSpacecraftState;
-import org.orekit.propagation.SpacecraftState;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -63,9 +62,10 @@ class FieldPeriodBasedAdaptableIntervalTest {
         assertEquals(expected, actual);
     }
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(doubles = {1., 10.})
     @SuppressWarnings("unchecked")
-    void testCurrentIntervalElliptical() {
+    void testCurrentIntervalElliptical(final double defaultMaxCheck) {
         // GIVEN
         final FieldSpacecraftState<Binary64> mockedState = mock();
         when(mockedState.isOrbitDefined()).thenReturn(true);
@@ -75,8 +75,8 @@ class FieldPeriodBasedAdaptableIntervalTest {
         when(mockedOrbit.getKeplerianPeriod()).thenReturn(period);
         when(mockedState.getOrbit()).thenReturn(mockedOrbit);
         final double factor = 2;
-        final double expected = period.getReal() * factor;
-        final FieldPeriodBasedAdaptableInterval<Binary64> interval = new FieldPeriodBasedAdaptableInterval<>(factor, 1.);
+        final double expected = FastMath.min(defaultMaxCheck, period.getReal() * factor);
+        final FieldPeriodBasedAdaptableInterval<Binary64> interval = new FieldPeriodBasedAdaptableInterval<>(factor, defaultMaxCheck);
         // WHEN
         final double actual = interval.currentInterval(mockedState, true);
         // THEN
