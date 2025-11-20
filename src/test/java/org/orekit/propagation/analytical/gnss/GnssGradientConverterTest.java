@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.orekit.Utils;
+import org.orekit.annotation.DefaultDataContext;
 import org.orekit.data.DataContext;
 import org.orekit.gnss.SatelliteSystem;
 import org.orekit.orbits.OrbitType;
@@ -41,6 +42,7 @@ import org.orekit.propagation.analytical.gnss.data.GalileoNavigationMessage;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.DoubleArrayDictionary;
 import org.orekit.utils.FieldPVCoordinates;
+import org.orekit.utils.IERSConventions;
 import org.orekit.utils.ParameterDriver;
 
 import java.util.function.BiConsumer;
@@ -48,12 +50,15 @@ import java.util.function.ToDoubleFunction;
 
 class GnssGradientConverterTest {
 
+    private DataContext context;
     private GNSSPropagator propagator;
 
+    @DefaultDataContext
     @BeforeEach
     public void setUp() {
         Utils.setDataRoot("regular-data");
-        final GalileoNavigationMessage goe = new GalileoNavigationMessage(DataContext.getDefault().getTimeScales(),
+        context = DataContext.getDefault();
+        final GalileoNavigationMessage goe = new GalileoNavigationMessage(context.getTimeScales(),
                                                                           SatelliteSystem.GALILEO,
                                                                           GalileoNavigationMessage.FNAV);
         goe.setPRN(4);
@@ -74,7 +79,10 @@ class GnssGradientConverterTest {
         goe.setCrs(-18.78125);
         goe.setCic(3.166496753692627E-8);
         goe.setCis(-1.862645149230957E-8);
-        propagator = new GNSSPropagatorBuilder(goe, DataContext.getDefault().getFrames()).build();
+        propagator = new GNSSPropagatorBuilder(goe,
+                                               context.getFrames().getEME2000(),
+                                               context.getFrames().getITRF(IERSConventions.IERS_2010, false)).
+                     buildPropagator();
     }
 
     @Test
@@ -120,7 +128,8 @@ class GnssGradientConverterTest {
         goe.setCrs(87.03125);
         goe.setCic(3.203749656677246E-7);
         goe.setCis(4.0978193283081055E-8);
-        GNSSPropagator propagator = goe.getPropagator();
+        GNSSPropagator propagator = goe.getPropagator(context.getFrames().getEME2000(),
+                                                      context.getFrames().getITRF(IERSConventions.IERS_2010, true));
 
         // we want to compute the partial derivatives with respect to Crs and Crc parameters
         Assertions.assertEquals(9, propagator.getOrbitalElements().getParameters().length);
