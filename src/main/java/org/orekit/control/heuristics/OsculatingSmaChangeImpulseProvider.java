@@ -30,7 +30,7 @@ import org.orekit.propagation.SpacecraftState;
  * @author Romain Serra
  * @since 14.0
  */
-public class SmaChangingImpulseProvider extends AbstractInPlaneImpulseProvider {
+public class OsculatingSmaChangeImpulseProvider extends AbstractInPlaneImpulseProvider {
 
     /** Target osculating semi-major axis. */
     private final double targetSemiMajorAxis;
@@ -39,7 +39,7 @@ public class SmaChangingImpulseProvider extends AbstractInPlaneImpulseProvider {
      * Constructor with default maximum magnitude set to positive infinity (unconstrained).
      * @param targetSemiMajorAxis osculating value to achieve
      */
-    public SmaChangingImpulseProvider(final double targetSemiMajorAxis) {
+    public OsculatingSmaChangeImpulseProvider(final double targetSemiMajorAxis) {
         this(Double.POSITIVE_INFINITY, targetSemiMajorAxis);
     }
 
@@ -48,7 +48,7 @@ public class SmaChangingImpulseProvider extends AbstractInPlaneImpulseProvider {
      * @param maximumMagnitude maximum magnitude
      * @param targetSemiMajorAxis osculating value to achieve
      */
-    public SmaChangingImpulseProvider(final double maximumMagnitude, final double targetSemiMajorAxis) {
+    public OsculatingSmaChangeImpulseProvider(final double maximumMagnitude, final double targetSemiMajorAxis) {
         super(maximumMagnitude);
         this.targetSemiMajorAxis = targetSemiMajorAxis;
     }

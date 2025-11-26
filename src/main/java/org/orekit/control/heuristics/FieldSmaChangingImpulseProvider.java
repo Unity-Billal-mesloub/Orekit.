@@ -28,7 +28,7 @@ import org.orekit.propagation.FieldSpacecraftState;
  * The resulting osculating eccentricity depends on the execution location. The instantaneous orbital plane is left unchanged.
  * A constraint on the maximum magnitude can be optionally set.
  * @see FieldAbstractInPlaneImpulseProvider
- * @see SmaChangingImpulseProvider
+ * @see OsculatingSmaChangeImpulseProvider
  * @author Romain Serra
  * @since 14.0
  */
