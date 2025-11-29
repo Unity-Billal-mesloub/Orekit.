@@ -37,14 +37,14 @@ import org.orekit.utils.Constants;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class SmaChangingImpulseProviderTest {
+class OsculatingSmaChangeImpulseProviderTest {
 
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void testGetImpulseAlready(final boolean isForward) {
         // GIVEN
         final double semiMajorAxis = 1e7;
-        final SmaChangingImpulseProvider impulseProvider = new SmaChangingImpulseProvider(semiMajorAxis);
+        final OsculatingSmaChangeImpulseProvider impulseProvider = new OsculatingSmaChangeImpulseProvider(semiMajorAxis);
         final EquinoctialOrbit orbit = new EquinoctialOrbit(semiMajorAxis, 0., 0., 0., 0., 0., PositionAngleType.TRUE,
                 FramesFactory.getGCRF(), AbsoluteDate.ARBITRARY_EPOCH, Constants.EGM96_EARTH_MU);
         // WHEN
@@ -58,7 +58,7 @@ class SmaChangingImpulseProviderTest {
     void testGetImpulseDifferent(final double deltaSma) {
         // GIVEN
         final double semimajorAxis = 1.0e7;
-        final SmaChangingImpulseProvider impulseProvider = new SmaChangingImpulseProvider(semimajorAxis);
+        final OsculatingSmaChangeImpulseProvider impulseProvider = new OsculatingSmaChangeImpulseProvider(semimajorAxis);
         final EquinoctialOrbit orbit = new EquinoctialOrbit(semimajorAxis + deltaSma, 0., 0., 0., 0., 0., PositionAngleType.TRUE,
                 FramesFactory.getGCRF(), AbsoluteDate.ARBITRARY_EPOCH, Constants.EGM96_EARTH_MU);
         // WHEN
@@ -76,7 +76,7 @@ class SmaChangingImpulseProviderTest {
         final KeplerianOrbit orbit = new KeplerianOrbit(semimajorAxis, 0., 0., 0., 0., FastMath.PI, PositionAngleType.MEAN,
                 FramesFactory.getGCRF(), AbsoluteDate.ARBITRARY_EPOCH, Constants.EGM96_EARTH_MU);
         final double maximumMagnitude = 10.;
-        final SmaChangingImpulseProvider impulseProvider = new SmaChangingImpulseProvider(maximumMagnitude, semimajorAxis + 1e6);
+        final OsculatingSmaChangeImpulseProvider impulseProvider = new OsculatingSmaChangeImpulseProvider(maximumMagnitude, semimajorAxis + 1e6);
         // WHEN
         final Vector3D impulse = impulseProvider.getImpulse(new SpacecraftState(orbit), true);
         // THEN
@@ -94,7 +94,7 @@ class SmaChangingImpulseProviderTest {
         final AbsoluteDate maneuverDate = isForward ? orbit.getDate().shiftedBy(10) : orbit.getDate().shiftedBy(-10.);
         final SingleDateDetector detector = new SingleDateDetector(maneuverDate);
         final ImpulseManeuver maneuver = new ImpulseManeuver(detector, new FrameAlignedProvider(orbit.getFrame()),
-                new SmaChangingImpulseProvider(targetSemiMajorAxis), Double.POSITIVE_INFINITY, Control3DVectorCostType.NONE);
+                new OsculatingSmaChangeImpulseProvider(targetSemiMajorAxis), Double.POSITIVE_INFINITY, Control3DVectorCostType.NONE);
         propagator.addEventDetector(maneuver);
         // WHEN
         final AbsoluteDate targetDate = isForward ? maneuverDate.shiftedBy(1) : maneuverDate.shiftedBy(-1);

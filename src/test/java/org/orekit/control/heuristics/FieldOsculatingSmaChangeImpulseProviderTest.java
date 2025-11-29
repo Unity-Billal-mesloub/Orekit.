@@ -37,7 +37,7 @@ import org.orekit.utils.Constants;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class FieldSmaChangingImpulseProviderTest {
+class FieldOsculatingSmaChangeImpulseProviderTest {
 
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
@@ -84,7 +84,7 @@ class FieldSmaChangingImpulseProviderTest {
         // WHEN
         final FieldVector3D<Binary64> impulse = impulseProvider.getImpulse(new FieldSpacecraftState<>(fieldOrbit), isForward);
         // THEN
-        final Vector3D expected = new SmaChangingImpulseProvider(targetSemiMajorAxis.getReal())
+        final Vector3D expected = new OsculatingSmaChangeImpulseProvider(targetSemiMajorAxis.getReal())
                 .getImpulse(new SpacecraftState(keplerianOrbit), isForward);
         assertEquals(expected, impulse.toVector3D());
     }
