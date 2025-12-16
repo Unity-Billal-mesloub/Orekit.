@@ -29,8 +29,15 @@ import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.events.FieldDetectorModifier;
 import org.orekit.propagation.events.FieldEventDetectionSettings;
 import org.orekit.propagation.events.FieldEventDetector;
+import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
+import org.orekit.propagation.events.handlers.FieldResetDerivativesOnEvent;
+import org.orekit.propagation.events.handlers.FieldStopOnDecreasing;
 import org.orekit.propagation.events.handlers.FieldStopOnEvent;
+import org.orekit.propagation.events.handlers.FieldStopOnIncreasing;
+import org.orekit.propagation.events.handlers.ResetDerivativesOnEvent;
+import org.orekit.propagation.events.handlers.StopOnDecreasing;
+import org.orekit.propagation.events.handlers.StopOnIncreasing;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.utils.Constants;
 import org.orekit.utils.FieldAbsolutePVCoordinates;
@@ -155,15 +162,28 @@ public class FieldImpulseManeuver<T extends CalculusFieldElement<T>> extends Abs
 
     /**
      * Constructor from non-Field impulse maneuver.
+     * The conversion of the trigger might not work as expected in specific cases and one might need to build it by hand.
      * @param field field
      * @param maneuver non-Field impulse maneuver
      * @since 14.0
      */
     public FieldImpulseManeuver(final Field<T> field, final ImpulseManeuver maneuver) {
-        this(FieldEventDetector.of(maneuver.getDetector().getEventFunction(), new FieldStopOnEvent<>(),
+        this(FieldEventDetector.of(maneuver.getDetector().getEventFunction(), convertHandler(maneuver.getDetector().getHandler()),
                 new FieldEventDetectionSettings<>(field, maneuver.getDetectionSettings())),
                 maneuver.getAttitudeOverride(), FieldImpulseProvider.of(maneuver.getImpulseProvider()),
                 field.getZero().newInstance(maneuver.getIsp()), maneuver.getControl3DVectorCostType());
+    }
+
+    private static <T extends CalculusFieldElement<T>> FieldEventHandler<T> convertHandler(final EventHandler eventHandler) {
+        if (eventHandler instanceof StopOnDecreasing) {
+            return new FieldStopOnDecreasing<>();
+        } else if (eventHandler instanceof StopOnIncreasing) {
+            return new FieldStopOnIncreasing<>();
+        } else if (eventHandler instanceof ResetDerivativesOnEvent) {
+            return new FieldResetDerivativesOnEvent<>();
+        } else {
+            return new FieldStopOnEvent<>();
+        }
     }
 
     /**
