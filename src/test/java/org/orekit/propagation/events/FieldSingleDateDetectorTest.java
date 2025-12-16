@@ -20,15 +20,32 @@ import org.hipparchus.util.Binary64;
 import org.hipparchus.util.Binary64Field;
 import org.junit.jupiter.api.Test;
 import org.orekit.propagation.FieldSpacecraftState;
+import org.orekit.propagation.events.handlers.ContinueOnEvent;
+import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
 import org.orekit.propagation.events.handlers.FieldStopOnEvent;
 import org.orekit.time.AbsoluteDate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class FieldSingleDateDetectorTest {
+
+    @Test
+    void testToEventDetector() {
+        // GIVEN
+        final FieldSingleDateDetector<Binary64> fieldDetector = new FieldSingleDateDetector<>(Binary64Field.getInstance(),
+                AbsoluteDate.ARBITRARY_EPOCH);
+        final EventHandler expectedHandler = new ContinueOnEvent();
+        // WHEN
+        final SingleDateDetector detector = fieldDetector.toEventDetector(expectedHandler);
+        // THEN
+        assertEquals(expectedHandler, detector.getHandler());
+        assertEquals(fieldDetector.getDate(), detector.getDate());
+    }
 
     @Test
     void testConstructor() {

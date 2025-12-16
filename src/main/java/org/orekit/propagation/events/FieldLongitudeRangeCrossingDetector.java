@@ -22,6 +22,7 @@ import org.hipparchus.util.FastMath;
 import org.orekit.bodies.BodyShape;
 import org.orekit.bodies.FieldGeodeticPoint;
 import org.orekit.propagation.FieldSpacecraftState;
+import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
 import org.orekit.propagation.events.handlers.FieldStopOnIncreasing;
 import org.orekit.propagation.events.intervals.FieldAdaptableInterval;
@@ -191,4 +192,9 @@ public class FieldLongitudeRangeCrossingDetector <T extends CalculusFieldElement
 
     }
 
+    @Override
+    public LongitudeRangeCrossingDetector toEventDetector(final EventHandler eventHandler) {
+        return new LongitudeRangeCrossingDetector(getDetectionSettings().toEventDetectionSettings(), eventHandler, getBodyShape(),
+                getFromLongitude(), getToLongitude());
+    }
 }

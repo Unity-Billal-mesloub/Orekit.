@@ -22,6 +22,7 @@ import org.hipparchus.ode.events.FieldEventSlopeFilter;
 import org.orekit.frames.TopocentricFrame;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.events.functions.ElevationExtremumEventFunction;
+import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
 import org.orekit.propagation.events.handlers.FieldStopOnIncreasing;
 
@@ -121,4 +122,8 @@ public class FieldElevationExtremumDetector<T extends CalculusFieldElement<T>>
         return getEventFunction().value(s);
     }
 
+    @Override
+    public ElevationExtremumDetector toEventDetector(final EventHandler eventHandler) {
+        return new ElevationExtremumDetector(getDetectionSettings().toEventDetectionSettings(), eventHandler, getTopocentricFrame());
+    }
 }

@@ -21,6 +21,7 @@ import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.ode.events.Action;
 import org.orekit.bodies.CelestialBodies;
 import org.orekit.propagation.FieldSpacecraftState;
+import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
 import org.orekit.propagation.events.handlers.FieldStopOnEvent;
 import org.orekit.utils.ExtendedPositionProvider;
@@ -143,4 +144,8 @@ public class FieldAngularSeparationDetector<T extends CalculusFieldElement<T>>
         return separation.subtract(proximityAngle);
     }
 
+    @Override
+    public AngularSeparationDetector toEventDetector(final EventHandler eventHandler) {
+        return new AngularSeparationDetector(beacon, observer, proximityAngle.getReal()).withHandler(eventHandler);
+    }
 }

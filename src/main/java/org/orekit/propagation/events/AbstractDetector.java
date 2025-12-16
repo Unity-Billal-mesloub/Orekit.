@@ -24,7 +24,8 @@ import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.intervals.AdaptableInterval;
 import org.orekit.time.AbsoluteDate;
 
-/** Common parts shared by several orbital events finders.
+/** Common parts shared by several events finders.
+ * It should only be implemented by detectors able to accept any handler.
  * @param <T> type of the detector
  * @see org.orekit.propagation.Propagator#addEventDetector(EventDetector)
  * @author Luc Maisonobe

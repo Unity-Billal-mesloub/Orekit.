@@ -20,6 +20,7 @@ import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.Field;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.events.functions.SingleDateEventFunction;
+import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
 import org.orekit.propagation.events.handlers.FieldStopOnEvent;
 import org.orekit.time.AbsoluteDate;
@@ -103,5 +104,10 @@ public class FieldSingleDateDetector<T extends CalculusFieldElement<T>>
      */
     public FieldSingleDateDetector<T> withDate(final AbsoluteDate newDate) {
         return new FieldSingleDateDetector<>(getDetectionSettings(), getHandler(), newDate);
+    }
+
+    @Override
+    public SingleDateDetector toEventDetector(final EventHandler eventHandler) {
+        return new SingleDateDetector(getDetectionSettings().toEventDetectionSettings(), eventHandler, getDate());
     }
 }

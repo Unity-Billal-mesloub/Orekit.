@@ -23,6 +23,7 @@ import org.hipparchus.util.MathUtils;
 import org.orekit.bodies.BodyShape;
 import org.orekit.bodies.FieldGeodeticPoint;
 import org.orekit.propagation.FieldSpacecraftState;
+import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.FieldContinueOnEvent;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
 import org.orekit.propagation.events.handlers.FieldStopOnIncreasing;
@@ -32,12 +33,23 @@ import org.orekit.time.FieldAbsoluteDate;
 /** Detector for geographic longitude crossing.
  * <p>This detector identifies when a spacecraft crosses a fixed
  * longitude with respect to a central body.</p>
+ * <p>
+ * The value is the longitude difference between the spacecraft and the fixed
+ * longitude to be crossed, with some sign tweaks to ensure continuity.
+ * These tweaks imply the {@code increasing} flag in events detection becomes
+ * irrelevant here! As an example, the longitude of a prograde spacecraft
+ * will always increase, but this g function will increase and decrease so it
+ * will cross the zero value once per orbit, in increasing and decreasing
+ * directions on alternate orbits. If eastwards and westwards crossing have to
+ * be distinguished, the velocity direction has to be checked instead of looking
+ * at the {@code increasing} flag.
+ * </p>
  * @author Alberto Ferrero
  * @since 12.0
  * @param <T> type of the field elements
  */
 public class FieldLongitudeCrossingDetector <T extends CalculusFieldElement<T>>
-    extends FieldAbstractGeographicalDetector<FieldLongitudeCrossingDetector<T>, T> {
+    extends FieldAbstractGeographicalDetector<FieldLongitudeCrossingDetector<T>, T> implements FieldDetectorModifier<T> {
 
     /**
     * Fixed longitude to be crossed.
@@ -103,8 +115,7 @@ public class FieldLongitudeCrossingDetector <T extends CalculusFieldElement<T>>
         this.longitude = longitude;
 
         // we filter out spurious longitude crossings occurring at the antimeridian
-        final FieldRawLongitudeCrossingDetector<T> raw = new FieldRawLongitudeCrossingDetector<>(detectionSettings,
-            new FieldContinueOnEvent<>());
+        final FieldRawLongitudeCrossingDetector<T> raw = new FieldRawLongitudeCrossingDetector<>(detectionSettings);
         final FieldEnablingPredicate<T> predicate =
             (state, detector, g) -> FastMath.abs(g).getReal() < 0.5 * FastMath.PI;
         this.filtering = new FieldEventEnablingPredicateFilter<>(raw, predicate);
@@ -138,56 +149,25 @@ public class FieldLongitudeCrossingDetector <T extends CalculusFieldElement<T>>
         filtering.init(s0, t);
     }
 
-    /**
-    * Compute the value of the detection function.
-    * <p>
-    * The value is the longitude difference between the spacecraft and the fixed
-    * longitude to be crossed, with some sign tweaks to ensure continuity.
-    * These tweaks imply the {@code increasing} flag in events detection becomes
-    * irrelevant here! As an example, the longitude of a prograde spacecraft
-    * will always increase, but this g function will increase and decrease so it
-    * will cross the zero value once per orbit, in increasing and decreasing
-    * directions on alternate orbits. If eastwards and westwards crossing have to
-    * be distinguished, the velocity direction has to be checked instead of looking
-    * at the {@code increasing} flag.
-    * </p>
-    *
-    * @param s the current state information: date, kinematics, attitude
-    * @return longitude difference between the spacecraft and the fixed
-    * longitude, with some sign tweaks to ensure continuity
-    */
-    public T g(final FieldSpacecraftState<T> s) {
-        return filtering.g(s);
+    @Override
+    public FieldEventDetector<T> getDetector() {
+        return filtering;
+    }
+
+    @Override
+    public LongitudeCrossingDetector toEventDetector(final EventHandler eventHandler) {
+        return new LongitudeCrossingDetector(getDetectionSettings().toEventDetectionSettings(), eventHandler,
+                getBodyShape(), getLongitude());
     }
 
     private class FieldRawLongitudeCrossingDetector <S extends CalculusFieldElement<S>>
-        extends FieldAbstractDetector<FieldRawLongitudeCrossingDetector<S>, S> {
+        implements FieldEventDetector<S> {
 
-        /**
-        * Protected constructor with full parameters.
-        * <p>
-        * This constructor is not public as users are expected to use the builder
-        * API with the various {@code withXxx()} methods to set up the instance
-        * in a readable manner without using a huge amount of parameters.
-        * </p>
-        *
-        * @param detectionSettings event detection settings
-        * @param handler   event handler to call at event occurrences
-        */
-        protected FieldRawLongitudeCrossingDetector(
-            final FieldEventDetectionSettings<S> detectionSettings,
-            final FieldEventHandler<S> handler) {
-            super(detectionSettings, handler);
-        }
+        /** Event detection settings. */
+        private final FieldEventDetectionSettings<S> detectionSettings;
 
-        /**
-        * {@inheritDoc}
-        */
-        @Override
-        protected FieldRawLongitudeCrossingDetector<S> create(
-            final FieldEventDetectionSettings<S> detectionSettings,
-            final FieldEventHandler<S> newHandler) {
-            return new FieldRawLongitudeCrossingDetector<>(detectionSettings, newHandler);
+        FieldRawLongitudeCrossingDetector(final FieldEventDetectionSettings<S> detectionSettings) {
+            this.detectionSettings = detectionSettings;
         }
 
         /**
@@ -207,8 +187,7 @@ public class FieldLongitudeCrossingDetector <T extends CalculusFieldElement<T>>
         public S g(final FieldSpacecraftState<S> s) {
 
             // convert state to geodetic coordinates
-            final FieldGeodeticPoint<S> gp = getBodyShape().transform(s.getPosition(),
-                s.getFrame(), s.getDate());
+            final FieldGeodeticPoint<S> gp = getBodyShape().transform(s.getPosition(), s.getFrame(), s.getDate());
 
             // longitude difference
             final S zero = gp.getLongitude().getField().getZero();
@@ -216,6 +195,15 @@ public class FieldLongitudeCrossingDetector <T extends CalculusFieldElement<T>>
 
         }
 
+        @Override
+        public FieldEventDetectionSettings<S> getDetectionSettings() {
+            return detectionSettings;
+        }
+
+        @Override
+        public FieldEventHandler<S> getHandler() {
+            return new FieldContinueOnEvent<>();
+        }
     }
 
 }

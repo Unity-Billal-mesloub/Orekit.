@@ -28,9 +28,11 @@ import org.orekit.errors.OrekitMessages;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.events.functions.EventFunction;
 import org.orekit.propagation.events.functions.EventFunctionModifier;
+import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
 import org.orekit.propagation.events.handlers.FieldStopOnEvent;
 import org.orekit.propagation.events.intervals.DateDetectionAdaptableIntervalFactory;
+import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.time.FieldTimeStamped;
 
@@ -200,6 +202,12 @@ public class FieldDateDetector<T extends CalculusFieldElement<T>> extends FieldA
      */
     public FieldAbsoluteDate<T> getDate() {
         return currentIndex < 0 ? null : eventDateList.get(currentIndex).getDate();
+    }
+
+    @Override
+    public DateDetector toEventDetector(final EventHandler eventHandler) {
+        return new DateDetector(getDetectionSettings().toEventDetectionSettings(), eventHandler, minGap,
+                getDates().stream().map(tFieldTimeStamped -> tFieldTimeStamped.getDate().toAbsoluteDate()).toArray(AbsoluteDate[]::new));
     }
 
     /** Add an event date.

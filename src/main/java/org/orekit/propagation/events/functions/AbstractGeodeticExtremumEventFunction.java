@@ -27,7 +27,7 @@ import org.orekit.propagation.SpacecraftState;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.utils.FieldPVCoordinates;
 
-/** Abstract class for geodetic coordinates extremum event function..
+/** Abstract class for geodetic coordinates extremum event function.
  * @author Romain Serra
  * @since 14.0
  */

@@ -17,8 +17,8 @@
 package org.orekit.propagation.events;
 
 import org.orekit.bodies.BodyShape;
-import org.orekit.bodies.GeodeticPoint;
 import org.orekit.propagation.SpacecraftState;
+import org.orekit.propagation.events.functions.LatitudeValueCrossingEventFunction;
 import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.StopOnIncreasing;
 
@@ -32,6 +32,9 @@ public class LatitudeCrossingDetector extends AbstractGeographicalDetector<Latit
 
     /** Fixed latitude to be crossed. */
     private final double latitude;
+
+    /** Event function. */
+    private final LatitudeValueCrossingEventFunction eventFunction;
 
     /** Build a new detector.
      * <p>The new instance uses default values for maximal checking interval
@@ -72,6 +75,7 @@ public class LatitudeCrossingDetector extends AbstractGeographicalDetector<Latit
                                        final BodyShape body, final double latitude) {
         super(detectionSettings, handler, body);
         this.latitude = latitude;
+        this.eventFunction = new LatitudeValueCrossingEventFunction(body, latitude);
     }
 
     /** {@inheritDoc} */
@@ -88,6 +92,11 @@ public class LatitudeCrossingDetector extends AbstractGeographicalDetector<Latit
         return latitude;
     }
 
+    @Override
+    public LatitudeValueCrossingEventFunction getEventFunction() {
+        return eventFunction;
+    }
+
     /** Compute the value of the detection function.
      * <p>
      * The value is the spacecraft latitude minus the fixed latitude to be crossed.
@@ -98,14 +107,7 @@ public class LatitudeCrossingDetector extends AbstractGeographicalDetector<Latit
      * @return spacecraft latitude minus the fixed latitude to be crossed
      */
     public double g(final SpacecraftState s) {
-
-        // convert state to geodetic coordinates
-        final GeodeticPoint gp = getBodyShape().transform(s.getPosition(),
-                                                s.getFrame(), s.getDate());
-
-        // latitude difference
-        return gp.getLatitude() - latitude;
-
+        return getEventFunction().value(s);
     }
 
 }

@@ -29,6 +29,8 @@ import org.orekit.frames.FramesFactory;
 import org.orekit.orbits.FieldCartesianOrbit;
 import org.orekit.orbits.FieldOrbit;
 import org.orekit.propagation.analytical.FieldEcksteinHechlerPropagator;
+import org.orekit.propagation.events.handlers.ContinueOnEvent;
+import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.FieldContinueOnEvent;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
@@ -38,6 +40,23 @@ import org.orekit.utils.Constants;
 import org.orekit.utils.FieldPVCoordinates;
 
 class FieldParameterDrivenDateIntervalDetectorTest {
+
+    @Test
+    void testToEventDetector() {
+        // GIVEN
+        final FieldAbsoluteDate<Binary64> fieldDate = FieldAbsoluteDate.getArbitraryEpoch(Binary64Field.getInstance());
+        final FieldParameterDrivenDateIntervalDetector<Binary64> fieldDetector = new FieldParameterDrivenDateIntervalDetector<>(fieldDate.getField(),
+                "e", fieldDate.toAbsoluteDate(), fieldDate.toAbsoluteDate());
+        final EventHandler handler = new ContinueOnEvent();
+        // WHEN
+        final ParameterDrivenDateIntervalDetector detector = fieldDetector.toEventDetector(handler);
+        // THEN
+        Assertions.assertEquals(handler, detector.getHandler());
+        Assertions.assertEquals(fieldDetector.getStartDriver(), detector.getStartDriver());
+        Assertions.assertEquals(fieldDetector.getStopDriver(), detector.getStopDriver());
+        Assertions.assertEquals(fieldDetector.getDurationDriver(), detector.getDurationDriver());
+        Assertions.assertEquals(fieldDetector.getMedianDriver(), detector.getMedianDriver());
+    }
 
     @Test
     void testDependsOnlyOnTime() {

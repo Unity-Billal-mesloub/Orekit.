@@ -22,6 +22,7 @@ import org.orekit.bodies.BodyShape;
 import org.orekit.bodies.FieldGeodeticPoint;
 import org.orekit.frames.Frame;
 import org.orekit.propagation.FieldSpacecraftState;
+import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
 import org.orekit.propagation.events.handlers.FieldStopOnDecreasing;
 
@@ -136,4 +137,8 @@ public class FieldAltitudeDetector<T extends CalculusFieldElement<T>> extends Fi
         return point.getAltitude().subtract(altitude);
     }
 
+    @Override
+    public AltitudeDetector toEventDetector(final EventHandler eventHandler) {
+        return new AltitudeDetector(altitude.getReal(), getBodyShape()).withHandler(eventHandler);
+    }
 }

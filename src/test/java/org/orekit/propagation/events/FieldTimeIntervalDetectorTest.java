@@ -21,18 +21,34 @@ import org.hipparchus.util.Binary64Field;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.orekit.propagation.FieldSpacecraftState;
+import org.orekit.propagation.events.handlers.ContinueOnEvent;
+import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
 import org.orekit.propagation.events.intervals.AdaptableInterval;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.time.TimeInterval;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class FieldTimeIntervalDetectorTest {
+
+    @Test
+    void testToEventDetector() {
+        // GIVEN
+        final FieldTimeIntervalDetector<Binary64> fieldDetector = new FieldTimeIntervalDetector<>(Binary64Field.getInstance(),
+                TimeInterval.of(AbsoluteDate.ARBITRARY_EPOCH, AbsoluteDate.J2000_EPOCH));
+        final EventHandler expectedHandler = new ContinueOnEvent();
+        // WHEN
+        final TimeIntervalDetector detector = fieldDetector.toEventDetector(expectedHandler);
+        // THEN
+        assertEquals(expectedHandler, detector.getHandler());
+        assertEquals(fieldDetector.getTimeInterval(), detector.getTimeInterval());
+    }
 
     @Test
     void testGetter() {
