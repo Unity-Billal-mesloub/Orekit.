@@ -16,11 +16,12 @@
  */
 package org.orekit.propagation.events;
 
-import org.hipparchus.Field;
 import org.hipparchus.CalculusFieldElement;
+import org.hipparchus.Field;
 import org.orekit.bodies.BodyShape;
-import org.orekit.bodies.FieldGeodeticPoint;
 import org.orekit.propagation.FieldSpacecraftState;
+import org.orekit.propagation.events.functions.LatitudeValueCrossingEventFunction;
+import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
 import org.orekit.propagation.events.handlers.FieldStopOnIncreasing;
 import org.orekit.propagation.events.intervals.FieldAdaptableInterval;
@@ -38,6 +39,9 @@ public class FieldLatitudeCrossingDetector <T extends CalculusFieldElement<T>>
 
     /** Fixed latitude to be crossed. */
     private final double latitude;
+
+    /** Event function. */
+    private final LatitudeValueCrossingEventFunction eventFunction;
 
     /** Build a new detector.
      * <p>The new instance uses default values for maximal checking interval
@@ -87,6 +91,7 @@ public class FieldLatitudeCrossingDetector <T extends CalculusFieldElement<T>>
             final double latitude) {
         super(detectionSettings, handler, body);
         this.latitude = latitude;
+        this.eventFunction = new LatitudeValueCrossingEventFunction(getBodyShape(), latitude);
     }
 
     /** {@inheritDoc} */
@@ -95,6 +100,11 @@ public class FieldLatitudeCrossingDetector <T extends CalculusFieldElement<T>>
             final FieldEventDetectionSettings<T> detectionSettings,
             final FieldEventHandler<T> newHandler) {
         return new FieldLatitudeCrossingDetector<>(detectionSettings, newHandler, getBodyShape(), latitude);
+    }
+
+    @Override
+    public LatitudeValueCrossingEventFunction getEventFunction() {
+        return eventFunction;
     }
 
     /** Get the fixed latitude to be crossed (radians).
@@ -114,16 +124,11 @@ public class FieldLatitudeCrossingDetector <T extends CalculusFieldElement<T>>
      * @return spacecraft latitude minus the fixed latitude to be crossed
      */
     public T g(final FieldSpacecraftState<T> s) {
-
-        // convert state to geodetic coordinates
-        final FieldGeodeticPoint<T> gp = getBodyShape().transform(
-                s.getPosition(),
-                s.getFrame(),
-                s.getDate());
-
-        // latitude difference
-        return gp.getLatitude().subtract(latitude);
-
+        return getEventFunction().value(s);
     }
 
+    @Override
+    public LatitudeCrossingDetector toEventDetector(final EventHandler eventHandler) {
+        return new LatitudeCrossingDetector(getDetectionSettings().toEventDetectionSettings(), eventHandler, getBodyShape(), latitude);
+    }
 }

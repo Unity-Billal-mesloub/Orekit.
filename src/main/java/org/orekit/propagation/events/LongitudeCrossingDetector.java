@@ -29,10 +29,22 @@ import org.orekit.time.AbsoluteDate;
 /** Detector for geographic longitude crossing.
  * <p>This detector identifies when a spacecraft crosses a fixed
  * longitude with respect to a central body.</p>
+ * <p>
+ * The g value is the longitude difference between the spacecraft and the fixed
+ * longitude to be crossed, with some sign tweaks to ensure continuity.
+ * These tweaks imply the {@code increasing} flag in events detection becomes
+ * irrelevant here! As an example, the longitude of a prograde spacecraft
+ * will always increase, but this g function will increase and decrease so it
+ * will cross the zero value once per orbit, in increasing and decreasing
+ * directions on alternate orbits. If eastwards and westwards crossing have to
+ * be distinguished, the velocity direction has to be checked instead of looking
+ * at the {@code increasing} flag.
+ * </p>
  * @author Luc Maisonobe
  * @since 7.1
  */
-public class LongitudeCrossingDetector extends AbstractGeographicalDetector<LongitudeCrossingDetector> {
+public class LongitudeCrossingDetector extends AbstractGeographicalDetector<LongitudeCrossingDetector>
+        implements DetectorModifier {
 
     /** Fixed longitude to be crossed. */
     private final double longitude;
@@ -83,7 +95,7 @@ public class LongitudeCrossingDetector extends AbstractGeographicalDetector<Long
         this.longitude = longitude;
 
         // we filter out spurious longitude crossings occurring at the antimeridian
-        final RawLongitudeCrossingDetector raw = new RawLongitudeCrossingDetector(detectionSettings, new ContinueOnEvent());
+        final RawLongitudeCrossingDetector raw = new RawLongitudeCrossingDetector();
         final EnablingPredicate predicate =
             (state, detector, g) -> FastMath.abs(g) < 0.5 * FastMath.PI;
         this.filtering = new EventEnablingPredicateFilter(raw, predicate);
@@ -104,6 +116,11 @@ public class LongitudeCrossingDetector extends AbstractGeographicalDetector<Long
         return longitude;
     }
 
+    @Override
+    public EventDetector getDetector() {
+        return filtering;
+    }
+
     /**  {@inheritDoc} */
     @Override
     public void init(final SpacecraftState s0, final AbsoluteDate t) {
@@ -111,48 +128,7 @@ public class LongitudeCrossingDetector extends AbstractGeographicalDetector<Long
         filtering.init(s0, t);
     }
 
-    /** Compute the value of the detection function.
-     * <p>
-     * The value is the longitude difference between the spacecraft and the fixed
-     * longitude to be crossed, with some sign tweaks to ensure continuity.
-     * These tweaks imply the {@code increasing} flag in events detection becomes
-     * irrelevant here! As an example, the longitude of a prograde spacecraft
-     * will always increase, but this g function will increase and decrease so it
-     * will cross the zero value once per orbit, in increasing and decreasing
-     * directions on alternate orbits. If eastwards and westwards crossing have to
-     * be distinguished, the velocity direction has to be checked instead of looking
-     * at the {@code increasing} flag.
-     * </p>
-     * @param s the current state information: date, kinematics, attitude
-     * @return longitude difference between the spacecraft and the fixed
-     * longitude, with some sign tweaks to ensure continuity
-     */
-    public double g(final SpacecraftState s) {
-        return filtering.g(s);
-    }
-
-    private class RawLongitudeCrossingDetector extends AbstractDetector<RawLongitudeCrossingDetector> {
-
-        /** Protected constructor with full parameters.
-         * <p>
-         * This constructor is not public as users are expected to use the builder
-         * API with the various {@code withXxx()} methods to set up the instance
-         * in a readable manner without using a huge amount of parameters.
-         * </p>
-         * @param detectionSettings event detection settings
-         * @param handler event handler to call at event occurrences
-         */
-        protected RawLongitudeCrossingDetector(final EventDetectionSettings detectionSettings,
-                                               final EventHandler handler) {
-            super(detectionSettings, handler);
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        protected RawLongitudeCrossingDetector create(final EventDetectionSettings detectionSettings,
-                                                      final EventHandler newHandler) {
-            return new RawLongitudeCrossingDetector(detectionSettings, newHandler);
-        }
+    private class RawLongitudeCrossingDetector implements EventDetector {
 
         /** Compute the value of the detection function.
          * <p>
@@ -169,14 +145,17 @@ public class LongitudeCrossingDetector extends AbstractGeographicalDetector<Long
         public double g(final SpacecraftState s) {
 
             // convert state to geodetic coordinates
-            final GeodeticPoint gp = getBodyShape().transform(s.getPosition(),
-                                                    s.getFrame(), s.getDate());
+            final GeodeticPoint gp = getBodyShape().transform(s.getPosition(), s.getFrame(), s.getDate());
 
             // longitude difference
             return MathUtils.normalizeAngle(gp.getLongitude() - longitude, 0.0);
 
         }
 
+        @Override
+        public EventHandler getHandler() {
+            return new ContinueOnEvent();
+        }
     }
 
 }

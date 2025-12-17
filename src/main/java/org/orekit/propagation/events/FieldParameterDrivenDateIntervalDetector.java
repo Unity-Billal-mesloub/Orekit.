@@ -26,6 +26,7 @@ import org.orekit.errors.OrekitMessages;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.events.functions.EventFunction;
 import org.orekit.propagation.events.functions.TimeIntervalEventFunction;
+import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
 import org.orekit.propagation.events.handlers.FieldStopOnEvent;
 import org.orekit.time.AbsoluteDate;
@@ -233,6 +234,12 @@ public class FieldParameterDrivenDateIntervalDetector<T extends CalculusFieldEle
     @Override
     public T g(final FieldSpacecraftState<T> s) {
         return getEventFunction().value(s);
+    }
+
+    @Override
+    public ParameterDrivenDateIntervalDetector toEventDetector(final EventHandler eventHandler) {
+        return new ParameterDrivenDateIntervalDetector(getDetectionSettings().toEventDetectionSettings(), eventHandler,
+                getStartDriver(), getStopDriver(), getMedianDriver(), getDurationDriver());
     }
 
     /** Base observer. */

@@ -25,6 +25,7 @@ import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.events.functions.AbstractElevationEventFunction;
 import org.orekit.propagation.events.functions.MaskedElevationEventFunction;
 import org.orekit.propagation.events.functions.MinimumElevationEventFunction;
+import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
 import org.orekit.propagation.events.handlers.FieldStopOnDecreasing;
 import org.orekit.utils.ElevationMask;
@@ -213,4 +214,9 @@ public class FieldElevationDetector<T extends CalculusFieldElement<T>>
                                             minElevation, elevationMask, newRefractionModel, getTopocentricFrame());
     }
 
+    @Override
+    public ElevationDetector toEventDetector(final EventHandler eventHandler) {
+        return new ElevationDetector(getDetectionSettings().toEventDetectionSettings(), eventHandler, minElevation,
+                elevationMask, refractionModel, getTopocentricFrame());
+    }
 }

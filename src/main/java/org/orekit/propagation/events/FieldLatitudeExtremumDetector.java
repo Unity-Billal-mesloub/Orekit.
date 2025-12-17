@@ -21,6 +21,7 @@ import org.hipparchus.Field;
 import org.orekit.bodies.BodyShape;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.events.functions.LatitudeExtremumEventFunction;
+import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
 import org.orekit.propagation.events.handlers.FieldStopOnIncreasing;
 
@@ -84,4 +85,8 @@ public class FieldLatitudeExtremumDetector<T extends CalculusFieldElement<T>>
         return getEventFunction().value(s);
     }
 
+    @Override
+    public LatitudeExtremumDetector toEventDetector(final EventHandler eventHandler) {
+        return new LatitudeExtremumDetector(getDetectionSettings().toEventDetectionSettings(), eventHandler, getBodyShape());
+    }
 }

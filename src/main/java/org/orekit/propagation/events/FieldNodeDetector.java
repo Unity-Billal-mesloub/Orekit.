@@ -29,6 +29,7 @@ import org.orekit.orbits.OrbitType;
 import org.orekit.orbits.PositionAngleType;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.events.functions.NodeEventFunction;
+import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
 import org.orekit.propagation.events.handlers.FieldStopOnEvent;
 import org.orekit.propagation.events.handlers.FieldStopOnIncreasing;
@@ -186,4 +187,8 @@ public class FieldNodeDetector<T extends CalculusFieldElement<T>> extends FieldA
         return getEventFunction().value(s);
     }
 
+    @Override
+    public NodeDetector toEventDetector(final EventHandler eventHandler) {
+        return new NodeDetector(getDetectionSettings().toEventDetectionSettings(), eventHandler, getFrame());
+    }
 }

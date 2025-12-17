@@ -26,6 +26,7 @@ import org.orekit.bodies.CelestialBodyFactory;
 import org.orekit.frames.Frame;
 import org.orekit.frames.FramesFactory;
 import org.orekit.propagation.FieldSpacecraftState;
+import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
 import org.orekit.propagation.events.handlers.FieldStopOnEvent;
 import org.orekit.utils.FieldPVCoordinatesProvider;
@@ -189,5 +190,11 @@ public class FieldBetaAngleDetector<T extends CalculusFieldElement<T>> extends F
                                                final FieldEventHandler<T> newHandler) {
         return new FieldBetaAngleDetector<>(detectionSettings, newHandler,
                 getBetaAngleThreshold(), getCelestialBodyProvider(), getInertialFrame());
+    }
+
+    @Override
+    public BetaAngleDetector toEventDetector(final EventHandler eventHandler) {
+        return new BetaAngleDetector(getDetectionSettings().toEventDetectionSettings(), eventHandler, betaAngleThreshold.getReal(),
+                null, getInertialFrame());
     }
 }

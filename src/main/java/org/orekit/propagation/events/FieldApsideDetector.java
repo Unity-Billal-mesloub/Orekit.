@@ -21,6 +21,7 @@ import org.hipparchus.ode.events.Action;
 import org.orekit.orbits.FieldOrbit;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.events.functions.ApsideEventFunction;
+import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
 import org.orekit.propagation.events.handlers.FieldStopOnIncreasing;
 
@@ -114,4 +115,8 @@ public class FieldApsideDetector<T extends CalculusFieldElement<T>> extends Fiel
         return getEventFunction().value(s);
     }
 
+    @Override
+    public ApsideDetector toEventDetector(final EventHandler eventHandler) {
+        return new ApsideDetector(getDetectionSettings().toEventDetectionSettings(), eventHandler);
+    }
 }

@@ -22,6 +22,7 @@ import org.orekit.models.AtmosphericRefractionModel;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.events.functions.EventFunction;
 import org.orekit.propagation.events.functions.GroundAtNightEventFunction;
+import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.FieldContinueOnEvent;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
 import org.orekit.utils.ExtendedPositionProvider;
@@ -115,6 +116,12 @@ public class FieldGroundAtNightDetector<T extends CalculusFieldElement<T>>
     @Override
     public T g(final FieldSpacecraftState<T> state) {
         return eventFunction.value(state);
+    }
+
+    @Override
+    public GroundAtNightDetector toEventDetector(final EventHandler eventHandler) {
+        return new GroundAtNightDetector(getTopocentricFrame(), sun, dawnDuskElevation.getReal(), refractionModel,
+                getDetectionSettings().toEventDetectionSettings(), eventHandler);
     }
 
     private class LocalEventFunction extends GroundAtNightEventFunction {

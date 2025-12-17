@@ -17,45 +17,37 @@
 package org.orekit.propagation.events;
 
 import org.hipparchus.util.Binary64;
-import org.hipparchus.util.Binary64Field;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.orekit.bodies.GeodeticPoint;
-import org.orekit.bodies.OneAxisEllipsoid;
-import org.orekit.frames.FramesFactory;
-import org.orekit.frames.TopocentricFrame;
-import org.orekit.models.AtmosphericRefractionModel;
+import org.orekit.bodies.BodyShape;
 import org.orekit.propagation.events.handlers.ContinueOnEvent;
 import org.orekit.propagation.events.handlers.EventHandler;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
-class FieldElevationDetectorTest {
+class FieldAltitudeDetectorTest {
 
     @Test
-    void testWithRefraction() {
+    void testGetter() {
         // GIVEN
-        final TopocentricFrame frame = new TopocentricFrame(new OneAxisEllipsoid(1, 0, FramesFactory.getGCRF()),
-                new GeodeticPoint(0., 0., 0), "");
-        final FieldElevationDetector<Binary64> fieldElevationDetector = new FieldElevationDetector<>(Binary64Field.getInstance(), frame);
-        final AtmosphericRefractionModel model = mock(AtmosphericRefractionModel.class);
+        final Binary64 expectedAltitude = Binary64.ONE;
+        final FieldAltitudeDetector<Binary64> fieldDetector = new FieldAltitudeDetector<>(expectedAltitude, mock(BodyShape.class));
         // WHEN
-        final FieldElevationDetector<Binary64> detector = fieldElevationDetector.withRefraction(model);
+        final Binary64 actualAltitude = fieldDetector.getAltitude();
         // THEN
-        Assertions.assertEquals(model, detector.getRefractionModel());
+        assertEquals(expectedAltitude, actualAltitude);
     }
 
     @Test
     void testToEventDetector() {
         // GIVEN
-        final FieldElevationDetector<Binary64> fieldDetector = new FieldElevationDetector<>(Binary64Field.getInstance(),
-                mock(TopocentricFrame.class));
+        final FieldAltitudeDetector<Binary64> fieldDetector = new FieldAltitudeDetector<>(Binary64.ONE, mock(BodyShape.class));
         final EventHandler expectedHandler = new ContinueOnEvent();
         // WHEN
-        final ElevationDetector detector = fieldDetector.toEventDetector(expectedHandler);
+        final AltitudeDetector detector = fieldDetector.toEventDetector(expectedHandler);
         // THEN
         assertEquals(expectedHandler, detector.getHandler());
-        assertEquals(fieldDetector.getTopocentricFrame(), detector.getTopocentricFrame());
+        assertEquals(fieldDetector.getBodyShape(), detector.getBodyShape());
+        assertEquals(fieldDetector.getAltitude().getReal(), detector.getAltitude());
     }
 }

@@ -26,7 +26,8 @@ import org.orekit.propagation.events.handlers.FieldEventHandler;
 import org.orekit.propagation.events.intervals.FieldAdaptableInterval;
 import org.orekit.time.FieldAbsoluteDate;
 
-/** Common parts shared by several orbital events finders.
+/** Common parts shared by several events finders.
+ * It should only be implemented by detectors able to accept any handler.
  * @param <D> type of the detector
  * @param <T> type of the field element
  * @see org.orekit.propagation.Propagator#addEventDetector(EventDetector)

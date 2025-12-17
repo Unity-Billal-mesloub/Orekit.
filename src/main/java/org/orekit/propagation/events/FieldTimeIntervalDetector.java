@@ -21,6 +21,7 @@ import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.Field;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.events.functions.TimeIntervalEventFunction;
+import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.FieldContinueOnEvent;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
 import org.orekit.propagation.events.intervals.DateDetectionAdaptableIntervalFactory;
@@ -108,5 +109,10 @@ public class FieldTimeIntervalDetector<T extends CalculusFieldElement<T>>
     @Override
     public T g(final FieldSpacecraftState<T> s) {
         return eventFunction.value(s);
+    }
+
+    @Override
+    public TimeIntervalDetector toEventDetector(final EventHandler eventHandler) {
+        return new TimeIntervalDetector(getDetectionSettings().toEventDetectionSettings(), eventHandler, getTimeInterval());
     }
 }

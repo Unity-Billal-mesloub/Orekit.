@@ -28,13 +28,15 @@ import org.orekit.models.AtmosphericRefractionModel;
 import org.orekit.models.earth.ITURP834AtmosphericRefraction;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
+import org.orekit.propagation.events.handlers.ContinueOnEvent;
+import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
 import org.orekit.propagation.events.handlers.FieldStopOnEvent;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.Constants;
 import org.orekit.utils.ExtendedPositionProvider;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -113,6 +115,18 @@ class FieldGroundAtNightDetectorTest {
         assertEquals(detector.getTopocentricFrame(), createdDetector.getTopocentricFrame());
         assertEquals(detectionSettings, createdDetector.getDetectionSettings());
         assertEquals(expectedHandler, createdDetector.getHandler());
+    }
+
+    @Test
+    void testToEventDetector() {
+        // GIVEN
+        final FieldGroundAtNightDetector<Binary64> fieldDetector = new FieldGroundAtNightDetector<>(mock(TopocentricFrame.class),
+                mock(ExtendedPositionProvider.class), Binary64.ZERO, mock(AtmosphericRefractionModel.class));
+        final EventHandler expectedHandler = new ContinueOnEvent();
+        // WHEN
+        final GroundAtNightDetector detector = fieldDetector.toEventDetector(expectedHandler);
+        // THEN
+        assertEquals(expectedHandler, detector.getHandler());
     }
 }
 

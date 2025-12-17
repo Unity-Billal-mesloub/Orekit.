@@ -140,8 +140,7 @@ public class LongitudeRangeCrossingDetector extends AbstractGeographicalDetector
     public double g(final SpacecraftState s) {
 
         // convert state to geodetic coordinates
-        final GeodeticPoint gp = getBodyShape().transform(s.getPVCoordinates().getPosition(),
-            s.getFrame(), s.getDate());
+        final GeodeticPoint gp = getBodyShape().transform(s.getPosition(), s.getFrame(), s.getDate());
 
         // point longitude
         final double longitude = ensureLongitudePositiveContinuity(gp.getLongitude());

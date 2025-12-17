@@ -20,8 +20,11 @@ import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.Field;
 import org.hipparchus.util.FastMath;
 import org.orekit.bodies.BodyShape;
-import org.orekit.bodies.FieldGeodeticPoint;
 import org.orekit.propagation.FieldSpacecraftState;
+import org.orekit.propagation.SpacecraftState;
+import org.orekit.propagation.events.functions.AbstractGeodeticEventFunction;
+import org.orekit.propagation.events.functions.EventFunction;
+import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
 import org.orekit.propagation.events.handlers.FieldStopOnIncreasing;
 import org.orekit.propagation.events.intervals.FieldAdaptableInterval;
@@ -47,10 +50,8 @@ public class FieldLatitudeRangeCrossingDetector <T extends CalculusFieldElement<
      */
     private final double toLatitude;
 
-    /**
-     * Sign, to get reversed inclusion latitude range (lower > upper).
-     */
-    private final double sign;
+    /** Event function. */
+    private final AbstractGeodeticEventFunction eventFunction;
 
     /**
      * Build a new detector.
@@ -111,7 +112,9 @@ public class FieldLatitudeRangeCrossingDetector <T extends CalculusFieldElement<
         super(detectionSettings, handler, body);
         this.fromLatitude = fromLatitude;
         this.toLatitude = toLatitude;
-        this.sign = FastMath.signum(toLatitude - fromLatitude);
+        final double sign = FastMath.signum(toLatitude - fromLatitude);
+        this.eventFunction = new LocalEventFunction(body, sign > 0 ? fromLatitude : toLatitude,
+                sign > 0 ? toLatitude : fromLatitude);
     }
 
     /**
@@ -142,6 +145,11 @@ public class FieldLatitudeRangeCrossingDetector <T extends CalculusFieldElement<
         return toLatitude;
     }
 
+    @Override
+    public EventFunction getEventFunction() {
+        return eventFunction;
+    }
+
     /**
      * Compute the value of the detection function.
      * <p>
@@ -154,17 +162,42 @@ public class FieldLatitudeRangeCrossingDetector <T extends CalculusFieldElement<
      * @return positive if spacecraft inside the range
      */
     public T g(final FieldSpacecraftState<T> s) {
-
-        // convert state to geodetic coordinates
-        final FieldGeodeticPoint<T> gp = getBodyShape().transform(s.getPVCoordinates().getPosition(),
-            s.getFrame(), s.getDate());
-
-        // point latitude
-        final T latitude = gp.getLatitude();
-
-        // inside or outside latitude range
-        return latitude.subtract(fromLatitude).multiply(latitude.negate().add(toLatitude)).multiply(sign);
-
+        return getEventFunction().value(s);
     }
 
+    @Override
+    public LatitudeRangeCrossingDetector toEventDetector(final EventHandler eventHandler) {
+        return new LatitudeRangeCrossingDetector(getDetectionSettings().toEventDetectionSettings(), eventHandler,
+                getBodyShape(), getFromLatitude(), getToLatitude());
+    }
+
+    /**
+     * Local event function.
+     * @since 14.0
+     */
+    private static class LocalEventFunction extends AbstractGeodeticEventFunction {
+
+        /** Lower bound latitude. */
+        private final double minLatitude;
+        /** Upper bound latitude. */
+        private final double maxLatitude;
+
+        LocalEventFunction(final BodyShape body, final double minLatitude, final double maxLatitude) {
+            super(body);
+            this.minLatitude = minLatitude;
+            this.maxLatitude = maxLatitude;
+        }
+
+        @Override
+        public double value(final SpacecraftState state) {
+            final double latitude = transformToGeodeticPoint(state).getLatitude();
+            return (latitude - minLatitude) * (maxLatitude - latitude);
+        }
+
+        @Override
+        public <T extends CalculusFieldElement<T>> T value(final FieldSpacecraftState<T> fieldState) {
+            final T latitude = transformToGeodeticPoint(fieldState).getLatitude();
+            return (latitude.subtract(minLatitude)).multiply(latitude.negate().add(maxLatitude));
+        }
+    }
 }
