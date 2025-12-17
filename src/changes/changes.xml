@@ -20,6 +20,12 @@
   </properties>
   <body>
     <release version="14.0" date="TBD" description="TBD">
+        <action dev="serrof" type="add" issue="issue-1881">
+            Add toEventDetector in FieldAbstractDetector.
+        </action>
+        <action dev="serrof" type="add" issue="issue-1879">
+            Introduce EventFunction.
+        </action>
         <action dev="serrof" type="add" issue="issue-1877">
             Add Taylor ExtendedPositionProvider.
         </action>

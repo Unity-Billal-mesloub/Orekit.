@@ -19,6 +19,10 @@ package org.orekit.propagation.events;
 import org.hipparchus.ode.events.Action;
 import org.orekit.bodies.OneAxisEllipsoid;
 import org.orekit.propagation.SpacecraftState;
+import org.orekit.propagation.events.functions.EventFunction;
+import org.orekit.propagation.events.functions.EventFunctionModifier;
+import org.orekit.propagation.events.functions.PenumbraEventFunction;
+import org.orekit.propagation.events.functions.UmbraEventFunction;
 import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.StopOnIncreasing;
 import org.orekit.utils.ExtendedPositionProvider;
@@ -60,6 +64,9 @@ public class EclipseDetector extends AbstractDetector<EclipseDetector> {
 
     /** Margin to apply to eclipse angle. */
     private final double margin;
+
+    /** Event function. */
+    private final EventFunction eventFunction;
 
     /** Build a new eclipse detector.
      * <p>The new instance is a total eclipse (umbra) detector with default
@@ -106,6 +113,8 @@ public class EclipseDetector extends AbstractDetector<EclipseDetector> {
         this.occultationEngine = occultationEngine;
         this.margin            = margin;
         this.totalEclipse      = totalEclipse;
+        this.eventFunction = EventFunctionModifier.addReal(totalEclipse ? new UmbraEventFunction(occultationEngine) :
+                new PenumbraEventFunction(occultationEngine), margin);
     }
 
     /** {@inheritDoc} */
@@ -178,17 +187,14 @@ public class EclipseDetector extends AbstractDetector<EclipseDetector> {
         return totalEclipse;
     }
 
-    /** Compute the value of the switching function.
-     * This function becomes negative when entering the region of shadow
-     * and positive when exiting.
-     * @param s the current state information: date, kinematics, attitude
-     * @return value of the switching function
-     */
+    @Override
+    public EventFunction getEventFunction() {
+        return eventFunction;
+    }
+
+    @Override
     public double g(final SpacecraftState s) {
-        final OccultationEngine.OccultationAngles angles = occultationEngine.angles(s);
-        return totalEclipse ?
-               (angles.getSeparation() - angles.getLimbRadius() + angles.getOccultedApparentRadius() + margin) :
-               (angles.getSeparation() - angles.getLimbRadius() - angles.getOccultedApparentRadius() + margin);
+        return getEventFunction().value(s);
     }
 
 }

@@ -17,36 +17,39 @@
 package org.orekit.propagation.events.functions;
 
 import org.hipparchus.CalculusFieldElement;
-import org.orekit.bodies.BodyShape;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
+import org.orekit.utils.OccultationEngine;
 
-/** Class for geodetic latitude value-crossing event function.
- * It is negative under the critical value.
+/**
+ * Class for penumbra event with conical shadows from ellipsoidal occulting bodies.
+ * It is negative in penumbra, positive otherwise.
  * @author Romain Serra
+ * @see OccultationEngine
  * @since 14.0
  */
-public class LatitudeValueCrossingEventFunction extends AbstractGeodeticEventFunction {
+public class PenumbraEventFunction implements EventFunction {
 
-    /** Critical latitude for crossing event. */
-    private final double criticalLatitude;
+    /** Occultation engine. */
+    private final OccultationEngine occultationEngine;
 
-    /** Constructor.
-     * @param body body
-     * @param criticalLatitude latitude for crossing
+    /**
+     * Constructor.
+     * @param occultationEngine occultation engine
      */
-    public LatitudeValueCrossingEventFunction(final BodyShape body, final double criticalLatitude) {
-        super(body);
-        this.criticalLatitude = criticalLatitude;
+    public PenumbraEventFunction(final OccultationEngine occultationEngine) {
+        this.occultationEngine = occultationEngine;
     }
 
     @Override
     public double value(final SpacecraftState state) {
-        return transformToGeodeticPoint(state).getLatitude() - criticalLatitude;
+        final OccultationEngine.OccultationAngles angles = occultationEngine.angles(state);
+        return angles.getSeparation() - angles.getLimbRadius() - angles.getOccultedApparentRadius();
     }
 
     @Override
     public <T extends CalculusFieldElement<T>> T value(final FieldSpacecraftState<T> fieldState) {
-        return transformToGeodeticPoint(fieldState).getLatitude().subtract(criticalLatitude);
+        final OccultationEngine.FieldOccultationAngles<T> angles = occultationEngine.angles(fieldState);
+        return angles.getSeparation().subtract(angles.getLimbRadius()).subtract(angles.getOccultedApparentRadius());
     }
 }
