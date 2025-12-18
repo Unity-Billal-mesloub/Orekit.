@@ -24,6 +24,7 @@ import org.orekit.time.TimeInterval;
 
 /**
  * Class representing time interval crossing detection.
+ * It is positive within the interval.
  * @author Romain Serra
  * @since 14.0
  */

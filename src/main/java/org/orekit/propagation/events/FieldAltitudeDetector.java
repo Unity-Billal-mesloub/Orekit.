@@ -19,9 +19,10 @@ package org.orekit.propagation.events;
 import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.ode.events.Action;
 import org.orekit.bodies.BodyShape;
-import org.orekit.bodies.FieldGeodeticPoint;
-import org.orekit.frames.Frame;
 import org.orekit.propagation.FieldSpacecraftState;
+import org.orekit.propagation.events.functions.AltitudeEventFunction;
+import org.orekit.propagation.events.functions.EventFunction;
+import org.orekit.propagation.events.functions.EventFunctionModifier;
 import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
 import org.orekit.propagation.events.handlers.FieldStopOnDecreasing;
@@ -39,6 +40,9 @@ import org.orekit.propagation.events.handlers.FieldStopOnDecreasing;
  * @param <T> type of the field elements
  */
 public class FieldAltitudeDetector<T extends CalculusFieldElement<T>> extends FieldAbstractGeographicalDetector<FieldAltitudeDetector<T>, T> {
+
+    /** Event function. */
+    private final EventFunction eventFunction;
 
     /** Threshold altitude value (m). */
     private final T altitude;
@@ -108,6 +112,8 @@ public class FieldAltitudeDetector<T extends CalculusFieldElement<T>> extends Fi
                                     final FieldEventHandler<T> handler, final T altitude, final BodyShape bodyShape) {
         super(detectionSettings, handler, bodyShape);
         this.altitude  = altitude;
+        this.eventFunction = EventFunctionModifier.addFieldValue(new AltitudeEventFunction(bodyShape, altitude.getReal()),
+                altitude.getAddendum());
     }
 
     /** {@inheritDoc} */
@@ -124,6 +130,11 @@ public class FieldAltitudeDetector<T extends CalculusFieldElement<T>> extends Fi
         return altitude;
     }
 
+    @Override
+    public EventFunction getEventFunction() {
+        return eventFunction;
+    }
+
     /** Compute the value of the switching function.
      * This function measures the difference between the current altitude
      * and the threshold altitude.
@@ -131,10 +142,7 @@ public class FieldAltitudeDetector<T extends CalculusFieldElement<T>> extends Fi
      * @return value of the switching function
      */
     public T g(final FieldSpacecraftState<T> s) {
-        final Frame bodyFrame              = getBodyShape().getBodyFrame();
-        final FieldGeodeticPoint<T> point  = getBodyShape().transform(s.getPosition(bodyFrame),
-                                                                 bodyFrame, s.getDate());
-        return point.getAltitude().subtract(altitude);
+        return getEventFunction().value(s);
     }
 
     @Override

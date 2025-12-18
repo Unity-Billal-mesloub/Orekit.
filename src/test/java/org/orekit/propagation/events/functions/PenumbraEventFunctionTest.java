@@ -19,37 +19,44 @@ package org.orekit.propagation.events.functions;
 import org.hipparchus.util.Binary64;
 import org.hipparchus.util.Binary64Field;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.orekit.TestUtils;
 import org.orekit.Utils;
-import org.orekit.bodies.BodyShape;
+import org.orekit.bodies.AnalyticalSolarPositionProvider;
+import org.orekit.bodies.OneAxisEllipsoid;
 import org.orekit.frames.FramesFactory;
-import org.orekit.models.earth.ReferenceEllipsoid;
-import org.orekit.orbits.Orbit;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.time.AbsoluteDate;
+import org.orekit.utils.Constants;
+import org.orekit.utils.ExtendedPositionProvider;
+import org.orekit.utils.OccultationEngine;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class LatitudeValueCrossingEventFunctionTest {
+class PenumbraEventFunctionTest {
 
     @BeforeEach
     void setUp() {
         Utils.setDataRoot("regular-data");
     }
 
-    @Test
-    void testValueField() {
+    @ParameterizedTest
+    @ValueSource(doubles = {0., 1e2, 1e3, 1e4})
+    void testValueField(final double timeShift) {
         // GIVEN
-        final Orbit orbit = TestUtils.getDefaultOrbit(AbsoluteDate.ARBITRARY_EPOCH);
-        final SpacecraftState state = new SpacecraftState(orbit);
+        final ExtendedPositionProvider provider = new AnalyticalSolarPositionProvider();
+        final OccultationEngine engine = new OccultationEngine(provider, Constants.SUN_RADIUS,
+                new OneAxisEllipsoid(Constants.EGM96_EARTH_EQUATORIAL_RADIUS, 0., FramesFactory.getGTOD(true)));
+        final PenumbraEventFunction eventFunction = new PenumbraEventFunction(engine);
+        final SpacecraftState state = new SpacecraftState(TestUtils.getDefaultOrbit(AbsoluteDate.ARBITRARY_EPOCH).shiftedBy(timeShift));
         final FieldSpacecraftState<Binary64> fieldState = new FieldSpacecraftState<>(Binary64Field.getInstance(), state);
-        final BodyShape bodyShape = ReferenceEllipsoid.getWgs84(FramesFactory.getGTOD(true));
-        final LatitudeValueCrossingEventFunction eventFunction = new LatitudeValueCrossingEventFunction(bodyShape, 1.);
         // WHEN
-        final Binary64 value = eventFunction.value(fieldState);
+        final double actual = eventFunction.value(fieldState).getReal();
         // THEN
-        assertEquals(eventFunction.value(state), value.getReal());
+        final double expected = eventFunction.value(state);
+        assertEquals(expected, actual);
     }
+
 }

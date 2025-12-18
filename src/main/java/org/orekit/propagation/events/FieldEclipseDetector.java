@@ -21,6 +21,7 @@ import org.hipparchus.Field;
 import org.hipparchus.ode.events.Action;
 import org.orekit.bodies.OneAxisEllipsoid;
 import org.orekit.propagation.FieldSpacecraftState;
+import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
 import org.orekit.propagation.events.handlers.FieldStopOnIncreasing;
 import org.orekit.utils.ExtendedPositionProvider;
@@ -187,4 +188,10 @@ public class FieldEclipseDetector<T extends CalculusFieldElement<T>> extends Fie
                angles.getSeparation().subtract(angles.getLimbRadius()).subtract(angles.getOccultedApparentRadius()).add(margin);
     }
 
+    @Override
+    public EclipseDetector toEventDetector(final EventHandler eventHandler) {
+        final EclipseDetector baseDetector = new EclipseDetector(occultationEngine).withMargin(margin.getReal())
+                .withHandler(eventHandler).withDetectionSettings(getDetectionSettings().toEventDetectionSettings());
+        return totalEclipse ? baseDetector.withUmbra() : baseDetector.withPenumbra();
+    }
 }

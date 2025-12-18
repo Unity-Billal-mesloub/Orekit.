@@ -31,7 +31,7 @@ import org.orekit.utils.ExtendedPositionProvider;
 
 /** Event function for ground location being at night.
  * <p>
- * The {@code g} function of this detector is positive when ground is at night
+ * It is positive when ground is at night
  * (i.e. Sun is below dawn/dusk elevation angle).
  * </p>
  * @author Luc Maisonobe
@@ -58,9 +58,8 @@ public class GroundAtNightEventFunction implements EventFunction {
      * @param dawnDuskElevation Sun elevation below which we consider night is dark enough (rad)
      * @param refractionModel reference to refraction model (null if refraction should be ignored),
      */
-    protected GroundAtNightEventFunction(final TopocentricFrame topocentricFrame, final ExtendedPositionProvider sun,
-                                         final double dawnDuskElevation,
-                                         final AtmosphericRefractionModel refractionModel) {
+    public GroundAtNightEventFunction(final TopocentricFrame topocentricFrame, final ExtendedPositionProvider sun,
+                                      final double dawnDuskElevation, final AtmosphericRefractionModel refractionModel) {
         this.topocentricFrame = topocentricFrame;
         this.sun               = sun;
         this.dawnDuskElevation = dawnDuskElevation;

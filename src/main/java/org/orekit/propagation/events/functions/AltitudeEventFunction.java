@@ -21,32 +21,32 @@ import org.orekit.bodies.BodyShape;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
 
-/** Class for geodetic latitude value-crossing event function.
+/** Class for geodetic altitude value-crossing event function.
  * It is negative under the critical value.
  * @author Romain Serra
  * @since 14.0
  */
-public class LatitudeValueCrossingEventFunction extends AbstractGeodeticEventFunction {
+public class AltitudeEventFunction extends AbstractGeodeticEventFunction {
 
-    /** Critical latitude for crossing event. */
-    private final double criticalLatitude;
+    /** Critical altitude for crossing event. */
+    private final double criticalAltitude;
 
     /** Constructor.
      * @param body body
-     * @param criticalLatitude latitude for crossing
+     * @param criticalAltitude altitude for crossing
      */
-    public LatitudeValueCrossingEventFunction(final BodyShape body, final double criticalLatitude) {
+    public AltitudeEventFunction(final BodyShape body, final double criticalAltitude) {
         super(body);
-        this.criticalLatitude = criticalLatitude;
+        this.criticalAltitude = criticalAltitude;
     }
 
     @Override
     public double value(final SpacecraftState state) {
-        return transformToGeodeticPoint(state).getLatitude() - criticalLatitude;
+        return transformToGeodeticPoint(state).getAltitude() - criticalAltitude;
     }
 
     @Override
     public <T extends CalculusFieldElement<T>> T value(final FieldSpacecraftState<T> fieldState) {
-        return transformToGeodeticPoint(fieldState).getLatitude().subtract(criticalLatitude);
+        return transformToGeodeticPoint(fieldState).getAltitude().subtract(criticalAltitude);
     }
 }

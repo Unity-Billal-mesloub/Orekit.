@@ -21,6 +21,7 @@ import org.orekit.frames.TopocentricFrame;
 import org.orekit.models.AtmosphericRefractionModel;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.events.functions.EventFunction;
+import org.orekit.propagation.events.functions.EventFunctionModifier;
 import org.orekit.propagation.events.functions.GroundAtNightEventFunction;
 import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.FieldContinueOnEvent;
@@ -88,7 +89,9 @@ public class FieldGroundAtNightDetector<T extends CalculusFieldElement<T>>
         this.sun               = sun;
         this.dawnDuskElevation = dawnDuskElevation;
         this.refractionModel   = refractionModel;
-        this.eventFunction = new LocalEventFunction(getTopocentricFrame());
+        final GroundAtNightEventFunction baseFunction = new GroundAtNightEventFunction(getTopocentricFrame(),
+                sun, dawnDuskElevation.getReal(), refractionModel);
+        this.eventFunction = EventFunctionModifier.addFieldValue(baseFunction, dawnDuskElevation.getAddendum());
     }
 
     /** {@inheritDoc} */
@@ -122,23 +125,5 @@ public class FieldGroundAtNightDetector<T extends CalculusFieldElement<T>>
     public GroundAtNightDetector toEventDetector(final EventHandler eventHandler) {
         return new GroundAtNightDetector(getTopocentricFrame(), sun, dawnDuskElevation.getReal(), refractionModel,
                 getDetectionSettings().toEventDetectionSettings(), eventHandler);
-    }
-
-    private class LocalEventFunction extends GroundAtNightEventFunction {
-
-        protected LocalEventFunction(final TopocentricFrame topocentricFrame) {
-            super(topocentricFrame, sun, dawnDuskElevation.getReal(), refractionModel);
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public <S extends CalculusFieldElement<S>> S value(final FieldSpacecraftState<S> state) {
-            final S g = super.value(state);
-            if (g.getField().equals(getThreshold().getField())) {
-                return (S) ((T) g).add(dawnDuskElevation.getAddendum());
-            } else {
-                return g;
-            }
-        }
     }
 }

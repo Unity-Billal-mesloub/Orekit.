@@ -17,12 +17,13 @@
 package org.orekit.propagation.events.functions;
 
 import org.hipparchus.CalculusFieldElement;
+import org.hipparchus.complex.Complex;
 import org.hipparchus.util.Binary64;
 import org.junit.jupiter.api.Test;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -63,6 +64,43 @@ class EventFunctionModifierTest {
         final Binary64 value = modifier.value(fieldState);
         // THEN
         assertEquals(testFunction.value(fieldState), value);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void testAddReal() {
+        // GIVEN
+        final TestFunction function = new TestFunction();
+        final double increment = 10.;
+        // WHEN
+        final EventFunctionModifier functionModifier = EventFunctionModifier.addReal(function, increment);
+        // THEN
+        final SpacecraftState state = mock();
+        final double expected = function.value(state) + increment;
+        assertEquals(expected, functionModifier.value(state));
+        final FieldSpacecraftState<Binary64> fieldState = mock();
+        when(fieldState.getMass()).thenReturn(Binary64.ONE);
+        assertEquals(expected, functionModifier.value(fieldState).getReal());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void testAddFieldValue() {
+        // GIVEN
+        final TestFunction function = new TestFunction();
+        final Complex increment = Complex.I;
+        // WHEN
+        final EventFunctionModifier functionModifier = EventFunctionModifier.addFieldValue(function, increment);
+        // THEN
+        final SpacecraftState state = mock();
+        final double expected = function.value(state) + increment.getReal();
+        assertEquals(expected, functionModifier.value(state));
+        final FieldSpacecraftState<Binary64> fieldStateBinary64 = mock();
+        when(fieldStateBinary64.getMass()).thenReturn(Binary64.ONE);
+        assertEquals(expected, functionModifier.value(fieldStateBinary64).getReal());
+        final FieldSpacecraftState<Complex> fieldStateComplex = mock();
+        when(fieldStateComplex.getMass()).thenReturn(Complex.ONE);
+        assertEquals(increment.add(expected), functionModifier.value(fieldStateComplex));
     }
 
     private static class TestFunction implements EventFunction {

@@ -23,6 +23,7 @@ import org.orekit.models.AtmosphericRefractionModel;
 
 /**
  * Abstract class for elevation event function.
+ * It is negative when under the necessary elevation.
  * @author Romain Serra
  * @since 14.0
  */

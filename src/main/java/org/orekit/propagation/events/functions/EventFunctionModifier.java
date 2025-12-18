@@ -49,4 +49,49 @@ public interface EventFunctionModifier extends EventFunction {
     default boolean dependsOnMainVariablesOnly() {
         return getBaseFunction().dependsOnMainVariablesOnly();
     }
+
+    static EventFunctionModifier addReal(final EventFunction eventFunction, final double increment) {
+        return new EventFunctionModifier() {
+            @Override
+            public EventFunction getBaseFunction() {
+                return eventFunction;
+            }
+
+            @Override
+            public double value(final SpacecraftState state) {
+                return eventFunction.value(state) + increment;
+            }
+
+            @Override
+            public <T extends CalculusFieldElement<T>> T value(final FieldSpacecraftState<T> fieldState) {
+                return eventFunction.value(fieldState).add(increment);
+            }
+        };
+    }
+
+    static <S extends CalculusFieldElement<S>> EventFunctionModifier addFieldValue(final EventFunction eventFunction,
+                                                                                   final S increment) {
+        return new EventFunctionModifier() {
+            @Override
+            public EventFunction getBaseFunction() {
+                return eventFunction;
+            }
+
+            @Override
+            public double value(final SpacecraftState state) {
+                return eventFunction.value(state) + increment.getReal();
+            }
+
+            @Override
+            @SuppressWarnings("unchecked")
+            public <T extends CalculusFieldElement<T>> T value(final FieldSpacecraftState<T> fieldState) {
+                final T g = eventFunction.value(fieldState);
+                if (g.getField().equals(increment.getField())) {
+                    return (T) ((S) g).add(increment);
+                } else {
+                    return g.add(increment.getReal());
+                }
+            }
+        };
+    }
 }
