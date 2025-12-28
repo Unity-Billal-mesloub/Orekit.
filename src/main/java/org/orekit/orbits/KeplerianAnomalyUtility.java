@@ -44,6 +44,9 @@ public final class KeplerianAnomalyUtility {
      */
     static final double CONVERGENCE_THRESHOLD = 1e-10;
 
+    /** Tolerance for stopping criterion in iterative conversion from mean to eccentric angle. */
+    static final double RELATIVE_CONVERGENCE_THRESHOLD = 1.0e-13;
+
     /**
      * Maximum number of iterations in the iterative computation of
      * the elliptic and hyperbolic eccentric anomalies differences.
