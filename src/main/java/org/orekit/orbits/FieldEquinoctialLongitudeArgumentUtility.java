@@ -34,6 +34,9 @@ public class FieldEquinoctialLongitudeArgumentUtility {
     /** Tolerance for stopping criterion in iterative conversion from mean to eccentric angle. */
     private static final double TOLERANCE_CONVERGENCE = 1.0e-11;
 
+    /** Tolerance for stopping criterion in iterative conversion from mean to eccentric angle. */
+    private static final double TOLERANCE_RELATIVE_CONVERGENCE = 1.0e-13;
+
     /** Maximum number of iterations in iterative conversion from mean to eccentric angle. */
     private static final int MAXIMUM_ITERATION = 50;
 
@@ -134,7 +137,8 @@ public class FieldEquinoctialLongitudeArgumentUtility {
             lEmlM = lEmlM.subtract(shift);
             lE     = lM.add(lEmlM);
 
-            hasConverged = FastMath.norm(shift) <= TOLERANCE_CONVERGENCE;
+            hasConverged = FastMath.norm(shift) <= TOLERANCE_CONVERGENCE ||
+                           shift.isSmall(lEmlM, TOLERANCE_RELATIVE_CONVERGENCE);
         } while (++iter < MAXIMUM_ITERATION && !hasConverged);
 
         if (!hasConverged) {
