@@ -28,7 +28,7 @@ import org.orekit.propagation.SpacecraftState;
  * @author Romain Serra
  * @since 14.0
  */
-public class MinimumElevationEventFunction extends AbstractElevationEventFunction {
+public class MinimumElevationEventFunction extends AbstractElevationCrossingFunction {
 
     /** Minimum elevation. */
     private final double minimumElevation;

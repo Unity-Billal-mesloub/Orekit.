@@ -36,14 +36,14 @@ public class SingleDateDetector extends AbstractDetector<SingleDateDetector> imp
     private final AbsoluteDate date;
 
     /** Full constructor.
+     * @param eventFunction event function
      * @param detectionSettings event detection settings
      * @param eventHandler event handler
-     * @param date event date
      */
-    public SingleDateDetector(final EventDetectionSettings detectionSettings, final EventHandler eventHandler,
-                              final AbsoluteDate date) {
-        super(new SingleDateEventFunction(date), detectionSettings, eventHandler);
-        this.date = date;
+    public SingleDateDetector(final SingleDateEventFunction eventFunction,
+                              final EventDetectionSettings detectionSettings, final EventHandler eventHandler) {
+        super(eventFunction, detectionSettings, eventHandler);
+        this.date = eventFunction.getDate();
     }
 
     /** Build a new instance with default detection settings.
@@ -51,8 +51,9 @@ public class SingleDateDetector extends AbstractDetector<SingleDateDetector> imp
      * @param date event date
      */
     public SingleDateDetector(final EventHandler eventHandler, final AbsoluteDate date) {
-        this(new EventDetectionSettings(DateDetector.DEFAULT_MAX_CHECK, DateDetector.DEFAULT_THRESHOLD, DEFAULT_MAX_ITER),
-                eventHandler, date);
+        this(new SingleDateEventFunction(date),
+                new EventDetectionSettings(DateDetector.DEFAULT_MAX_CHECK, DateDetector.DEFAULT_THRESHOLD, DEFAULT_MAX_ITER),
+                eventHandler);
     }
 
     /** Build a new instance with default detection settings and event handler (stop on event).
@@ -65,7 +66,7 @@ public class SingleDateDetector extends AbstractDetector<SingleDateDetector> imp
     /** {@inheritDoc} */
     @Override
     protected SingleDateDetector create(final EventDetectionSettings detectionSettings, final EventHandler newHandler) {
-        return new SingleDateDetector(detectionSettings, newHandler, date);
+        return new SingleDateDetector((SingleDateEventFunction) getEventFunction(), detectionSettings, newHandler);
     }
 
     /** {@inheritDoc} */
@@ -92,6 +93,6 @@ public class SingleDateDetector extends AbstractDetector<SingleDateDetector> imp
      * @return new detector
      */
     public SingleDateDetector withDate(final AbsoluteDate newDate) {
-        return new SingleDateDetector(getDetectionSettings(), getHandler(), newDate);
+        return new SingleDateDetector(new SingleDateEventFunction(newDate), getDetectionSettings(), getHandler());
     }
 }

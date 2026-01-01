@@ -71,12 +71,11 @@ public class FieldApsideDetector<T extends CalculusFieldElement<T>> extends Fiel
      * @param orbit initial orbit
      */
     public FieldApsideDetector(final T threshold, final FieldOrbit<T> orbit) {
-        super(new ApsideEventFunction(),
-                new FieldEventDetectionSettings<>(orbit.getKeplerianPeriod().divide(3).getReal(), threshold, DEFAULT_MAX_ITER),
+        this(new FieldEventDetectionSettings<>(orbit.getKeplerianPeriod().divide(3).getReal(), threshold, DEFAULT_MAX_ITER),
                 new FieldStopOnIncreasing<>());
     }
 
-    /** Constructor with full parameters.
+    /** Constructor.
      * <p>
      * This constructor is public because otherwise all accessible ones would require an orbit.
      * </p>
@@ -86,14 +85,26 @@ public class FieldApsideDetector<T extends CalculusFieldElement<T>> extends Fiel
      */
     public FieldApsideDetector(final FieldEventDetectionSettings<T> detectionSettings,
                                final FieldEventHandler<T> handler) {
-        super(new ApsideEventFunction(), detectionSettings, handler);
+        this(new ApsideEventFunction(), detectionSettings, handler);
+    }
+
+    /** Constructor with full parameters.
+     * @param apsideEventFunction event function
+     * @param detectionSettings event detection settings
+     * @param handler event handler to call at event occurrences
+     * @since 14.0
+     */
+    protected FieldApsideDetector(final ApsideEventFunction apsideEventFunction,
+                                  final FieldEventDetectionSettings<T> detectionSettings,
+                                  final FieldEventHandler<T> handler) {
+        super(apsideEventFunction, detectionSettings, handler);
     }
 
     /** {@inheritDoc} */
     @Override
     protected FieldApsideDetector<T> create(final FieldEventDetectionSettings<T> detectionSettings,
                                             final FieldEventHandler<T> newHandler) {
-        return new FieldApsideDetector<>(detectionSettings, newHandler);
+        return new FieldApsideDetector<>((ApsideEventFunction) getEventFunction(), detectionSettings, newHandler);
     }
 
     /** Compute the value of the switching function.
@@ -108,6 +119,7 @@ public class FieldApsideDetector<T extends CalculusFieldElement<T>> extends Fiel
 
     @Override
     public ApsideDetector toEventDetector(final EventHandler eventHandler) {
-        return new ApsideDetector(getDetectionSettings().toEventDetectionSettings(), eventHandler);
+        return new ApsideDetector((ApsideEventFunction) getEventFunction(),
+                getDetectionSettings().toEventDetectionSettings(), eventHandler);
     }
 }

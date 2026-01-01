@@ -67,6 +67,20 @@ public class FieldTimeIntervalDetector<T extends CalculusFieldElement<T>>
     }
 
     /**
+     * Full constructor.
+     * @param eventFunction event function
+     * @param detectionSettings event detection settings
+     * @param handler event handler
+     * @since 14.0
+     */
+    public FieldTimeIntervalDetector(final TimeIntervalEventFunction eventFunction,
+                                     final FieldEventDetectionSettings<T> detectionSettings,
+                                     final FieldEventHandler<T> handler) {
+        super(eventFunction, detectionSettings, handler);
+        this.timeInterval = eventFunction.getTimeInterval();
+    }
+
+    /**
      * Get the default detection settings.
      * @param field field
      * @param timeInterval time interval
@@ -94,7 +108,8 @@ public class FieldTimeIntervalDetector<T extends CalculusFieldElement<T>>
     @Override
     protected FieldTimeIntervalDetector<T> create(final FieldEventDetectionSettings<T> detectionSettings,
                                                  final FieldEventHandler<T> newHandler) {
-        return new FieldTimeIntervalDetector<>(detectionSettings, newHandler, timeInterval);
+        return new FieldTimeIntervalDetector<>((TimeIntervalEventFunction) getEventFunction(), detectionSettings,
+                newHandler);
     }
 
     @Override
@@ -104,6 +119,7 @@ public class FieldTimeIntervalDetector<T extends CalculusFieldElement<T>>
 
     @Override
     public TimeIntervalDetector toEventDetector(final EventHandler eventHandler) {
-        return new TimeIntervalDetector(getDetectionSettings().toEventDetectionSettings(), eventHandler, getTimeInterval());
+        return new TimeIntervalDetector((TimeIntervalEventFunction) getEventFunction(),
+                getDetectionSettings().toEventDetectionSettings(), eventHandler);
     }
 }

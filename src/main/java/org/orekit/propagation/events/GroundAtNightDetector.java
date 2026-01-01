@@ -60,15 +60,6 @@ public class GroundAtNightDetector extends AbstractTopocentricDetector<GroundAtN
     /** Sun elevation at astronomical dawn/dusk (18° below horizon). */
     public static final double ASTRONOMICAL_DAWN_DUSK_ELEVATION = FastMath.toRadians(-18.0);
 
-    /** Provider for Sun position. */
-    private final PVCoordinatesProvider sun;
-
-    /** Sun elevation below which we consider night is dark enough. */
-    private final double dawnDuskElevation;
-
-    /** Atmospheric Model used for calculations, if defined. */
-    private final AtmosphericRefractionModel refractionModel;
-
     /** Simple constructor.
      * <p>
      * Beware that {@link org.orekit.models.earth.EarthStandardAtmosphereRefraction Earth
@@ -85,39 +76,35 @@ public class GroundAtNightDetector extends AbstractTopocentricDetector<GroundAtN
      * @param refractionModel reference to refraction model (null if refraction should be ignored)
      */
     public GroundAtNightDetector(final TopocentricFrame groundLocation, final PVCoordinatesProvider sun,
-                                 final double dawnDuskElevation,
-                                 final AtmosphericRefractionModel refractionModel) {
-        this(groundLocation, sun, dawnDuskElevation, refractionModel,
-                EventDetectionSettings.getDefaultEventDetectionSettings(), new ContinueOnEvent());
+                                 final double dawnDuskElevation, final AtmosphericRefractionModel refractionModel) {
+        this(new GroundAtNightEventFunction(groundLocation, new LocalExtendedPositionProvider(sun), dawnDuskElevation, refractionModel));
     }
 
-    /** Private constructor.
-     * @param groundLocation ground location from which measurement is performed
-     * @param sun provider for Sun position
-     * @param dawnDuskElevation Sun elevation below which we consider night is dark enough (rad)
-     * (typically {@link #ASTRONOMICAL_DAWN_DUSK_ELEVATION})
-     * @param refractionModel reference to refraction model (null if refraction should be ignored),
+    /** Constructor from event function.
+     * @param groundAtNightEventFunction event function
+     * @since 14.0
+     */
+    public GroundAtNightDetector(final GroundAtNightEventFunction groundAtNightEventFunction) {
+        this(groundAtNightEventFunction, EventDetectionSettings.getDefaultEventDetectionSettings(), new ContinueOnEvent());
+    }
+
+    /** Protected constructor.
+     * @param groundAtNightEventFunction event function
      * @param detectionSettings event detection settings
      * @param handler   event handler to call at event occurrences
-     * @since 13.0
+     * @since 14.0
      */
-    protected GroundAtNightDetector(final TopocentricFrame groundLocation, final PVCoordinatesProvider sun,
-                                    final double dawnDuskElevation,
-                                    final AtmosphericRefractionModel refractionModel,
+    protected GroundAtNightDetector(final GroundAtNightEventFunction groundAtNightEventFunction,
                                     final EventDetectionSettings detectionSettings,
                                     final EventHandler handler) {
-        super(new LocalEventFunction(groundLocation, sun, dawnDuskElevation, refractionModel), detectionSettings, handler, groundLocation);
-        this.sun               = sun;
-        this.dawnDuskElevation = dawnDuskElevation;
-        this.refractionModel   = refractionModel;
+        super(groundAtNightEventFunction, detectionSettings, handler, groundAtNightEventFunction.getTopocentricFrame());
     }
 
     /** {@inheritDoc} */
     @Override
     protected GroundAtNightDetector create(final EventDetectionSettings detectionSettings,
                                            final EventHandler newHandler) {
-        return new GroundAtNightDetector(getTopocentricFrame(), sun, dawnDuskElevation, refractionModel,
-                                         detectionSettings, newHandler);
+        return new GroundAtNightDetector((GroundAtNightEventFunction) getEventFunction(), detectionSettings, newHandler);
     }
 
     /** {@inheritDoc}
@@ -132,14 +119,6 @@ public class GroundAtNightDetector extends AbstractTopocentricDetector<GroundAtN
     @Override
     public double g(final SpacecraftState state) {
         return getEventFunction().value(state);
-    }
-
-    private static class LocalEventFunction extends GroundAtNightEventFunction {
-
-        protected LocalEventFunction(final TopocentricFrame topocentricFrame, final PVCoordinatesProvider sun,
-                                     final double dawnDuskElevation, final AtmosphericRefractionModel refractionModel) {
-            super(topocentricFrame, new LocalExtendedPositionProvider(sun), dawnDuskElevation, refractionModel);
-        }
     }
 
     private static class LocalExtendedPositionProvider implements ExtendedPositionProvider {

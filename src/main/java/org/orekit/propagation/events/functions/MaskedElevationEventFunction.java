@@ -31,7 +31,7 @@ import org.orekit.utils.TrackingCoordinates;
  * @author Romain Serra
  * @since 14.0
  */
-public class MaskedElevationEventFunction extends AbstractElevationEventFunction {
+public class MaskedElevationEventFunction extends AbstractElevationCrossingFunction {
 
     /** Elevation mask. */
     private final ElevationMask elevationMask;

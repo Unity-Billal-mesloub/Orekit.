@@ -23,11 +23,11 @@ import org.orekit.bodies.GeodeticPoint;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
 
-/** Abstract class for geodetic coordinates value-crossing event function.
+/** Abstract class for event function related to geodetic coordinates.
  * @author Romain Serra
  * @since 14.0
  */
-public abstract class AbstractGeodeticCrossingEventFunction implements EventFunction {
+public abstract class AbstractGeodeticEventFunction implements EventFunction {
 
     /** Body shape. */
     private final BodyShape bodyShape;
@@ -35,7 +35,7 @@ public abstract class AbstractGeodeticCrossingEventFunction implements EventFunc
     /** Constructor.
      * @param body body
      */
-    protected AbstractGeodeticCrossingEventFunction(final BodyShape body) {
+    protected AbstractGeodeticEventFunction(final BodyShape body) {
         this.bodyShape = body;
     }
 

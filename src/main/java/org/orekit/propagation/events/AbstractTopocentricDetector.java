@@ -17,6 +17,7 @@
 package org.orekit.propagation.events;
 
 import org.orekit.frames.TopocentricFrame;
+import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.functions.EventFunction;
 import org.orekit.propagation.events.handlers.EventHandler;
 
@@ -53,4 +54,12 @@ public abstract class AbstractTopocentricDetector<T extends AbstractDetector<T>>
         return topocentricFrame;
     }
 
+
+    /** Get the elevation value.
+     * @param s the current state information: date, kinematics, attitude
+     * @return spacecraft elevation
+     */
+    public double getElevation(final SpacecraftState s) {
+        return getTopocentricFrame().getElevation(s.getPosition(), s.getFrame(), s.getDate());
+    }
 }

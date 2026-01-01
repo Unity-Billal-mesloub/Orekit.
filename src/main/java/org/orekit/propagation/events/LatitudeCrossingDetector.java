@@ -56,29 +56,43 @@ public class LatitudeCrossingDetector extends AbstractGeographicalDetector<Latit
              body, latitude);
     }
 
-    /** Protected constructor with full parameters.
-     * <p>
-     * This constructor is not public as users are expected to use the builder
-     * API with the various {@code withXxx()} methods to set up the instance
-     * in a readable manner without using a huge amount of parameters.
-     * </p>
+    /** Constructor with input detection settings and handler.
      * @param detectionSettings event detection settings
      * @param handler event handler to call at event occurrences
      * @param body body on which the latitude is defined
      * @param latitude latitude to be crossed
      * @since 13.0
      */
-    protected LatitudeCrossingDetector(final EventDetectionSettings detectionSettings, final EventHandler handler,
-                                       final BodyShape body, final double latitude) {
-        super(new LatitudeValueCrossingEventFunction(body, latitude), detectionSettings, handler, body);
-        this.latitude = latitude;
+    public LatitudeCrossingDetector(final EventDetectionSettings detectionSettings, final EventHandler handler,
+                                    final BodyShape body, final double latitude) {
+        this(new LatitudeValueCrossingEventFunction(body, latitude), detectionSettings, handler, body);
+    }
+
+    /** Protected constructor with full parameters.
+     * <p>
+     * This constructor is not public as users are expected to use the builder
+     * API with the various {@code withXxx()} methods to set up the instance
+     * in a readable manner without using a huge amount of parameters.
+     * </p>
+     * @param eventFunction event function
+     * @param detectionSettings event detection settings
+     * @param handler event handler to call at event occurrences
+     * @param body body on which the latitude is defined
+     * @since 14.0
+     */
+    protected LatitudeCrossingDetector(final LatitudeValueCrossingEventFunction eventFunction,
+                                       final EventDetectionSettings detectionSettings, final EventHandler handler,
+                                       final BodyShape body) {
+        super(eventFunction, detectionSettings, handler, body);
+        this.latitude = eventFunction.getCriticalLatitude();
     }
 
     /** {@inheritDoc} */
     @Override
     protected LatitudeCrossingDetector create(final EventDetectionSettings detectionSettings,
                                               final EventHandler newHandler) {
-        return new LatitudeCrossingDetector(detectionSettings, newHandler, getBodyShape(), latitude);
+        return new LatitudeCrossingDetector((LatitudeValueCrossingEventFunction) getEventFunction(), detectionSettings,
+                newHandler, getBodyShape());
     }
 
     /** Get the fixed latitude to be crossed (radians).

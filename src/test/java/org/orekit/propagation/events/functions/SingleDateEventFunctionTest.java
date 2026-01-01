@@ -24,12 +24,26 @@ import org.orekit.orbits.Orbit;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.time.AbsoluteDate;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class SingleDateEventFunctionTest {
+
+    @Test
+    void testShiftedBy() {
+        // GIVEN
+        final AbsoluteDate date = AbsoluteDate.ARBITRARY_EPOCH;
+        final SpacecraftState state = mock();
+        when(state.getDate()).thenReturn(date);
+        final SingleDateEventFunction singleDateEventFunction = new SingleDateEventFunction(date);
+        final double shift = 1.;
+        // WHEN
+        final SingleDateEventFunction shifted = singleDateEventFunction.shiftedBy(shift);
+        // THEN
+        assertEquals(date.shiftedBy(shift), shifted.getDate());
+    }
 
     @Test
     void testValue() {

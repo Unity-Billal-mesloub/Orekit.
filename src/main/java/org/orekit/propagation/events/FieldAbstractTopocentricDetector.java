@@ -18,6 +18,7 @@ package org.orekit.propagation.events;
 
 import org.hipparchus.CalculusFieldElement;
 import org.orekit.frames.TopocentricFrame;
+import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.events.functions.EventFunction;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
 
@@ -57,4 +58,12 @@ public abstract class FieldAbstractTopocentricDetector<D extends FieldAbstractDe
         return topocentricFrame;
     }
 
+
+    /** Get the elevation value.
+     * @param s the current state information: date, kinematics, attitude
+     * @return spacecraft elevation
+     */
+    public T getElevation(final FieldSpacecraftState<T> s) {
+        return getTopocentricFrame().getElevation(s.getPosition(), s.getFrame(), s.getDate());
+    }
 }

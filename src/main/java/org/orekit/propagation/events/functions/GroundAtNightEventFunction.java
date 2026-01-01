@@ -38,10 +38,7 @@ import org.orekit.utils.ExtendedPositionProvider;
  * @author Romain Serra
  * @since 14.0
  */
-public class GroundAtNightEventFunction implements EventFunction {
-
-    /** Topocentric frame for station. */
-    private final TopocentricFrame topocentricFrame;
+public class GroundAtNightEventFunction extends AbstractTopocentricEventFunction {
 
     /** Provider for Sun position. */
     private final ExtendedPositionProvider sun;
@@ -60,7 +57,7 @@ public class GroundAtNightEventFunction implements EventFunction {
      */
     public GroundAtNightEventFunction(final TopocentricFrame topocentricFrame, final ExtendedPositionProvider sun,
                                       final double dawnDuskElevation, final AtmosphericRefractionModel refractionModel) {
-        this.topocentricFrame = topocentricFrame;
+        super(topocentricFrame);
         this.sun               = sun;
         this.dawnDuskElevation = dawnDuskElevation;
         this.refractionModel   = refractionModel;
@@ -71,7 +68,7 @@ public class GroundAtNightEventFunction implements EventFunction {
         final AbsoluteDate date     = state.getDate();
         final Frame         frame    = state.getFrame();
         final Vector3D position = sun.getPosition(date, frame);
-        final double trueElevation   = topocentricFrame.getElevation(position, frame, date);
+        final double trueElevation   = getTopocentricFrame().getElevation(position, frame, date);
 
         final double calculatedElevation;
         if (refractionModel != null) {
@@ -98,7 +95,7 @@ public class GroundAtNightEventFunction implements EventFunction {
         final FieldAbsoluteDate<T> date     = state.getDate();
         final Frame         frame    = state.getFrame();
         final FieldVector3D<T> position = sun.getPosition(date, frame);
-        final T trueElevation   = topocentricFrame.getElevation(position, frame, date);
+        final T trueElevation   = getTopocentricFrame().getElevation(position, frame, date);
 
         final T calculatedElevation;
         if (refractionModel != null) {

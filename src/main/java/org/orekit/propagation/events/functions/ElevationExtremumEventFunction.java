@@ -31,22 +31,19 @@ import org.orekit.utils.TimeStampedPVCoordinates;
  * @author Romain Serra
  * @since 14.0
  */
-public class ElevationExtremumEventFunction implements EventFunction {
-
-    /** Topocentric frame. */
-    private final TopocentricFrame topocentricFrame;
+public class ElevationExtremumEventFunction extends AbstractTopocentricEventFunction {
 
     /** Constructor.
      * @param topo topocentric frame centered on ground point
      */
     public ElevationExtremumEventFunction(final TopocentricFrame topo) {
-        this.topocentricFrame = topo;
+        super(topo);
     }
 
     @Override
     public double value(final SpacecraftState state) {
         // get position, velocity of spacecraft in topocentric frame
-        final KinematicTransform inertToTopo = state.getFrame().getKinematicTransformTo(topocentricFrame, state.getDate());
+        final KinematicTransform inertToTopo = state.getFrame().getKinematicTransformTo(getTopocentricFrame(), state.getDate());
         final TimeStampedPVCoordinates pvTopo = inertToTopo.transformOnlyPV(state.getPVCoordinates());
 
         // convert the coordinates to UnivariateDerivative1 based vector
@@ -73,7 +70,7 @@ public class ElevationExtremumEventFunction implements EventFunction {
     public <T extends CalculusFieldElement<T>> T value(final FieldSpacecraftState<T> s) {
 
         // get position, velocity acceleration of spacecraft in topocentric frame
-        final FieldStaticTransform<FieldUnivariateDerivative1<T>> inertToTopo = s.getFrame().getStaticTransformTo(topocentricFrame,
+        final FieldStaticTransform<FieldUnivariateDerivative1<T>> inertToTopo = s.getFrame().getStaticTransformTo(getTopocentricFrame(),
                 s.getDate().toFUD1Field());
         final FieldVector3D<FieldUnivariateDerivative1<T>> positionInert = s.getPVCoordinates().toUnivariateDerivative1Vector();
         final FieldVector3D<FieldUnivariateDerivative1<T>> posTopo = inertToTopo.transformPosition(positionInert);

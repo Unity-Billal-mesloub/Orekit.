@@ -20,13 +20,17 @@ import org.hipparchus.CalculusFieldElement;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.time.AbsoluteDate;
+import org.orekit.time.TimeOffset;
+import org.orekit.time.TimeShiftable;
+import org.orekit.time.TimeStamped;
 
 /**
  * Class representing single date detection.
+ * It is negative before the epoch.
  * @author Romain Serra
  * @since 14.0
  */
-public class SingleDateEventFunction implements EventFunction {
+public class SingleDateEventFunction implements EventFunction, TimeStamped, TimeShiftable<SingleDateEventFunction> {
 
     /** Event date. */
     private final AbsoluteDate date;
@@ -52,5 +56,20 @@ public class SingleDateEventFunction implements EventFunction {
     @Override
     public boolean dependsOnTimeOnly() {
         return true;
+    }
+
+    @Override
+    public AbsoluteDate getDate() {
+        return date;
+    }
+
+    @Override
+    public SingleDateEventFunction shiftedBy(final double dt) {
+        return shiftedBy(new TimeOffset(dt));
+    }
+
+    @Override
+    public SingleDateEventFunction shiftedBy(final TimeOffset dt) {
+        return new SingleDateEventFunction(date.shiftedBy(dt));
     }
 }

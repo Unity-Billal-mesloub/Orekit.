@@ -45,10 +45,17 @@ public class LongitudeExtremumDetector extends AbstractGeographicalDetector<Long
      * @param threshold convergence threshold (s)
      * @param body body on which the longitude is defined
      */
-    public LongitudeExtremumDetector(final double maxCheck, final double threshold,
-                                    final BodyShape body) {
-        this(new EventDetectionSettings(maxCheck, threshold, DEFAULT_MAX_ITER), new StopOnIncreasing(),
-             body);
+    public LongitudeExtremumDetector(final double maxCheck, final double threshold, final BodyShape body) {
+        this(new LongitudeExtremumEventFunction(body), new EventDetectionSettings(maxCheck, threshold, DEFAULT_MAX_ITER),
+                new StopOnIncreasing());
+    }
+
+    /** Constructor with event function.
+     * @param longitudeExtremumEventFunction event function
+     * @since 14.0
+     */
+    public LongitudeExtremumDetector(final LongitudeExtremumEventFunction longitudeExtremumEventFunction) {
+        this(longitudeExtremumEventFunction, EventDetectionSettings.getDefaultEventDetectionSettings(), new StopOnIncreasing());
     }
 
     /** Protected constructor with full parameters.
@@ -57,21 +64,22 @@ public class LongitudeExtremumDetector extends AbstractGeographicalDetector<Long
      * API with the various {@code withXxx()} methods to set up the instance
      * in a readable manner without using a huge amount of parameters.
      * </p>
+     * @param longitudeExtremumEventFunction event function
      * @param detectionSettings event detection settings
      * @param handler event handler to call at event occurrences
-     * @param body body on which the longitude is defined
-     * @since 13.0
+     * @since 14.0
      */
-    protected LongitudeExtremumDetector(final EventDetectionSettings detectionSettings, final EventHandler handler,
-                                        final BodyShape body) {
-        super(new LongitudeExtremumEventFunction(body), detectionSettings, handler, body);
+    protected LongitudeExtremumDetector(final LongitudeExtremumEventFunction longitudeExtremumEventFunction,
+                                        final EventDetectionSettings detectionSettings, final EventHandler handler) {
+        super(longitudeExtremumEventFunction, detectionSettings, handler, longitudeExtremumEventFunction.getBodyShape());
     }
 
     /** {@inheritDoc} */
     @Override
     protected LongitudeExtremumDetector create(final EventDetectionSettings detectionSettings,
                                                final EventHandler newHandler) {
-        return new LongitudeExtremumDetector(detectionSettings, newHandler, getBodyShape());
+        return new LongitudeExtremumDetector((LongitudeExtremumEventFunction) getEventFunction(), detectionSettings,
+                newHandler);
     }
 
     /** Compute the value of the detection function.

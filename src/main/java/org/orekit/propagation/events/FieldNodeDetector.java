@@ -95,12 +95,7 @@ public class FieldNodeDetector<T extends CalculusFieldElement<T>> extends FieldA
             threshold, DEFAULT_MAX_ITER), new FieldStopOnIncreasing<>(), frame);
     }
 
-    /** Protected constructor with full parameters.
-     * <p>
-     * This constructor is not public as users are expected to use the builder
-     * API with the various {@code withXxx()} methods to set up the instance
-     * in a readable manner without using a huge amount of parameters.
-     * </p>
+    /** Constructor with detection settings and handler.
      * @param detectionSettings event detection settings
      * @param handler event handler to call at event occurrences
      * @param frame frame in which the equator is defined (typical
@@ -110,15 +105,34 @@ public class FieldNodeDetector<T extends CalculusFieldElement<T>> extends FieldA
      */
     protected FieldNodeDetector(final FieldEventDetectionSettings<T> detectionSettings,
                                 final FieldEventHandler<T> handler, final Frame frame) {
-        super(new NodeEventFunction(frame), detectionSettings, handler);
-        this.frame = frame;
+        this(new NodeEventFunction(frame), detectionSettings, handler);
+    }
+
+    /** Protected constructor with full parameters.
+     * <p>
+     * This constructor is not public as users are expected to use the builder
+     * API with the various {@code withXxx()} methods to set up the instance
+     * in a readable manner without using a huge amount of parameters.
+     * </p>
+     * @param nodeEventFunction event function
+     * @param detectionSettings event detection settings
+     * @param handler event handler to call at event occurrences
+     * values are {@link org.orekit.frames.FramesFactory#getEME2000() EME<sub>2000</sub>} or
+     * {@link org.orekit.frames.FramesFactory#getITRF(org.orekit.utils.IERSConventions, boolean) ITRF})
+     * @since 14.0
+     */
+    protected FieldNodeDetector(final NodeEventFunction nodeEventFunction,
+                                final FieldEventDetectionSettings<T> detectionSettings,
+                                final FieldEventHandler<T> handler) {
+        super(nodeEventFunction, detectionSettings, handler);
+        this.frame = nodeEventFunction.getFrame();
     }
 
     /** {@inheritDoc} */
     @Override
     protected FieldNodeDetector<T> create(final FieldEventDetectionSettings<T> detectionSettings,
                                           final FieldEventHandler<T> newHandler) {
-        return new FieldNodeDetector<>(detectionSettings, newHandler, frame);
+        return new FieldNodeDetector<>((NodeEventFunction) getEventFunction(), detectionSettings, newHandler);
     }
 
     /** Find time separation between nodes.
@@ -180,6 +194,7 @@ public class FieldNodeDetector<T extends CalculusFieldElement<T>> extends FieldA
 
     @Override
     public NodeDetector toEventDetector(final EventHandler eventHandler) {
-        return new NodeDetector(getDetectionSettings().toEventDetectionSettings(), eventHandler, getFrame());
+        return new NodeDetector((NodeEventFunction) getEventFunction(),
+                getDetectionSettings().toEventDetectionSettings(), eventHandler);
     }
 }

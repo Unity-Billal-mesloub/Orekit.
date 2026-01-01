@@ -18,9 +18,11 @@
  *
  * This package provides built-in implementations of {@link org.orekit.propagation.events.functions.EventFunction}.
  * <p>
- * They are meant to separate the logic of event functions from the detectors themselves.
+ * They are meant to separate the logic of event functions from the detectors themselves, as well as gathering the
+ * code for Field and non-Field.
  * </p>
  * @author Romain Serra
+ * @see org.hipparchus.CalculusFieldElement
  * @since 14.0
  */
 package org.orekit.propagation.events.functions;

@@ -78,7 +78,18 @@ public class ApsideDetector extends AbstractDetector<ApsideDetector> {
      * @since 13.0
      */
     public ApsideDetector(final EventDetectionSettings detectionSettings, final EventHandler handler) {
-        super(new ApsideEventFunction(), detectionSettings, handler);
+        this(new ApsideEventFunction(), detectionSettings, handler);
+    }
+
+    /** Protected constructor with full parameters.
+     * @param apsideEventFunction event function
+     * @param detectionSettings detection settings
+     * @param handler event handler to call at event occurrences
+     * @since 14.0
+     */
+    protected ApsideDetector(final ApsideEventFunction apsideEventFunction,
+                             final EventDetectionSettings detectionSettings, final EventHandler handler) {
+        super(apsideEventFunction, detectionSettings, handler);
     }
 
     /** {@inheritDoc} */

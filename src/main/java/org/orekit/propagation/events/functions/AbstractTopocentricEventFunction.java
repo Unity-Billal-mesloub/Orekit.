@@ -16,44 +16,32 @@
  */
 package org.orekit.propagation.events.functions;
 
-import org.hipparchus.CalculusFieldElement;
-import org.orekit.frames.Frame;
-import org.orekit.propagation.FieldSpacecraftState;
-import org.orekit.propagation.SpacecraftState;
+import org.orekit.frames.TopocentricFrame;
 
-/** Node crossing event function.
- * It computes the Z position in the reference frame.
+
+/**
+ * Abstract class for topocentric event function.
  * @author Romain Serra
  * @since 14.0
  */
-public class NodeEventFunction implements EventFunction {
+public abstract class AbstractTopocentricEventFunction implements EventFunction {
 
-    /** Reference frame. */
-    private final Frame frame;
+    /** Topocentric frame. */
+    private final TopocentricFrame topocentricFrame;
 
-    /**
-     * Constructor.
-     * @param frame reference frame for node definition
+    /** Constructor.
+     * @param topo reference to a topocentric model
      */
-    public NodeEventFunction(final Frame frame) {
-        this.frame = frame;
-    }
-
-    @Override
-    public double value(final SpacecraftState state) {
-        return state.getPosition(frame).getZ();
-    }
-
-    @Override
-    public <T extends CalculusFieldElement<T>> T value(final FieldSpacecraftState<T> fieldState) {
-        return fieldState.getPosition(frame).getZ();
+    protected AbstractTopocentricEventFunction(final TopocentricFrame topo) {
+        this.topocentricFrame = topo;
     }
 
     /**
-     * Getter for the frame.
+     * Getter for the topocentric frame.
      * @return frame
      */
-    public Frame getFrame() {
-        return frame;
+    public TopocentricFrame getTopocentricFrame() {
+        return topocentricFrame;
     }
+
 }

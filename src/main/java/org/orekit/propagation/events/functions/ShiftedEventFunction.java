@@ -20,7 +20,7 @@ import org.hipparchus.CalculusFieldElement;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
 
-/** Shifted event function.
+/** Time-shifted event function.
  * @author Romain Serra
  * @since 14.0
  */

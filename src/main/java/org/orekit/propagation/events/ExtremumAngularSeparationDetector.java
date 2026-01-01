@@ -47,7 +47,7 @@ public class ExtremumAngularSeparationDetector extends AbstractDetector<Extremum
     public ExtremumAngularSeparationDetector(final EventDetectionSettings detectionSettings,
                                              final EventHandler handler,
                                              final ExtendedPositionProvider beacon,
-                                                final ExtendedPositionProvider observer) {
+                                             final ExtendedPositionProvider observer) {
         super(detectionSettings, handler);
         this.beacon         = beacon;
         this.observer       = observer;

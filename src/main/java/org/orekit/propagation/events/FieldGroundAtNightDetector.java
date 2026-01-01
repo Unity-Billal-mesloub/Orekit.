@@ -113,7 +113,7 @@ public class FieldGroundAtNightDetector<T extends CalculusFieldElement<T>>
 
     @Override
     public GroundAtNightDetector toEventDetector(final EventHandler eventHandler) {
-        return new GroundAtNightDetector(getTopocentricFrame(), sun, dawnDuskElevation.getReal(), refractionModel,
-                getDetectionSettings().toEventDetectionSettings(), eventHandler);
+        return new GroundAtNightDetector(new GroundAtNightEventFunction(getTopocentricFrame(), sun, dawnDuskElevation.getReal(),
+                refractionModel), getDetectionSettings().toEventDetectionSettings(), eventHandler);
     }
 }

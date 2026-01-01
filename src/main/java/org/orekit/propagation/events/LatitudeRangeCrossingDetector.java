@@ -19,7 +19,7 @@ package org.orekit.propagation.events;
 import org.hipparchus.util.FastMath;
 import org.orekit.bodies.BodyShape;
 import org.orekit.propagation.SpacecraftState;
-import org.orekit.propagation.events.functions.AbstractGeodeticCrossingEventFunction;
+import org.orekit.propagation.events.functions.AbstractGeodeticEventFunction;
 import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.StopOnDecreasing;
 
@@ -123,7 +123,7 @@ public class LatitudeRangeCrossingDetector extends AbstractGeographicalDetector<
      * Local event function.
      * @since 14.0
      */
-    private static class LocalEventFunction extends AbstractGeodeticCrossingEventFunction {
+    private static class LocalEventFunction extends AbstractGeodeticEventFunction {
 
         /** Lower bound latitude. */
         private final double minLatitude;

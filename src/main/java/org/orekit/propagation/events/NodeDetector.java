@@ -101,29 +101,39 @@ public class NodeDetector extends AbstractDetector<NodeDetector> {
              frame);
     }
 
+    /** Constructor with detection settings and handler.
+     * @param detectionSettings detection settings
+     * @param handler event handler to call at event occurrences
+     * @param frame frame in which the equator is defined (typical values are {@link org.orekit.frames.FramesFactory#getEME2000() EME<sub>2000</sub>} or
+     * {@link org.orekit.frames.FramesFactory#getITRF(org.orekit.utils.IERSConventions, boolean) ITRF})
+     */
+    public NodeDetector(final EventDetectionSettings detectionSettings, final EventHandler handler, final Frame frame) {
+        this(new NodeEventFunction(frame), detectionSettings, handler);
+    }
+
     /** Protected constructor with full parameters.
      * <p>
      * This constructor is not public as users are expected to use the builder
      * API with the various {@code withXxx()} methods to set up the instance
      * in a readable manner without using a huge amount of parameters.
      * </p>
+     * @param nodeEventFunction event function
      * @param detectionSettings detection settings
      * @param handler event handler to call at event occurrences
-     * @param frame frame in which the equator is defined (typical
      * values are {@link org.orekit.frames.FramesFactory#getEME2000() EME<sub>2000</sub>} or
      * {@link org.orekit.frames.FramesFactory#getITRF(org.orekit.utils.IERSConventions, boolean) ITRF})
-     * @since 12.2
+     * @since 14.0
      */
-    protected NodeDetector(final EventDetectionSettings detectionSettings, final EventHandler handler,
-                           final Frame frame) {
-        super(new NodeEventFunction(frame), detectionSettings, handler);
-        this.frame = frame;
+    protected NodeDetector(final NodeEventFunction nodeEventFunction,
+                           final EventDetectionSettings detectionSettings, final EventHandler handler) {
+        super(nodeEventFunction, detectionSettings, handler);
+        this.frame = nodeEventFunction.getFrame();
     }
 
     /** {@inheritDoc} */
     @Override
     protected NodeDetector create(final EventDetectionSettings detectionSettings, final EventHandler newHandler) {
-        return new NodeDetector(detectionSettings, newHandler, frame);
+        return new NodeDetector((NodeEventFunction) getEventFunction(), detectionSettings, newHandler);
     }
 
     /** Find time separation between nodes.

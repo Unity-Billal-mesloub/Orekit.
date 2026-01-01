@@ -60,35 +60,38 @@ public class ElevationExtremumDetector extends AbstractTopocentricDetector<Eleva
         this(new EventDetectionSettings(maxCheck, threshold, DEFAULT_MAX_ITER), new StopOnIncreasing(), topo);
     }
 
+    /** Build a detector.
+     * @param detectionSettings event detection settings
+     * @param handler event handler to call at event occurrences
+     * @param topo topocentric frame centered on ground point
+     */
+    public ElevationExtremumDetector(final EventDetectionSettings detectionSettings, final EventHandler handler,
+                                     final TopocentricFrame topo) {
+        this(new ElevationExtremumEventFunction(topo), detectionSettings, handler);
+    }
+
     /** Protected constructor with full parameters.
      * <p>
      * This constructor is not public as users are expected to use the builder
      * API with the various {@code withXxx()} methods to set up the instance
      * in a readable manner without using a huge amount of parameters.
      * </p>
+     * @param eventFunction event function
      * @param detectionSettings event detection settings
      * @param handler event handler to call at event occurrences
-     * @param topo topocentric frame centered on ground point
-     * @since 13.0
+     * @since 14.0
      */
-    protected ElevationExtremumDetector(final EventDetectionSettings detectionSettings, final EventHandler handler,
-                                        final TopocentricFrame topo) {
-        super(new ElevationExtremumEventFunction(topo), detectionSettings, handler, topo);
+    protected ElevationExtremumDetector(final ElevationExtremumEventFunction eventFunction,
+                                        final EventDetectionSettings detectionSettings, final EventHandler handler) {
+        super(eventFunction, detectionSettings, handler, eventFunction.getTopocentricFrame());
     }
 
     /** {@inheritDoc} */
     @Override
     protected ElevationExtremumDetector create(final EventDetectionSettings detectionSettings,
-                                              final EventHandler newHandler) {
-        return new ElevationExtremumDetector(detectionSettings, newHandler, getTopocentricFrame());
-    }
-
-    /** Get the elevation value.
-     * @param s the current state information: date, kinematics, attitude
-     * @return spacecraft elevation
-     */
-    public double getElevation(final SpacecraftState s) {
-        return getTopocentricFrame().getElevation(s.getPosition(), s.getFrame(), s.getDate());
+                                               final EventHandler newHandler) {
+        return new ElevationExtremumDetector((ElevationExtremumEventFunction) getEventFunction(), detectionSettings,
+                newHandler);
     }
 
     /** Compute the value of the detection function.
