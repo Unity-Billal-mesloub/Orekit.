@@ -84,12 +84,7 @@ public class EventShifter implements DetectorModifier {
         this(detector.getDetectionSettings(), detector, useShiftedStates, increasingTimeShift, decreasingTimeShift);
     }
 
-    /** Protected constructor with full parameters.
-     * <p>
-     * This constructor is not public as users are expected to use the builder
-     * API with the various {@code withXxx()} methods to set up the instance
-     * in a readable manner without using a huge amount of parameters.
-     * </p>
+    /** Constructor with full parameters.
      * @param detectionSettings event detection settings
      * @param detector event detector for the raw unshifted event
      * @param useShiftedStates if true, the state provided to {@link

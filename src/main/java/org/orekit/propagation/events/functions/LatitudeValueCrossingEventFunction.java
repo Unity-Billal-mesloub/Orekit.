@@ -26,7 +26,7 @@ import org.orekit.propagation.SpacecraftState;
  * @author Romain Serra
  * @since 14.0
  */
-public class LatitudeValueCrossingEventFunction extends AbstractGeodeticCrossingEventFunction {
+public class LatitudeValueCrossingEventFunction extends AbstractGeodeticEventFunction {
 
     /** Critical latitude for crossing event. */
     private final double criticalLatitude;
@@ -48,5 +48,13 @@ public class LatitudeValueCrossingEventFunction extends AbstractGeodeticCrossing
     @Override
     public <T extends CalculusFieldElement<T>> T value(final FieldSpacecraftState<T> fieldState) {
         return transformToGeodeticPoint(fieldState).getLatitude().subtract(criticalLatitude);
+    }
+
+    /**
+     * Getter for critical altitude.
+     * @return altitude
+     */
+    public double getCriticalLatitude() {
+        return criticalLatitude;
     }
 }

@@ -70,35 +70,39 @@ public class FieldElevationExtremumDetector<T extends CalculusFieldElement<T>>
              topo);
     }
 
+    /** Constructor with input detection settings and handler.
+     * @param detectionSettings event detection settings
+     * @param handler event handler to call at event occurrences
+     * @param topo topocentric frame centered on ground point
+     */
+    public FieldElevationExtremumDetector(final FieldEventDetectionSettings<T> detectionSettings,
+                                          final FieldEventHandler<T> handler,
+                                          final TopocentricFrame topo) {
+        this(new ElevationExtremumEventFunction(topo), detectionSettings, handler);
+    }
+
     /** Protected constructor with full parameters.
      * <p>
      * This constructor is not public as users are expected to use the builder
      * API with the various {@code withXxx()} methods to set up the instance
      * in a readable manner without using a huge amount of parameters.
      * </p>
+     * @param eventFunction event function
      * @param detectionSettings event detection settings
      * @param handler event handler to call at event occurrences
-     * @param topo topocentric frame centered on ground point
      */
-    protected FieldElevationExtremumDetector(final FieldEventDetectionSettings<T> detectionSettings,
-                                             final FieldEventHandler<T> handler,
-                                             final TopocentricFrame topo) {
-        super(new ElevationExtremumEventFunction(topo), detectionSettings, handler, topo);
+    protected FieldElevationExtremumDetector(final ElevationExtremumEventFunction eventFunction,
+                                             final FieldEventDetectionSettings<T> detectionSettings,
+                                             final FieldEventHandler<T> handler) {
+        super(eventFunction, detectionSettings, handler, eventFunction.getTopocentricFrame());
     }
 
     /** {@inheritDoc} */
     @Override
     protected FieldElevationExtremumDetector<T> create(final FieldEventDetectionSettings<T> detectionSettings,
                                                        final FieldEventHandler<T> newHandler) {
-        return new FieldElevationExtremumDetector<>(detectionSettings, newHandler, getTopocentricFrame());
-    }
-
-    /** Get the elevation value.
-     * @param s the current state information: date, kinematics, attitude
-     * @return spacecraft elevation
-     */
-    public T getElevation(final FieldSpacecraftState<T> s) {
-        return getTopocentricFrame().getElevation(s.getPosition(), s.getFrame(), s.getDate());
+        return new FieldElevationExtremumDetector<>((ElevationExtremumEventFunction) getEventFunction(),
+                detectionSettings, newHandler);
     }
 
     /** Compute the value of the detection function.
@@ -115,6 +119,7 @@ public class FieldElevationExtremumDetector<T extends CalculusFieldElement<T>>
 
     @Override
     public ElevationExtremumDetector toEventDetector(final EventHandler eventHandler) {
-        return new ElevationExtremumDetector(getDetectionSettings().toEventDetectionSettings(), eventHandler, getTopocentricFrame());
+        return new ElevationExtremumDetector((ElevationExtremumEventFunction) getEventFunction(),
+                getDetectionSettings().toEventDetectionSettings(), eventHandler);
     }
 }

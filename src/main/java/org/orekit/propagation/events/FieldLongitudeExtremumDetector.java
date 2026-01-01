@@ -46,12 +46,7 @@ public class FieldLongitudeExtremumDetector<T extends CalculusFieldElement<T>>
                 new FieldStopOnIncreasing<>(), body);
     }
 
-    /** Constructor with full parameters.
-     * <p>
-     * This constructor is not public as users are expected to use the builder
-     * API with the various {@code withXxx()} methods to set up the instance
-     * in a readable manner without using a huge amount of parameters.
-     * </p>
+    /** Constructor with body shape.
      * @param detectionSettings event detection settings
      * @param handler event handler to call at event occurrences
      * @param body body on which the longitude is defined
@@ -59,14 +54,27 @@ public class FieldLongitudeExtremumDetector<T extends CalculusFieldElement<T>>
      */
     public FieldLongitudeExtremumDetector(final FieldEventDetectionSettings<T> detectionSettings,
                                           final FieldEventHandler<T> handler, final BodyShape body) {
-        super(new LongitudeExtremumEventFunction(body), detectionSettings, handler, body);
+        this(new LongitudeExtremumEventFunction(body), detectionSettings, handler);
+    }
+
+    /** Constructor with full parameters.
+     * @param longitudeExtremumEventFunction event function
+     * @param detectionSettings event detection settings
+     * @param handler event handler to call at event occurrences
+     * @since 13.0
+     */
+    public FieldLongitudeExtremumDetector(final LongitudeExtremumEventFunction longitudeExtremumEventFunction,
+                                          final FieldEventDetectionSettings<T> detectionSettings,
+                                          final FieldEventHandler<T> handler) {
+        super(longitudeExtremumEventFunction, detectionSettings, handler, longitudeExtremumEventFunction.getBodyShape());
     }
 
     /** {@inheritDoc} */
     @Override
     protected FieldLongitudeExtremumDetector<T> create(final FieldEventDetectionSettings<T> detectionSettings,
                                                        final FieldEventHandler<T> newHandler) {
-        return new FieldLongitudeExtremumDetector<>(detectionSettings, newHandler, getBodyShape());
+        return new FieldLongitudeExtremumDetector<>((LongitudeExtremumEventFunction) getEventFunction(),
+                detectionSettings, newHandler);
     }
 
     /** {@inheritDoc} */
@@ -77,6 +85,7 @@ public class FieldLongitudeExtremumDetector<T extends CalculusFieldElement<T>>
 
     @Override
     public LongitudeExtremumDetector toEventDetector(final EventHandler eventHandler) {
-        return new LongitudeExtremumDetector(getDetectionSettings().toEventDetectionSettings(), eventHandler, getBodyShape());
+        return new LongitudeExtremumDetector((LongitudeExtremumEventFunction) getEventFunction(),
+                getDetectionSettings().toEventDetectionSettings(), eventHandler);
     }
 }

@@ -22,15 +22,12 @@ import org.orekit.models.AtmosphericRefractionModel;
 
 
 /**
- * Abstract class for elevation event function.
+ * Abstract class for elevation crossing event function.
  * It is negative when under the necessary elevation.
  * @author Romain Serra
  * @since 14.0
  */
-public abstract class AbstractElevationEventFunction implements EventFunction {
-
-    /** Topocentric frame. */
-    private final TopocentricFrame topocentricFrame;
+public abstract class AbstractElevationCrossingFunction extends AbstractTopocentricEventFunction {
 
     /** Atmospheric Model used for calculations, if defined. */
     private final AtmosphericRefractionModel refractionModel;
@@ -39,10 +36,10 @@ public abstract class AbstractElevationEventFunction implements EventFunction {
      * @param refractionModel reference to refraction model (can be null in which case no correction is applied)
      * @param topo reference to a topocentric model
      */
-    protected AbstractElevationEventFunction(final AtmosphericRefractionModel refractionModel,
-                                             final TopocentricFrame topo) {
+    protected AbstractElevationCrossingFunction(final AtmosphericRefractionModel refractionModel,
+                                                final TopocentricFrame topo) {
+        super(topo);
         this.refractionModel = refractionModel;
-        this.topocentricFrame = topo;
     }
 
     /**
@@ -51,14 +48,6 @@ public abstract class AbstractElevationEventFunction implements EventFunction {
      */
     public AtmosphericRefractionModel getRefractionModel() {
         return this.refractionModel;
-    }
-
-    /**
-     * Getter for the topocentric frame.
-     * @return frame
-     */
-    public TopocentricFrame getTopocentricFrame() {
-        return topocentricFrame;
     }
 
     /** Apply refraction correction if applicable.

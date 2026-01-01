@@ -54,8 +54,20 @@ public class TimeIntervalDetector extends AbstractDetector<TimeIntervalDetector>
      */
     public TimeIntervalDetector(final EventDetectionSettings detectionSettings, final EventHandler handler,
                                 final TimeInterval timeInterval) {
-        super(new TimeIntervalEventFunction(timeInterval), detectionSettings, handler);
-        this.timeInterval = timeInterval;
+        this(new TimeIntervalEventFunction(timeInterval), detectionSettings, handler);
+    }
+
+    /**
+     * Full constructor.
+     * @param eventFunction event function
+     * @param detectionSettings event detection settings
+     * @param handler event handler
+     * @since 14.0
+     */
+    public TimeIntervalDetector(final TimeIntervalEventFunction eventFunction,
+                                final EventDetectionSettings detectionSettings, final EventHandler handler) {
+        super(eventFunction, detectionSettings, handler);
+        this.timeInterval = eventFunction.getTimeInterval();
     }
 
     /**
@@ -68,7 +80,7 @@ public class TimeIntervalDetector extends AbstractDetector<TimeIntervalDetector>
 
     @Override
     protected TimeIntervalDetector create(final EventDetectionSettings detectionSettings, final EventHandler newHandler) {
-        return new TimeIntervalDetector(detectionSettings, newHandler, timeInterval);
+        return new TimeIntervalDetector((TimeIntervalEventFunction) getEventFunction(), detectionSettings, newHandler);
     }
 
     @Override

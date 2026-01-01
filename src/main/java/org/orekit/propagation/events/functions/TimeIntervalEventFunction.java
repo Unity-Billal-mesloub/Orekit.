@@ -57,4 +57,12 @@ public class TimeIntervalEventFunction implements EventFunction {
     public boolean dependsOnTimeOnly() {
         return true;
     }
+
+    /**
+     * Getter for the time interval.
+     * @return interval
+     */
+    public TimeInterval getTimeInterval() {
+        return timeInterval;
+    }
 }

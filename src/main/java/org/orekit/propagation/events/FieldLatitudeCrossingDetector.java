@@ -69,33 +69,48 @@ public class FieldLatitudeCrossingDetector <T extends CalculusFieldElement<T>>
                 new FieldStopOnIncreasing<>(), body, latitude);
     }
 
-    /** Protected constructor with full parameters.
-     * <p>
-     * This constructor is not public as users are expected to use the builder
-     * API with the various {@code withXxx()} methods to set up the instance
-     * in a readable manner without using a huge amount of parameters.
-     * </p>
+    /** Constructor with input detection setting and handler.
      * @param detectionSettings event detection settings
      * @param handler event handler to call at event occurrences
      * @param body body on which the latitude is defined
      * @param latitude latitude to be crossed
      * @since 13.0
      */
-    protected FieldLatitudeCrossingDetector(
+    public FieldLatitudeCrossingDetector(
             final FieldEventDetectionSettings<T> detectionSettings,
             final FieldEventHandler<T> handler,
             final BodyShape body,
             final double latitude) {
-        super(new LatitudeValueCrossingEventFunction(body, latitude), detectionSettings, handler, body);
-        this.latitude = latitude;
+        this(new LatitudeValueCrossingEventFunction(body, latitude), detectionSettings, handler, body);
+    }
+
+    /** Protected constructor with full parameters.
+     * <p>
+     * This constructor is not public as users are expected to use the builder
+     * API with the various {@code withXxx()} methods to set up the instance
+     * in a readable manner without using a huge amount of parameters.
+     * </p>
+     * @param eventFunction event function
+     * @param detectionSettings event detection settings
+     * @param handler event handler to call at event occurrences
+     * @param body body on which the latitude is defined
+     * @since 14.0
+     */
+    protected FieldLatitudeCrossingDetector(
+            final LatitudeValueCrossingEventFunction eventFunction,
+            final FieldEventDetectionSettings<T> detectionSettings,
+            final FieldEventHandler<T> handler,
+            final BodyShape body) {
+        super(eventFunction, detectionSettings, handler, body);
+        this.latitude = eventFunction.getCriticalLatitude();
     }
 
     /** {@inheritDoc} */
     @Override
-    protected FieldLatitudeCrossingDetector<T> create(
-            final FieldEventDetectionSettings<T> detectionSettings,
-            final FieldEventHandler<T> newHandler) {
-        return new FieldLatitudeCrossingDetector<>(detectionSettings, newHandler, getBodyShape(), latitude);
+    protected FieldLatitudeCrossingDetector<T> create(final FieldEventDetectionSettings<T> detectionSettings,
+                                                      final FieldEventHandler<T> newHandler) {
+        return new FieldLatitudeCrossingDetector<>((LatitudeValueCrossingEventFunction) getEventFunction(),
+                detectionSettings, newHandler, getBodyShape());
     }
 
     /** Get the fixed latitude to be crossed (radians).
@@ -120,6 +135,7 @@ public class FieldLatitudeCrossingDetector <T extends CalculusFieldElement<T>>
 
     @Override
     public LatitudeCrossingDetector toEventDetector(final EventHandler eventHandler) {
-        return new LatitudeCrossingDetector(getDetectionSettings().toEventDetectionSettings(), eventHandler, getBodyShape(), latitude);
+        return new LatitudeCrossingDetector((LatitudeValueCrossingEventFunction) getEventFunction(),
+                getDetectionSettings().toEventDetectionSettings(), eventHandler, getBodyShape());
     }
 }
