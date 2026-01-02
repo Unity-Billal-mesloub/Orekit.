@@ -333,6 +333,10 @@ public class FieldEventEnablingPredicateFilter<T extends CalculusFieldElement<T>
         return forward;
     }
 
+    /**
+     * Local event function.
+     * @since 14.0
+     */
     private static class LocalEventFunction implements EventFunctionModifier {
 
         /** Wrapped event function. */

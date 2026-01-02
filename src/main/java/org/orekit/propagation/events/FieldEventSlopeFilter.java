@@ -296,6 +296,10 @@ public class FieldEventSlopeFilter<D extends FieldEventDetector<T>, T extends Ca
         return forward;
     }
 
+    /**
+     * Local event function.
+     * @since 14.0
+     */
     private class LocalEventFunction implements EventFunctionModifier {
 
         /** Wrapped event function. */
@@ -342,7 +346,6 @@ public class FieldEventSlopeFilter<D extends FieldEventDetector<T>, T extends Ca
          * @param detector sloped filter detector
          * @return cast detector
          */
-        @SuppressWarnings("unchecked")
         private FieldEventSlopeFilter<D, T> castDetector(final FieldEventDetector<T> detector) {
             return (FieldEventSlopeFilter<D, T>) detector;
         }

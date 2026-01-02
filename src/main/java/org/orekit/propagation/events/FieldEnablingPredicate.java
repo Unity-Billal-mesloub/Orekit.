@@ -16,16 +16,17 @@
  */
 package org.orekit.propagation.events;
 
+import java.util.Arrays;
+
 import org.hipparchus.CalculusFieldElement;
 import org.orekit.propagation.FieldSpacecraftState;
-
-import java.util.Arrays;
 
 /** This interface represents an event enabling predicate function.
  * @param <T> type of the field elements
  * @author Luc Maisonobe
  * @since 12.0
  */
+@FunctionalInterface
 public interface FieldEnablingPredicate<T extends CalculusFieldElement<T>> {
 
     /** Compute an event enabling function of state.

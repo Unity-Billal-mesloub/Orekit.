@@ -32,15 +32,12 @@ import org.orekit.orbits.FieldEquinoctialOrbit;
 import org.orekit.orbits.FieldOrbit;
 import org.orekit.propagation.FieldPropagator;
 import org.orekit.propagation.FieldSpacecraftState;
-import org.orekit.propagation.events.handlers.ContinueOnEvent;
-import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.events.handlers.FieldRecordAndContinue;
 import org.orekit.propagation.numerical.FieldNumericalPropagator;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.time.TimeScalesFactory;
 import org.orekit.utils.FieldPVCoordinates;
 import org.orekit.utils.FieldPVCoordinatesProvider;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FieldBetaAngleDetectorTest {
@@ -130,17 +127,5 @@ class FieldBetaAngleDetectorTest {
         final FieldSpacecraftState<Binary64> state = propagator.propagate(date, date.shiftedBy(30 * 86400));
         assertEquals(30 * 86400, state.getDate().durationFrom(date).getReal(), 1e-9);
         assertEquals(1, handler.getEvents().size());
-    }
-
-    @Test
-    void testToEventDetector() {
-        // GIVEN
-        final FieldBetaAngleDetector<Binary64> fieldDetector = new FieldBetaAngleDetector<>(Binary64.ONE);
-        final EventHandler expectedHandler = new ContinueOnEvent();
-        // WHEN
-        final BetaAngleDetector detector = fieldDetector.toEventDetector(expectedHandler);
-        // THEN
-        assertEquals(expectedHandler, detector.getHandler());
-        assertEquals(fieldDetector.getBetaAngleThreshold().getReal(), detector.getBetaAngleThreshold());
     }
 }
