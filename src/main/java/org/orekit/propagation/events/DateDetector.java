@@ -253,6 +253,10 @@ public class DateDetector extends AbstractDetector<DateDetector> implements Time
         }
     }
 
+    /**
+     * Local event function.
+     * @since 14.0
+     */
     private class LocalEventFunction implements EventFunction {
 
         @Override

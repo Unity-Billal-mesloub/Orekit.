@@ -51,8 +51,8 @@ public class LatitudeValueCrossingEventFunction extends AbstractGeodeticEventFun
     }
 
     /**
-     * Getter for critical altitude.
-     * @return altitude
+     * Getter for critical latitude.
+     * @return latitude
      */
     public double getCriticalLatitude() {
         return criticalLatitude;

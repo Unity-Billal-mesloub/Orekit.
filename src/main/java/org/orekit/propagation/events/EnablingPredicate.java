@@ -16,14 +16,15 @@
  */
 package org.orekit.propagation.events;
 
-import org.orekit.propagation.SpacecraftState;
-
 import java.util.Arrays;
+
+import org.orekit.propagation.SpacecraftState;
 
 /** This interface represents an event enabling predicate function.
  * @author Luc Maisonobe
  * @since 7.1
  */
+@FunctionalInterface
 public interface EnablingPredicate {
 
     /** Compute an event enabling function of state.

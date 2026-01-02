@@ -107,6 +107,7 @@ public interface FieldEventDetector <T extends CalculusFieldElement<T>> {
 
     /**
      * Builds instance from non-Field event detector.
+     * It might not perform as expected if the latter has a specialized handler.
      * @param field field
      * @param eventHandler handler
      * @param detector non-Field detector
